@@ -1,0 +1,8 @@
+.DS_Store
+vendor
+.idea
+application/logs/*
+uploads/*
+.env.development
+.env.testing
+.env.production

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="CodeIgniter Application Test Suite" tests="1" assertions="1" failures="1" errors="0" time="0.016911">
+    <testsuite name="Crud_test" file="C:\xampp\htdocs\restigniter-crud\application\tests\controllers\api\Crud_test.php" fullPackage="Crud" tests="1" assertions="1" failures="1" errors="0" time="0.016911">
+      <testcase name="testIndexMethods" class="Crud_test" file="C:\xampp\htdocs\restigniter-crud\application\tests\controllers\api\Crud_test.php" line="5" assertions="1" time="0.016911">
+        <failure type="PHPUnit_Framework_ExpectationFailedException">Crud_test::testIndexMethods
+Status code is not 204 but 200.
+Failed asserting that 200 is identical to 204.
+
+C:\xampp\htdocs\restigniter-crud\application\tests\_ci_phpunit_test\CIPHPUnitTestCase.php:270
+C:\xampp\htdocs\restigniter-crud\application\tests\controllers\api\Crud_test.php:10
+</failure>
+      </testcase>
+    </testsuite>
+  </testsuite>
+</testsuites>
