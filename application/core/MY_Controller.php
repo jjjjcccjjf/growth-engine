@@ -13,13 +13,14 @@ class Admin_core_controller extends CI_Controller
   function __construct()
   {
     parent::__construct();
+    $this->load->model('cms/options_model');
   }
 
   public function wrapper($body, $data = null)
   {
-    // if ($this->session->role !== 'administrator') {
-    //   redirect('cms/login');
-    // }
+    if (!in_array($this->session->role, $this->options_model->getRoles())) {
+      redirect('cms/login');
+    }
 
     $this->load->view('cms/partials/header');
     $this->load->view('cms/partials/left-sidebar');

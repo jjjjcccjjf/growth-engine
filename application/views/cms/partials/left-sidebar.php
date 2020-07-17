@@ -60,16 +60,22 @@
                 </ul>
               </div>
             </li> -->
-            <li class="nav-item active">
-              <a href="example.com">
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == '' ? 'active' : '' ?>">
+              <a href="<?php echo base_url() ?>">
                 <i class="fas fa-home"></i>
                 <p>Dashboard</p>
               </a> 
             </li>
-            <li class="nav-item">
-              <a href="example.com">
-                <i class="fas fa-home"></i>
-                <p>Test</p>
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'users' ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/users') ?>">
+                <i class="fas fa-users"></i>
+                <p>Users Management</p>
+              </a> 
+            </li>
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'sales' ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/sales') ?>">
+                <i class="fas fa-book"></i>
+                <p>Sales Management</p>
               </a> 
             </li>
             

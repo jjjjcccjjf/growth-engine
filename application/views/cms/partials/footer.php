@@ -1,8 +1,10 @@
 		
 		 
 	</div>
+	
+	<script src="<?php echo base_url('public/admin/') ?>/assets/js/custom/generic.js"></script>
+
 	<!--   Core JS Files   -->
-	<script src="<?php echo base_url('public/admin/') ?>/assets/js/core/jquery.3.2.1.min.js"></script>
 	<script src="<?php echo base_url('public/admin/') ?>/assets/js/core/popper.min.js"></script>
 	<script src="<?php echo base_url('public/admin/') ?>/assets/js/core/bootstrap.min.js"></script>
 

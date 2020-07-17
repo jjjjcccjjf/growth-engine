@@ -7,7 +7,7 @@ class Login extends Admin_core_controller {
   {
     parent::__construct();
 
-    $this->load->model('cms/login_model', 'login');
+    $this->load->model('cms/users_model');
   }
 
   public function index()
@@ -32,9 +32,9 @@ class Login extends Admin_core_controller {
     $email = $this->input->post('email');
     $password = $this->input->post('password');
 
-    $res = $this->login->getByEmail($email);
+    $res = $this->users_model->getByEmail($email);
     if($res && password_verify($password, $res->password)){
-      $this->session->set_userdata(['role' => 'administrator', 'id' => $res->id, 'name' => $res->name]);
+      $this->session->set_userdata(['role' => $res->role_title, 'id' => $res->id, 'name' => $res->name, 'profile_pic_path' => $res->profile_pic_path]);
       redirect('cms/dashboard');
     } else {
       $this->session->set_flashdata('login_msg', ['message' => 'Incorrect email or password', 'color' => 'red']);

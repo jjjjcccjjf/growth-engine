@@ -24,6 +24,21 @@
 
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link rel="stylesheet" href="<?php echo base_url('public/admin/') ?>/assets/css/demo.css">
+
+  <!-- jquery -->
+  <script src="<?php echo base_url('public/admin/') ?>/assets/js/core/jquery.3.2.1.min.js"></script>
+  <script>
+    var base_url = '<?php echo base_url() ?>'
+  </script>
+  <style>
+    .modal-body label {
+      color: #fff !important;
+    }
+    .form-control:disabled {
+      color: #000 !important;
+      font-weight: bold !important;
+    }
+  </style>
 </head>
 <body data-background-color="dark">
   <div class="wrapper">
@@ -255,29 +270,29 @@
             <li class="nav-item dropdown hidden-caret">
               <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                 <div class="avatar-sm">
-                  <img src="<?php echo base_url('public/admin/') ?>/assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+                  <img src="<?php echo $this->session->profile_pic_path ?>" onerror="this.src='<?php echo base_url('public/admin/') ?>/assets/img/optimind-logo.png'" alt="..." class="avatar-img rounded-circle">
                 </div>
               </a>
               <ul class="dropdown-menu dropdown-user animated fadeIn">
                 <div class="dropdown-user-scroll scrollbar-outer">
                   <li>
                     <div class="user-box">
-                      <div class="avatar-lg"><img src="<?php echo base_url('public/admin/') ?>/assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
+                      <div class="avatar-lg"><img src="<?php echo $this->session->profile_pic_path ?>" onerror="this.src='<?php echo base_url('public/admin/') ?>/assets/img/optimind-logo.png'" alt="image profile" class="avatar-img rounded"></div>
                       <div class="u-text">
-                        <h4>Hizrian</h4>
-                        <p class="text-muted">hello@example.com</p><a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                        <h4><?php echo $this->session->name ?></h4>
+                        <p class="text-muted"><?php echo ucwords($this->session->role) ?></p><a href="<?php echo base_url('cms/profile') ?>" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                       </div>
                     </div>
                   </li>
                   <li>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">My Profile</a>
+                    <a class="dropdown-item" href="<?php echo base_url('cms/profile') ?>">My Profile</a>
                     <a class="dropdown-item" href="#">My Balance</a>
                     <a class="dropdown-item" href="#">Inbox</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Account Setting</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Logout</a>
+                    <a class="dropdown-item" href="<?php echo base_url('cms/login/logout') ?>">Logout</a>
                   </li>
                 </div>
               </ul>

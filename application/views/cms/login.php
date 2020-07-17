@@ -59,22 +59,30 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-12 col-lg-12">
+                      <form method="post" action="<?php echo base_url('cms/login/attempt') ?>">
+                        
                       <div class="form-group">
                         <label for="email2">Email Address</label>
-                        <input type="email" class="form-control" id="email2" placeholder="Enter Email">
+                        <input name="email" type="email" class="form-control" id="email2" placeholder="Enter Email">
                         <!-- <small id="emailHelp2" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
                       </div>
                       <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password">
+                        <input name="password" type="password" class="form-control" id="password" placeholder="Password">
                       </div>
-                      
+                      <?php if ($login_msg = $this->session->login_msg): ?>
+                      <div class="form-group">
+                        <label style="color: <?php echo $login_msg['color'] ?>"><?php echo $login_msg['message'] ?></label>
+                      </div>
+                      <?php endif; ?>
                      </div>
                    </div>
                 <div class="card-action">
-                  <button class="btn btn-success">Login</button>
+                  <button class="btn btn-success" type="submit">Login</button>
                   <button class="btn btn-danger">Forgot Password</button>
                 </div>
+                    </form>
+
               </div>
             </div>
           </div>
