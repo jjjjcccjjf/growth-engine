@@ -10,13 +10,15 @@ class Sales_model extends Admin_core_model
     $this->table = 'sales'; # Replace these properties on children
     $this->upload_dir = 'uploads/sales/'; # Replace these properties on children
     $this->per_page = 30;
+
+    $this->load->model('cms/finance_model');
   }
 
-  // public function all()
-  // {
-  //   $res = $this->db->get($this->table)->result();
-  //   return $this->formatRes($res);
-  // }
+  public function all()
+  {
+    $res = $this->db->get($this->table)->result();
+    return $this->formatRes($res);
+  }
 
   // public function get($id)
   // {
@@ -159,6 +161,9 @@ class Sales_model extends Admin_core_model
     $data = [];
 
     foreach ($res as $key => $value) {
+      $value->sales_rep = $this->users_model->get($value->user_id)->name;
+      $value->invoice_remaining = $this->finance_model->getInvoiceRemaining($value->id);
+      $value->amount_left = $this->finance_model->getAmountLeft($value->id);
       $value->created_at_f = date('F j, Y', strtotime($value->created_at));
       $value->attachments = $this->getAttachments($value->id, 'sales_attachment');
       $value->attachment_count = count($value->attachments);

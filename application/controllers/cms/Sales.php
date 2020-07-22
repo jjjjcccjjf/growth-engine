@@ -38,7 +38,7 @@ class Sales extends Admin_core_controller {
     } else {
       $this->session->set_flashdata('flash_msg', ['message' => 'Error updating sale', 'color' => 'red']);
     }
-    redirect('cms/sales/view/' . $id);
+    redirect('cms/sales/view/' . $sale_id);
   }
 
   public function add()

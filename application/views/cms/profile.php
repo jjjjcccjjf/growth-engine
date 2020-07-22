@@ -90,5 +90,17 @@
         }
     
       }) 
+
+
+        <?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
+        swal("Success", "<?php echo $flash['message'] ?>", {
+          icon : "success",
+          buttons: {              
+            confirm: {
+              className : 'btn btn-success'
+            }
+          },
+        });
+        <?php endif; ?>
     });
   </script>

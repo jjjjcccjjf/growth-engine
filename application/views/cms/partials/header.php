@@ -280,18 +280,18 @@
                       <div class="avatar-lg"><img src="<?php echo $this->session->profile_pic_path ?>" onerror="this.src='<?php echo base_url('public/admin/') ?>/assets/img/optimind-logo.png'" alt="image profile" class="avatar-img rounded"></div>
                       <div class="u-text">
                         <h4><?php echo $this->session->name ?></h4>
-                        <p class="text-muted"><?php echo ucwords($this->session->role) ?></p><a href="<?php echo base_url('cms/profile') ?>" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                        <p class="text-muted"><?php echo ucwords($this->session->role) ?></p><a href="<?php echo base_url('cms/profile') ?>" class="btn btn-xs btn-secondary btn-sm">My Profile</a>
                       </div>
                     </div>
                   </li>
                   <li>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="<?php echo base_url('cms/profile') ?>">My Profile</a>
-                    <a class="dropdown-item" href="#">My Balance</a>
-                    <a class="dropdown-item" href="#">Inbox</a>
+                    <!-- <a class="dropdown-item" href="#">My Balance</a> -->
+                    <a class="dropdown-item" href="#">Notifications</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Account Setting</a>
-                    <div class="dropdown-divider"></div>
+                    <!-- <a class="dropdown-item" href="#">Account Setting</a> -->
+                    <!-- <div class="dropdown-divider"></div> -->
                     <a class="dropdown-item" href="<?php echo base_url('cms/login/logout') ?>">Logout</a>
                   </li>
                 </div>

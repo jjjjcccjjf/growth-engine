@@ -12,9 +12,15 @@
 							<li class="separator">
 								<i class="flaticon-right-arrow"></i>
 							</li>
+							<?php if (in_array($this->session->role, ['sales'])): ?>
 							<li class="nav-item">
 								<a href="<?php echo base_url('cms/sales') ?>">Sales</a>
 							</li>
+							<?php elseif (in_array($this->session->role, ['finance'])): ?>
+							<li class="nav-item">
+								<a href="<?php echo base_url('cms/finance/issue_invoice') ?>">Issue Invoice</a>
+							</li>
+							<?php endif ?>
 							<li class="separator">
 								<i class="flaticon-right-arrow"></i>
 							</li>
@@ -27,7 +33,15 @@
 						<div class="col-md-12">
 							<div class="card">
 								<div class="card-header">
-									<div class="card-title"><?php echo $res->project_name ?></div>
+									<div class="card-title"><?php echo $res->project_name ?>
+					      			<?php if(in_array($this->session->role, ['finance'])): ?>
+										<a href="<?php echo base_url('cms/finance/issue_invoice') ?>"><button class='btn btn-primary btn-sm pull-right'>&laquo; Return to sales list</button></a>
+      								<?php endif; ?>
+
+					      			<?php if(in_array($this->session->role, ['sales'])): ?>
+										<a href="<?php echo base_url('cms/sales') ?>"><button class='btn btn-primary btn-sm pull-right'>&laquo; Return to sales list</button></a>
+      								<?php endif; ?>
+									</div>
 								</div>
 								<div class="card-body">
 									<div class="card-sub">			
@@ -43,7 +57,7 @@
 												<?php endforeach ?>
 											</div>
 											<div class="col-md-4">
-												<form method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/sales/add_attachments/' . $res->id) ?>">
+												<form method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/sales/add_attachments/' . $res->id) ?>" id="upload_attachment">
 													<div class="form-group">
 														<input type="file" name="attachments[]" multiple class="form-control">
 													</div>
@@ -67,6 +81,7 @@
 							            <div class="form-group col-md-6">
 							              <label >Client Name</label>
 							              <input type="text" class="form-control" name="client_name" placeholder="Client name" value="<?php echo $res->client_name ?>" list="client_names">
+						                  <small class="form-text text-muted">Note: Clear the text field to activate autocomplete</small>
 			              	              <datalist id="client_names">
 							              	<?php foreach ($unique_clients as $value): ?>
 							              		<option><?php echo $value->client_name ?></option>
@@ -173,6 +188,22 @@
       			}) // end swal
 
 
+
+      			<?php if(in_array($this->session->role, ['finance'])): ?>
+      				$('form#upload_attachment, input[type=submit]').hide()
+      				$('input, textarea, select').attr('readonly', 'readonly').css('color', 'black')
+      			<?php endif; ?>
+
+  				<?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
+				swal("Success", "<?php echo $flash['message'] ?>", {
+					icon : "success",
+					buttons: {        			
+						confirm: {
+							className : 'btn btn-success'
+						}
+					},
+				});
+				<?php endif; ?>
 
 			});
 		</script>

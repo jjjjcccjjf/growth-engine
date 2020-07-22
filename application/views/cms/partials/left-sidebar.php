@@ -3,6 +3,17 @@
     <div class="sidebar sidebar-style-2" data-background-color="dark2">
       <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
+
+
+           <ul class="nav">
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == '' ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/notification') ?>">
+                <i class="fas fa-bell"></i>
+                <p>Notifications</p>
+              </a> 
+            </li>
+          </ul>
+
 <!--           <div class="user">
             <div class="avatar-sm float-left mr-2">
               <img src="<?php echo base_url('public/admin/') ?>/assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
@@ -66,19 +77,42 @@
                 <p>Dashboard</p>
               </a> 
             </li>
+
+            <?php if (in_array($this->session->role, ['superadmin'])): ?>
             <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'users' ? 'active' : '' ?>">
               <a href="<?php echo base_url('cms/users') ?>">
                 <i class="fas fa-users"></i>
                 <p>Users Management</p>
               </a> 
             </li>
+            <?php endif ?>
+
+            <?php if (in_array($this->session->role, ['sales'])): ?>
             <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'sales' ? 'active' : '' ?>">
               <a href="<?php echo base_url('cms/sales') ?>">
                 <i class="fas fa-book"></i>
                 <p>Sales Management</p>
               </a> 
             </li>
+            <?php endif ?>
+
+            <?php if (in_array($this->session->role, ['finance', 'superadmin'])): ?>
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && $this->uri->segment(3) == 'issue_invoice' ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/finance/issue_invoice') ?>">
+                <i class="fas fas fa-money-check-alt"></i>
+                <p>Issue Invoice</p>
+              </a> 
+            </li>
+            <?php endif ?>
             
+            <?php if (in_array($this->session->role, ['collection', 'finance', 'superadmin'])): ?>
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && $this->uri->segment(3) == 'invoice_management' ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/finance/invoice_management') ?>">
+                <i class="fas fas fas fa-list-ul"></i>
+                <p>Invoice Management</p>
+              </a> 
+            </li>
+            <?php endif ?>
 
             <!-- <li class="nav-section">
               <span class="sidebar-mini-icon">
