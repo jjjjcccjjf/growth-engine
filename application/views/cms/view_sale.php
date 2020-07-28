@@ -2,7 +2,8 @@
 	<div class="content">
 		<div class="page-inner">
 			<div class="page-header">
-				<h4 class="page-title"><?php echo $res->project_name ?></h4>
+				<h4 class="page-title"><?php echo $res->project_name ?> <?php echo $verified_status ?>
+				</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
 						<a href="<?php echo base_url('cms') ?>">
@@ -37,7 +38,7 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<div class="card-title"><?php echo $res->project_name ?>
+							<div class="card-title"><?php echo $res->project_name ?> <?php echo $verified_status ?>
 								<?php if(in_array($this->session->role, ['finance', 'superadmin'])): ?>
 								<a href="<?php echo base_url('cms/finance/issue_invoice') ?>"><button class='btn btn-primary btn-sm pull-right'>&laquo; Return to sales list</button></a>
 								<?php endif; ?>
@@ -156,11 +157,18 @@
 										<div class="card-sub">
 											<div class="row">
 												<div class="col-md-8">
-													<h3><?php echo $value->invoice_name ?></h3>
+													<h3><?php echo $value->invoice_name ?>
+													<?php if ($value->collected_date): ?>
+														<button class="btn btn-xs btn-success"><i class="fas fa-check"></i> Collected</button>
+													<?php else: ?>
+														<button class="btn btn-xs btn-warning"><i class="fas fas fa-exclamation-triangle"></i> Uncollected</button>
+													<?php endif ?>
+													</h3>
 														<small>Collected amount: <span style="font-weight:bold"><?php echo $value->collected_amount ?></span></small><br>
 														<small>Due date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->due_date ?></span></small><br>
-														<small>Collected date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->collected_date ?: 'Uncollected' ?></span></small><br>								
-														<small>Received by: <span style="font-weight:bold"><?php echo $value->received_by ?: 'Uncollected' ?></span></small><br>
+														<small>Date sent (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->sent_date ?: 'Unspecified' ?></span></small><br>								
+														<small>Collected date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->collected_date ?: 'Unspecified' ?></span></small><br>								
+														<small>Received by: <span style="font-weight:bold"><?php echo $value->received_by ?: 'Unspecified' ?></span></small><br>
 														<small>Quickbooks ID: <span style="font-weight:bold"><?php echo $value->quickbooks_id ?></span></small>
 														<hr>
 													<h3>Attachments: <span class="attachment_count"><?php echo $value->attachment_count ?></span></h3>

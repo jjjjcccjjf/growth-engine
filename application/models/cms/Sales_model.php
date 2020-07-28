@@ -205,6 +205,7 @@ class Sales_model extends Admin_core_model
       $value->created_at = date('Y-m-d', strtotime($value->created_at));
       $value->attachments = $this->getAttachments($value->id, 'sales_attachment');
       $value->attachment_count = count($value->attachments);
+      $value->is_verified = $this->finance_model->getVerifiedStatus($value->id);
       $data[] = $value;
     }
     return $data;

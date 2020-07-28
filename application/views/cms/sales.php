@@ -22,7 +22,7 @@
 											<th>Amount</th>
 											<th>Client Name</th>
 											<th>Payment Terms</th>
-											<th>Duration</th>
+											<th>Status</th>
 											<th>Date created</th>
 											<th>Action</th>
 										</tr>
@@ -33,7 +33,7 @@
 											<th>Amount</th>
 											<th>Client Name</th>
 											<th>Payment Terms</th>
-											<th>Duration</th>
+											<th>Status</th>
 											<th>Date created</th>
 											<th>Action</th>
 										</tr>
@@ -45,7 +45,7 @@
 											<td><?php echo $value->amount ?></td>
 											<td><?php echo $value->client_name ?></td>
 											<td><?php echo $value->payment_terms ?></td>
-											<td><?php echo $value->duration ?></td>
+											<td><?php echo $value->is_verified ?></td>
 											<td><?php echo $value->created_at ?></td>
 											<td><?php echo $value->id ?></td>
 										</tr>
@@ -154,6 +154,16 @@ $(document).ready(function($) {
 		    }
 		  },
 		  {
+		    "targets": 4,
+		    "render": function ( data, type, row, meta ) {
+		      if (data) {
+		      	return '<button class="btn-success btn btn-xs" title="At least one collection"><i class="fas fa-check"></i> VERIFIED</button>'
+		      } else {
+		      	return '<button class="btn-warning btn btn-xs"><i class="fas fa-exclamation-triangle"></i> UNVERIFIED</button>'
+		      }
+		    }
+		  },
+		  {
 		    "targets": 1,
 		    "render": function ( data, type, row, meta ) {
 		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -182,15 +192,16 @@ $(document).ready(function($) {
         title: 'Are you sure you want to delete this?',
         text: "You won't be able to revert this!",
         type: 'warning',
+        icon: 'warning',
         buttons:{
+          confirm: {
+            text : 'Yes, delete this',
+            className : 'btn btn-success'
+          },
           cancel: {
             visible: true,
             text : 'No, cancel!',
             className: 'btn btn-danger'
-          },              
-          confirm: {
-            text : 'Yes, delete this',
-            className : 'btn btn-success'
           }
         }
       }).then((willDelete) => {

@@ -170,6 +170,18 @@ class Finance_model extends Admin_core_model
     return $data;
   } 
 
+  function getVerifiedStatus($sale_id)
+  {
+    return (bool) $this->countAllCollected($sale_id);
+  }
+
+  function countAllCollected($sale_id)
+  {
+    $this->db->where('sale_id', $sale_id);
+    $this->db->where('collected_date IS NOT NULL');
+    return $this->db->count_all_results('invoice');
+  }
+
   function formatInvoiceRes($res)
   {
     $data = [];
