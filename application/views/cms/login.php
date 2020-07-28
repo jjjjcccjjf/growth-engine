@@ -79,7 +79,7 @@
                    </div>
                 <div class="card-action">
                   <button class="btn btn-success" type="submit">Login</button>
-                  <button class="btn btn-danger">Forgot Password</button>
+                  <!-- <button class="btn btn-danger">Forgot Password</button> -->
                 </div>
                     </form>
 

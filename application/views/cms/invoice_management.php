@@ -31,8 +31,9 @@
 											<th>Invoice name</th>
 											<th>Project name</th>
 											<th>Collect amount (in Peso)</th>
-											<th>Collect date</th>
 											<th>Due date</th>
+											<th>Collect date</th>
+											<th>Quickbooks ID</th>
 											<th>Date created</th>
 											<th>Action</th>
 										</tr>
@@ -42,8 +43,9 @@
 											<th>Invoice name</th>
 											<th>Project name</th>
 											<th>Collect amount (in Peso)</th>
-											<th>Collect date</th>
 											<th>Due date</th>
+											<th>Collect date</th>
+											<th>Quickbooks ID</th>
 											<th>Date created</th>
 											<th>Action</th>
 										</tr>
@@ -54,9 +56,10 @@
 											<td><?php echo $value->invoice_name ?></td>
 											<td><?php echo $value->project_name ?></td>
 											<td><?php echo $value->collected_amount ?></td>
-											<td><?php echo $value->collected_date ?></td>
 											<td><?php echo $value->due_date ?></td>
-											<td><?php echo $value->created_at_f ?></td>
+											<td><?php echo $value->collected_date ?></td>
+											<td><?php echo $value->quickbooks_id ?></td>
+											<td><?php echo $value->created_at ?></td>
 											<td>{"id": "<?php echo $value->id ?>", "is_collected": "<?php echo ($value->collected_date == '0000-00-00 00:00:00' || $value->collected_date == null ) ?>"}</td>
 										</tr>
 										 <?php endforeach; endif; ?>
@@ -111,13 +114,13 @@ $(document).ready(function($) {
 	<?php endforeach; endif; ?>
 	$('#basic-datatables').DataTable({
 		  "columnDefs": [ {
-		    "targets": 6,
+		    "targets": 7,
 		    "render": function ( data, type, row, meta ) {
 		    	data = JSON.parse(data)
 		      	
 		      	let stringy = '' 
 		      	let collect_button = '<button data-id="' + data.id +'" class="btn btn-link btn-sm btn-collect" title="Tag as collected"><i class="fa fa-check"></i> Tag as collected</button>'
-		      	let view = '<a href="<?php echo base_url('cms/finance/view_invoice/') ?>'+ data.id +'"><button class="btn btn-link btn-sm view-invoice" title="View invoice"><i class="fa fa-eye"></i> View invoice</button></a>'
+		      	let view = '<a href="<?php echo base_url('cms/finance/view_invoice/') ?>'+ data.id +'"><button class="btn btn-link btn-sm view-invoice" title="View invoice"><i class="fas fa-book"></i> Details</button></a>'
 		    	
 		    	if (data.is_collected) {
 		    		stringy = view
@@ -129,7 +132,15 @@ $(document).ready(function($) {
 		    		return view
 		    	}
 		    }
-		  } ]
+		  },
+		  {
+		    "targets": 2,
+		    "render": function ( data, type, row, meta ) {
+		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		    }
+		  }
+
+		   ]
 	});
 
 	$('.btn-collect').on('click', function(e){

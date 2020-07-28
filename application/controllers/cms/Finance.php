@@ -60,6 +60,18 @@ class Finance extends Admin_core_controller {
     redirect('cms/sales/view/' . $id);
   } 
 
+  public function update_invoice($invoice_id)
+  {
+    $data = $this->input->post();
+
+    if($this->finance_model->updateInvoice($invoice_id, $data)){
+      $this->session->set_flashdata('flash_msg', ['message' => 'Invoice  updated successfully', 'color' => 'green']);
+    } else {
+      $this->session->set_flashdata('flash_msg', ['message' => 'Error updating invoice', 'color' => 'red']);
+    }
+    redirect('cms/finance/view_invoice/' . $invoice_id);
+  } 
+
   public function collect()
   {
     $data = $this->input->post();
@@ -86,16 +98,27 @@ class Finance extends Admin_core_controller {
     redirect('cms/finance/issue_invoice');
   }
 
-  // public function add_attachments($sale_id)
-  // {
-  //   $attachments = $this->sales_model->batch_upload($_FILES['attachments']);
-  //   if($this->sales_model->addAttachments($attachments, $sale_id)){
-  //     $this->session->set_flashdata('flash_msg', ['message' => 'New sale added successfully', 'color' => 'green']);
-  //   } else {
-  //     $this->session->set_flashdata('flash_msg', ['message' => 'Error adding sale.', 'color' => 'red']);
-  //   }
-  //   redirect('cms/sales/view/' . $sale_id);
-  // }
+  public function add_attachments($invoice_id)
+  {
+    $attachments = $this->finance_model->batch_upload($_FILES['attachments']);
+    if($this->finance_model->addAttachments($attachments, $invoice_id)){
+      $this->session->set_flashdata('flash_msg', ['message' => 'Attachments added successfully', 'color' => 'green']);
+    } else {
+      $this->session->set_flashdata('flash_msg', ['message' => 'Error adding attachments.', 'color' => 'red']);
+    }
+    redirect('cms/finance/view_invoice/' . $invoice_id);
+  }
+
+  public function add_attachments_from_sale($invoice_id, $sale_id)
+  {
+    $attachments = $this->finance_model->batch_upload($_FILES['attachments']);
+    if($this->finance_model->addAttachments($attachments, $invoice_id)){
+      $this->session->set_flashdata('flash_msg', ['message' => 'Attachments added successfully', 'color' => 'green']);
+    } else {
+      $this->session->set_flashdata('flash_msg', ['message' => 'Error adding attachments.', 'color' => 'red']);
+    }
+    redirect('cms/sales/view/' . $sale_id);
+  }
 
   // public function attachment_delete($sale_id)
   // {

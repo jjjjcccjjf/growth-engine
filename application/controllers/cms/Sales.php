@@ -10,6 +10,8 @@ class Sales extends Admin_core_controller {
     $this->load->model('cms/users_model');
     $this->load->model('cms/sales_model');
     $this->load->model('cms/options_model');
+    $this->load->model('cms/clients_model');
+    $this->load->model('cms/finance_model');
   }
 
   public function index()
@@ -17,7 +19,7 @@ class Sales extends Admin_core_controller {
     $data['user'] = $this->users_model->get($this->session->id);
     $data['sales'] = $this->sales_model->getSales($this->session->id);
     $data['categories'] = $this->options_model->getSalesCategories();
-    $data['unique_clients'] = $this->sales_model->getUniqueClients();
+    $data['clients'] = $this->clients_model->all();
     $this->wrapper('cms/sales', $data);
   }
 
@@ -25,7 +27,8 @@ class Sales extends Admin_core_controller {
   {
     $data['res'] = $this->sales_model->getSale($sale_id);
     $data['categories'] = $this->options_model->getSalesCategories();
-    $data['unique_clients'] = $this->sales_model->getUniqueClients();
+    $data['clients'] = $this->clients_model->all();
+    $data['invoices'] = $this->finance_model->getInvoicesBySale($sale_id);
     $this->wrapper('cms/view_sale', $data);
   }
 
@@ -47,10 +50,23 @@ class Sales extends Admin_core_controller {
     $data = $this->input->post();
 
     $last_id = $this->sales_model->add($this->input->post());
-    if($last_id && $this->sales_model->addAttachments($attachments, $last_id)){
+    if ($attachments) {
+      $attachment_success = $this->sales_model->addAttachments($attachments, $last_id);
+    }
+    if($last_id || @$attachment_success){
       $this->session->set_flashdata('flash_msg', ['message' => 'New sale added successfully', 'color' => 'green']);
     } else {
       $this->session->set_flashdata('flash_msg', ['message' => 'Error adding sale.', 'color' => 'red']);
+    }
+    redirect('cms/sales');
+  }
+
+  public function delete($id)
+  {
+    if($this->sales_model->delete($this->input->post('id'))){
+      $this->session->set_flashdata('flash_msg', ['message' => 'Sale deleted successfully', 'color' => 'green']);
+    } else {
+      $this->session->set_flashdata('flash_msg', ['message' => 'Error deleting sale', 'color' => 'red']);
     }
     redirect('cms/sales');
   }

@@ -5,29 +5,20 @@
         <div class="sidebar-content">
 
 
-           <ul class="nav">
-            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == '' ? 'active' : '' ?>">
-              <a href="<?php echo base_url('cms/notification') ?>">
-                <i class="fas fa-bell"></i>
-                <p>Notifications</p>
-              </a> 
-            </li>
-          </ul>
-
-<!--           <div class="user">
+          <div class="user">
             <div class="avatar-sm float-left mr-2">
-              <img src="<?php echo base_url('public/admin/') ?>/assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+              <img src="<?php echo $this->session->profile_pic_path ?>" onerror="this.src='<?php echo base_url('public/admin/') ?>/assets/img/optimind-logo.png'" alt="..." class="avatar-img rounded-circle">
             </div>
             <div class="info">
               <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                 <span>
-                  Hizrian
-                  <span class="user-level">Administrator</span>
-                  <span class="caret"></span>
+                  <?php echo $this->session->name ?>
+                  <span class="user-level"><?php echo ucwords($this->session->role) ?></span>
+                  <!-- <span class="caret"></span> -->
                 </span>
               </a>
-              <div class="clearfix"></div>
-
+              <!-- <div class="clearfix"></div> -->
+<!-- 
               <div class="collapse in" id="collapseExample">
                 <ul class="nav">
                   <li>
@@ -46,9 +37,19 @@
                     </a>
                   </li>
                 </ul>
-              </div>
+              </div> -->
+
             </div>
-          </div> -->
+          </div>
+           <ul class="nav">
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'notifications' ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/notifications') ?>">
+                <i class="fas fa-bell"></i>
+                <p>Notifications</p>
+              </a> 
+            </li>
+          </ul>
+
           <ul class="nav nav-primary">
 <!--             <li class="nav-item active">
               <a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
@@ -71,7 +72,7 @@
                 </ul>
               </div>
             </li> -->
-            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == '' ? 'active' : '' ?>">
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'dashboard' ? 'active' : '' ?>">
               <a href="<?php echo base_url() ?>">
                 <i class="fas fa-home"></i>
                 <p>Dashboard</p>
@@ -83,6 +84,15 @@
               <a href="<?php echo base_url('cms/users') ?>">
                 <i class="fas fa-users"></i>
                 <p>Users Management</p>
+              </a> 
+            </li>
+            <?php endif ?>
+
+            <?php if (in_array($this->session->role, ['superadmin', 'sales'])): ?>
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'clients' ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/clients') ?>">
+                <i class="fas fa-clipboard"></i>
+                <p>Clients</p>
               </a> 
             </li>
             <?php endif ?>
@@ -106,7 +116,7 @@
             <?php endif ?>
             
             <?php if (in_array($this->session->role, ['collection', 'finance', 'superadmin'])): ?>
-            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && $this->uri->segment(3) == 'invoice_management' ? 'active' : '' ?>">
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && ($this->uri->segment(3) == 'invoice_management' || $this->uri->segment(3) == 'view_invoice')  ? 'active' : '' ?>">
               <a href="<?php echo base_url('cms/finance/invoice_management') ?>">
                 <i class="fas fas fas fa-list-ul"></i>
                 <p>Invoice Management</p>

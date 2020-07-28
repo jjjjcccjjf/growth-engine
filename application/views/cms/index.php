@@ -1,3 +1,28 @@
+<div class="main-panel">
+  <div class="content">
+    <div class="page-inner">
+      <!--       <div class="page-header">
+        <h4 class="page-title">Forms</h4>
+      </div> -->
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card card-round">
+            <div class="card-body">
+              <div class="card-title fw-mediumbold">Dashboard</div>
+              <div class="card-list">
+                  <div class="item-list" >
+                    <h3>Heads up! <i class="fas fa-wrench"></i> The Dashboard is still under construction </h3>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- <div class="main-panel">
   <div class="content">
     <div class="page-inner">

@@ -51,7 +51,7 @@
 											<!-- <td><?php echo $value->payment_terms ?></td> -->
 											<!-- <td><?php echo $value->duration ?></td> -->
 											<td><?php echo $value->invoice_remaining ?></td>
-											<td><?php echo $value->created_at_f ?></td>
+											<td><?php echo $value->created_at ?></td>
 											<td>{"id": "<?php echo $value->id ?>", "invoice_remaining": "<?php echo $value->invoice_remaining ?>"}</td>
 										</tr>
 										 <?php endforeach ?>
@@ -98,7 +98,7 @@
 	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Due Date</label>
-	              <input type="datetime-local" class="form-control" name="due_date" placeholder="">
+	              <input type="date" class="form-control" name="due_date" placeholder="">
 	            </div> 
 	            <div class="form-group col-md-6">
 	              <label >Quickbooks ID</label>
@@ -129,14 +129,21 @@ $(document).ready(function($) {
 		    "render": function ( data, type, row, meta ) {
 		      data = JSON.parse(data)
 		      let issue_invoice ='<button class="btn-link btn issue-invoice btn-sm" data-id="' + data.id +'"> <i class="fa fa-pen"></i> Issue Invoice</button>'
-		      let view = '<button class="btn btn-link btn-sm"><a href="'+base_url + 'cms/sales/view/' + data.id+'" title="View"><i class="fa fa-eye"></i> View</a></button>'
+		      let view = '<button class="btn btn-link btn-sm"><a href="'+base_url + 'cms/sales/view/' + data.id+'" title="View"><i class="fas fa-book"></i> Details</a></button>'
 		      let stringy = view
 		      if (data.invoice_remaining > 0) {
 		      	stringy = stringy + issue_invoice
 		      }
 		      return stringy;
+		    },
+		  },
+  		  {
+		    "targets": 2,
+		    "render": function ( data, type, row, meta ) {
+		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		    }
-		  } ]
+		  }
+		   ]
 	});
 
 	$('.add-new').on('click', function(){

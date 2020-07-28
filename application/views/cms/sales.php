@@ -9,6 +9,7 @@
 					<div class="card"> 
 						<div class="card-header">
 							<h4 class="card-title">
+								Sales list
 								<button class="add-new btn btn-sm btn-info pull-right"><i class="fa fa-plus"></i> Add new</button>
 							</h4>
 						</div>
@@ -45,7 +46,7 @@
 											<td><?php echo $value->client_name ?></td>
 											<td><?php echo $value->payment_terms ?></td>
 											<td><?php echo $value->duration ?></td>
-											<td><?php echo $value->created_at_f ?></td>
+											<td><?php echo $value->created_at ?></td>
 											<td><?php echo $value->id ?></td>
 										</tr>
 										 <?php endforeach ?>
@@ -83,13 +84,12 @@
 	              <textarea class="form-control" placeholder="Project description..." name="project_description"></textarea>
 	            </div>
 	            <div class="form-group col-md-6">
-	              <label >Client Name</label>
-	              <input type="text" class="form-control" name="client_name" placeholder="Client name" list="client_names">
-	              <datalist id="client_names">
-	              	<?php foreach ($unique_clients as $value): ?>
-	              		<option><?php echo $value->client_name ?></option>
+	              <label >Client</label>
+	              <select class="form-control" name='client_id'>
+	              	<?php foreach ($clients as $value): ?>
+	              		<option value="<?php echo $value->id ?>"><?php echo $value->client_name ?></option>
 	              	<?php endforeach ?>
-	              </datalist>
+	              </select>
 	            </div>
 	            <div class="form-group col-md-3">
 	              <label >Amount (in peso)</label>
@@ -115,7 +115,7 @@
 	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Number of Invoices</label>
-	              <input type="number" class="form-control" name="num_of_invoices" placeholder="Number of Invoices">
+	              <input type="number" class="form-control" name="num_of_invoices" min="0" placeholder="Number of Invoices">
 	            </div> 
 	            <div class="form-group col-md-6">
 	              <label >Attachments</label>
@@ -146,12 +146,20 @@
 $(document).ready(function($) {
 
 	$('#basic-datatables').DataTable({
-		  "columnDefs": [ {
+		  "columnDefs": [ 
+		  {
 		    "targets": 6,
 		    "render": function ( data, type, row, meta ) {
-		      return '<a href="'+base_url + 'cms/sales/view/' + data+'" title=""><i class="fa fa-edit"></i></a>';
+		      return '<a href="'+base_url + 'cms/sales/view/' + data+'" title="Edit"><i class="fa fa-edit"></i></a>&nbsp; <a href="javascript:void(0)" class="btn-delete" data-id="'+ data +'" title="Delete"><i class="fa fa-trash"></i></a>';
 		    }
-		  } ]
+		  },
+		  {
+		    "targets": 1,
+		    "render": function ( data, type, row, meta ) {
+		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		    }
+		  }
+ 	   ]
 	});
 
 	$('.add-new').on('click', function(){
@@ -168,5 +176,45 @@ $(document).ready(function($) {
 		},
 	});
 	<?php endif; ?>
+
+	 $('.btn-delete').click(function(e) {
+      swal({
+        title: 'Are you sure you want to delete this?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        buttons:{
+          cancel: {
+            visible: true,
+            text : 'No, cancel!',
+            className: 'btn btn-danger'
+          },              
+          confirm: {
+            text : 'Yes, delete this',
+            className : 'btn btn-success'
+          }
+        }
+      }).then((willDelete) => {
+        if (willDelete) {
+          // swal("Sale deleted successfully", {
+          //   icon: "success",
+          //   buttons : {
+          //     confirm : {
+          //       className: 'btn btn-success'
+          //     }
+          //   }
+          // });
+
+          invokeForm(base_url + 'cms/sales/delete', {id: $(this).data('id')});
+        } else {
+          swal("Operation cancelled", {
+            buttons : {
+              confirm : {
+                className: 'btn btn-success'
+              }
+            }
+          });
+        }
+      });
+    })
 });
 </script>

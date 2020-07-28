@@ -42,9 +42,15 @@ class Users_model extends Admin_core_model
     return $this->db->insert($this->table, $data);
   }
 
+  function updateLastChecked($id)
+  {
+    $this->db->where('id', $id);
+    $this->db->update('users', ['last_checked_notif_at' => date('Y-m-d H:i:s')]);
+  }
+
   public function update($id, $data)
   {
-    if (!$data['password']) {
+    if (!@$data['password']) {
       unset($data['password']);
     } else {
       $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);

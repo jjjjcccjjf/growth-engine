@@ -14,6 +14,7 @@ class Admin_core_controller extends CI_Controller
   {
     parent::__construct();
     $this->load->model('cms/options_model');
+    $this->load->model('cms/notifications_model');
   }
 
   public function wrapper($body, $data = null)
@@ -22,7 +23,12 @@ class Admin_core_controller extends CI_Controller
       redirect('cms/login');
     }
 
-    $this->load->view('cms/partials/header');
+    $this->db->reset_query();
+    $this->db->where('id', $this->session->id);
+    $last_checked_notif_at = @$this->db->get('users')->row()->last_checked_notif_at ?: 0;
+    $notifications_count = $this->notifications_model->countUnreadNotifs($last_checked_notif_at, $this->session->role);
+
+    $this->load->view('cms/partials/header', ['notifications_count' => $notifications_count]);
     $this->load->view('cms/partials/left-sidebar');
     $this->load->view($body, $data);
     $this->load->view('cms/partials/footer');

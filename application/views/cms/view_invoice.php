@@ -2,7 +2,7 @@
 			<div class="content">
 				<div class="page-inner">
 					<div class="page-header">
-						<h4 class="page-title"><?php echo $res->invoice_name ?></h4>
+						<h4 class="page-title"><?php echo $res->project_name ?></h4>
 						<ul class="breadcrumbs">
 							<li class="nav-home">
 								<a href="<?php echo base_url('cms') ?>">
@@ -45,7 +45,7 @@
 												<?php endforeach ?>
 											</div>
 											<div class="col-md-4">
-												<form method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/sales/add_attachments/' . $res->id) ?>" id="upload_attachment">
+												<form method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/finance/add_attachments/' . $res->id) ?>" id="upload_attachment">
 													<div class="form-group">
 														<input type="file" name="attachments[]" multiple class="form-control">
 													</div>
@@ -56,27 +56,31 @@
 											</div>
 										</div>						
 									</div>
-									 <form role="form" method="post" action="<?php echo base_url('cms/invoice/update/' . $res->id) ?>">
+									 <form role="form" method="post" action="<?php echo base_url('cms/finance/update_invoice/' . $res->id) ?>">
 						         	<div class="row">
+							            <div class="form-group col-md-4">
+							              <label >Project name</label>
+							              <input style="color:black" type="text" class="form-control" placeholder="Project name" value="<?php echo $res->project_name ?>" readonly="readonly">
+							            </div>  
 							            <div class="form-group col-md-4">
 							              <label >Invoice name</label>
 							              <input type="text" class="form-control" name="invoice_name" placeholder="Invoice name" value="<?php echo $res->invoice_name ?>">
 							            </div>  
 							            <div class="form-group col-md-4">
 							              <label >Collected amount (in peso)</label>
-							              <input type="number" step="0.5" min="0" class="form-control" name="collected_amount" placeholder="Collected amount" value="<?php echo $res->collected_amount ?>">
+							              <input type="number" step="0.01" min="0" class="form-control" name="collected_amount" placeholder="Collected amount" value="<?php echo $res->collected_amount ?>">
 							            </div> 
 							            <div class="form-group col-md-4">
 							              <label >Collected date</label>
-							              <input type="text"  class="form-control" name="collected_date" placeholder="Collected amount" value="<?php echo $res->collected_date ?: 'Uncollected' ?>">
+							              <input type="date"  class="form-control" name="collected_date" placeholder="Collected amount" value="<?php echo $res->collected_date ?>">
 							            </div> 
 							            <div class="form-group col-md-4">
 							              <label >Due date</label>
-							              <input type="text"  class="form-control" name="due_date" placeholder="Collected amount" value="<?php echo $res->due_date?>">
+							              <input type="date"  class="form-control" name="due_date" placeholder="Collected amount" value="<?php echo $res->due_date?>">
 							            </div>  
 							            <div class="form-group col-md-4">
 							              <label >Quickbooks ID</label>
-							              <input type="text"  class="form-control" name="collected_amount" placeholder="Quickbooks ID" value="<?php echo $res->quickbooks_id ?>">
+							              <input type="text"  class="form-control" name="quickbooks_id" placeholder="Quickbooks ID" value="<?php echo $res->quickbooks_id ?>">
 							            </div> 
 						                <!-- <input type="hidden" class="form-control" name="user_id" value="<?php echo $this->session->id ?>"> -->
 						         	</div>
@@ -142,10 +146,20 @@
 					});
       			}) // end swal
 
+  				<?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
+					swal("Success", "<?php echo $flash['message'] ?>", {
+						icon : "success",
+						buttons: {        			
+							confirm: {
+								className : 'btn btn-success'
+							}
+						},
+					});
+				<?php endif; ?>
 
-				$('form#upload_attachment, input[type=submit]').hide()
-				$('input, textarea, select').attr('readonly', 'readonly').css('color', 'black')
-				$('.delete-me').hide()
+				// $('form#upload_attachment, input[type=submit]').hide()
+				// $('input, textarea, select').attr('readonly', 'readonly').css('color', 'black')
+				// $('.delete-me').hide()
 
 			});
 		</script>

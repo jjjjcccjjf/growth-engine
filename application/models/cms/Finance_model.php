@@ -43,6 +43,24 @@ class Finance_model extends Admin_core_model
     $this->db->where('id', $data['id']);
     return $this->db->update('invoice', ['collected_date' => $data['collected_date']]);
   }
+
+  function updateInvoice($invoice_id, $data)
+  { 
+    if (!$data['collected_date']) {
+      unset($data['collected_date']);
+    }
+
+    $this->db->where('id', $invoice_id);
+    return $this->db->update('invoice', $data);
+  }
+
+  function getInvoicesBySale($sale_id)
+  {
+    $this->db->where('sale_id', $sale_id);
+    $res = $this->db->get('invoice')->result();
+    return $this->formatRes($res);
+  }
+
   function getInvoices()
   {
     return $this->all();
@@ -141,7 +159,9 @@ class Finance_model extends Admin_core_model
     $data = [];
 
     foreach ($res as $key => $value) {
-      $value->created_at_f = date('F j, Y', strtotime($value->created_at));
+      $value->created_at = date('Y-m-d', strtotime($value->created_at));
+      $value->due_date = date('Y-m-d', strtotime($value->due_date));
+      $value->collected_date = $value->collected_date ? date('Y-m-d', strtotime($value->collected_date)) : null;
       $value->attachments = $this->getAttachments($value->id, 'invoice');
       $value->attachment_count = count($value->attachments);
       $value->project_name = $this->db->get_where('sales', ['id' => $value->sale_id])->row()->project_name;
@@ -155,9 +175,9 @@ class Finance_model extends Admin_core_model
     $data = [];
 
     foreach ($res as $key => $value) {
-      $value->created_at_f = date('F j, Y', strtotime($value->created_at));
-      $value->due_date_f = date('F j, Y', strtotime($value->due_date));
-      $value->collected_date_f = date('F j, Y', strtotime($value->collected_date));
+      $value->created_at = date('Y-m-d', strtotime($value->created_at));
+      $value->due_date = date('Y-m-d', strtotime($value->due_date));
+      $value->collected_date = $value->collected_date ? date('Y-m-d', strtotime($value->collected_date)) : null;
       $value->attachments = $this->getAttachments($value->id, 'invoice');
       $value->attachment_count = count($value->attachments);
       $value->project_name = $this->db->get_where('sales', ['id' => $value->sale_id])->row()->project_name;

@@ -12,6 +12,8 @@ class Sales_model extends Admin_core_model
     $this->per_page = 30;
 
     $this->load->model('cms/finance_model');
+    $this->load->model('cms/clients_model');
+    $this->load->model('cms/notifications_model');
   }
 
   public function all()
@@ -64,10 +66,41 @@ class Sales_model extends Admin_core_model
     return $this->db->delete('attachments');
   }
 
+
   public function add($data)
   {
     $this->db->insert($this->table, $data);
-    return $this->db->insert_id();
+    $last_id = $this->db->insert_id();
+
+    if ($last_id) {
+      $this->notifications_model->createNotif($last_id, 'sales');
+    }
+
+    return $last_id;
+  }
+
+  public function delete($id)
+  {
+    $this->db->where('sale_id', $id);
+    $invoices = $this->db->get('invoice')->result();
+
+    if ($invoices) {
+      foreach ($invoices as $value) {
+        $this->db->where('meta_id', $value->id);
+        $this->db->where('type', 'invoice');
+        $this->db->delete('attachments');
+      }
+    }
+
+    $this->db->where('sale_id', $id);
+    $this->db->delete('invoice');
+
+    $this->db->where('meta_id', $id);
+    $this->db->where('type', 'sales_attachment');
+    $this->db->delete('attachments');
+
+    $this->db->where('id', $id);
+    return $this->db->delete('sales');
   }
 
   public function getUniqueClients()
@@ -78,6 +111,10 @@ class Sales_model extends Admin_core_model
 
   public function addAttachments($data, $meta_id)
   {
+    if (!$data) {
+      return false;
+    }
+
     $res = [];
     foreach ($data['name'] as $value) {
       $res[] = ['attachment_name' => $value, 'meta_id' => $meta_id, 'type' => 'sales_attachment'];
@@ -161,10 +198,11 @@ class Sales_model extends Admin_core_model
     $data = [];
 
     foreach ($res as $key => $value) {
+      $value->client_name = $this->clients_model->get($value->client_id)->client_name;
       $value->sales_rep = $this->users_model->get($value->user_id)->name;
       $value->invoice_remaining = $this->finance_model->getInvoiceRemaining($value->id);
       $value->amount_left = $this->finance_model->getAmountLeft($value->id);
-      $value->created_at_f = date('F j, Y', strtotime($value->created_at));
+      $value->created_at = date('Y-m-d', strtotime($value->created_at));
       $value->attachments = $this->getAttachments($value->id, 'sales_attachment');
       $value->attachment_count = count($value->attachments);
       $data[] = $value;
