@@ -18,6 +18,13 @@ class Users_model extends Admin_core_model
     return $this->formatRes($res);
   }
 
+  public function getSales()
+  {
+    $this->db->where('role_title', 'sales');
+    $res = $this->db->get($this->table)->result();
+    return $this->formatRes($res);
+  }
+
   public function get($id)
   {
      $res = $this->db->get_where($this->table, array('id' => $id))->row();

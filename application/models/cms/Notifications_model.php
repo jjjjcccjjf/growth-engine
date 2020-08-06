@@ -61,7 +61,7 @@ class Notifications_model extends Admin_core_model
       switch ($value->type) {
         case 'sales': # pag may sales na gumawa ng bagong sale
           $value->header = 'New sale';
-          $value->body = $this->db->get_Where('sales', ['id' => $value->meta_id])->row()->project_name . " has been created";
+          $value->body = @$this->db->get_Where('sales', ['id' => $value->meta_id])->row()->project_name . " has been created";
           $value->icon = 'fas fa-dollar-sign';
           $value->created_at_f = date('Y-m-d H:i:s', strtotime($value->created_at));
           $value->link = base_url('cms/finance/issue_invoice');
@@ -70,7 +70,7 @@ class Notifications_model extends Admin_core_model
 
         case 'invoice': # pag may invoice na nagawa
           $value->header = 'New invoice';
-          $value->body = $this->db->get_Where('invoice', ['id' => $value->meta_id])->row()->invoice_name . " has been created";
+          $value->body = @$this->db->get_Where('invoice', ['id' => $value->meta_id])->row()->invoice_name . " has been created";
           $value->icon = 'fas fa-file-invoice-dollar';
           $value->created_at_f = date('Y-m-d H:i:s', strtotime($value->created_at));
           $value->link = base_url('cms/finance/invoice_management');
@@ -79,7 +79,7 @@ class Notifications_model extends Admin_core_model
 
         case 'collection': # pag may invoice na nagawa
           $value->header = 'New collection';
-          $value->body = $this->db->get_Where('invoice', ['id' => $value->meta_id])->row()->invoice_name . " has been collected";
+          $value->body = @$this->db->get_Where('invoice', ['id' => $value->meta_id])->row()->invoice_name . " has been collected";
           $value->icon = 'fas fa-donate';
           $value->created_at_f = date('Y-m-d H:i:s', strtotime($value->created_at));
           $value->link = base_url('cms/finance/invoice_management');

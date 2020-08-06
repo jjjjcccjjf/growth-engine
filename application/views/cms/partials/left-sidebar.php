@@ -83,7 +83,7 @@
             <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'users' ? 'active' : '' ?>">
               <a href="<?php echo base_url('cms/users') ?>">
                 <i class="fas fa-users"></i>
-                <p>Users Management</p>
+                <p>Users & Quota Management</p>
               </a> 
             </li> 
             <?php endif ?>
