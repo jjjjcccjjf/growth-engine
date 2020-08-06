@@ -21,41 +21,63 @@ class Quota_model extends Admin_core_model
   }
  
  
-  public function add($data)
+  public function addQuota($user_id, $data)
   {
-    if ($this->checkYearExist($data['year'])) {
-      return false;  
-    } # return false pag nag eexist na ung year
+    $this->db->where('user_id', $user_id);
+    $this->db->delete('quota');
 
-    $this->db->insert($this->table, $data);
-    $last_id = $this->db->insert_id();
+    for ($i = 0; $i < count($data['year']); $i++) {
+      $this->db->insert($this->table, [
+        'year' => $data['year'][$i],
+        'quota_amount' => $data['quota_amount'][$i],
+        'user_id' => $user_id
+      ]);
+    }
 
-    return $last_id;
-  }
+    return true;
+  } 
 
-  function checkYearExist($year)
+  function get($user_id)
   {
-    $this->db->where('year', $year);
-    return $this->db->count_all_results('quota');
+    $this->db->where('user_id', $user_id);
+    return $this->db->get('quota')->result();
   }
  
+  // public function add($data)
+  // {
+  //   if ($this->checkYearExist($data['year'])) {
+  //     return false;  
+  //   } # return false pag nag eexist na ung year
 
-  public function update($id, $data)
-  {
-    $this->db->where('id', $id);
-    return $this->db->update($this->table, $data);
-  }
+  //   $this->db->insert($this->table, $data);
+  //   $last_id = $this->db->insert_id();
 
-  function formatRes($res)
-  {
-    $data = [];
+  //   return $last_id;
+  // }
 
-    foreach ($res as $key => $value) {
-      $value->created_at = date('Y-m-d', strtotime($value->created_at));
-      $data[] = $value;
-    }
-    return $data;
-  } 
+  // function checkYearExist($year)
+  // {
+  //   $this->db->where('year', $year);
+  //   return $this->db->count_all_results('quota');
+  // }
+ 
+
+  // public function update($id, $data)
+  // {
+  //   $this->db->where('id', $id);
+  //   return $this->db->update($this->table, $data);
+  // }
+
+  // function formatRes($res)
+  // {
+  //   $data = [];
+
+  //   foreach ($res as $key => $value) {
+  //     $value->created_at = date('Y-m-d', strtotime($value->created_at));
+  //     $data[] = $value;
+  //   }
+  //   return $data;
+  // } 
  
 
 }

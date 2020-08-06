@@ -37,6 +37,44 @@ class Sales_model extends Admin_core_model
     return $new_res;
   }
 
+  function getSalesOrdered()
+  {
+    $this->db->order_by('name', 'desc');
+    return $this->db->get_where('users', ['role_title' => 'sales'])->result();
+  }
+
+  function getSaleCountPerSaleForGraph()
+  {
+    $sales = $this->getSalesOrdered();
+
+    $res = [];
+
+    foreach ($sales as $value) {
+      $res[] = [
+        $value->name,
+        $this->getSalesCount($value->id)
+      ];
+    }
+
+    return $res;
+  }
+
+  function getVerifiedSaleCountPerSaleForGraph()
+  {
+    $sales = $this->getSalesOrdered();
+
+    $res = [];
+
+    foreach ($sales as $value) {
+      $res[] = [
+        $value->name,
+        $this->getSalesCountVerified($value->id)
+      ];
+    }
+
+    return $res;
+  }
+
   // public function get($id)
   // {
   //    $res = $this->db->get_where($this->table, array('id' => $id))->row();
@@ -200,6 +238,38 @@ class Sales_model extends Admin_core_model
     }
 
     return $this->formatRes($res);
+  }
+
+  function getSalesCount($user_id)
+  {
+    return count($this->getSales($user_id));
+  }
+
+  function getSalesCountVerified($user_id)
+  {
+    $verified_count = 0;
+    $sales = $this->getSales($user_id);
+    if ($sales) {
+      foreach ($sales as $value) {
+        if ($value->is_verified) {
+          $verified_count = $verified_count + 1;
+        }
+      }
+    }
+
+    return $verified_count;
+  }
+
+  function getSalesArrayForGraph()
+  {
+    $sales = $this->getSalesOrdered();
+    $res = [];
+    if ($sales) {
+      foreach ($sales as $value) {
+        $res[] = (object)['name' => $value->name, 'flag' => $value->name];
+      }
+    }
+    return $res;
   }
 
   function getSale($sale_id)

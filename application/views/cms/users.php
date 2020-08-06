@@ -28,8 +28,14 @@
 									<td><?php echo $value->email ?></td>
 									<td><?php echo $value->role_title ?></td>
 									<td>
-										<button data-toggle="modal" data-target="#staticBackdrop" class="btn btn-link edit-row" data-payload='<?php echo json_encode(['id' => $value->id, 'name' => $value->name, 'email' => $value->email, 'role_title' => $value->role_title, 'contact_num' => $value->contact_num, 'profile_pic_path' => $value->profile_pic_path], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE)?>'><i class="fa fa-edit"></i> Edit</button>
-										<button data-toggle="modal" data-payload='<?php echo json_encode(['id' => $value->id, 'name' => $value->name], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE)?>' class="btn btn-link btn-delete"><i class="fa fa-trash"></i> Delete</button>
+										<button data-toggle="modal" data-target="#staticBackdrop" class="btn btn-sm btn-link edit-row btn-info" data-payload='<?php echo json_encode(['id' => $value->id, 'name' => $value->name, 'email' => $value->email, 'role_title' => $value->role_title, 'contact_num' => $value->contact_num, 'profile_pic_path' => $value->profile_pic_path], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE)?>'><i class="fa fa-edit"></i> Edit</button>
+										<button data-toggle="modal" data-payload='<?php echo json_encode(['id' => $value->id, 'name' => $value->name], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE)?>' class="btn btn-sm btn-link btn-delete btn-danger"><i class="fa fa-trash"></i> Delete</button>
+
+										<?php if ($value->role_title == 'sales'): ?>
+											<a href="<?php echo base_url('cms/users/quota/' . $value->id ) ?>" class="btn btn-link btn-sm btn-success">
+												<i class="fa fa-chart-bar"></i> Quota
+											</a>
+										<?php endif ?>
 
 									</td>
 								</tr>
@@ -71,7 +77,7 @@
         </button>
       </div>
       <div class="modal-body">
-         <form role="form" method="post" enctype="multipart/form-data">
+         <form role="form" method="post" enctype="multipart/form-data" id="edit-form">
          	<div class="row">
 	            <div class="form-group col-md-6">
 	              <label >Name</label>
@@ -122,8 +128,130 @@
     </div>
   </div>
 </div>
-<script src="<?php echo base_url('public/admin/assets/js/custom/users_management.js') ?>"></script>
 <script>
+
+$(document).ready(function() {
+
+    //Updating
+    $('.edit-row').on('click', function(){
+      $('#edit-form')[0].reset() // reset the form
+      const payload = $(this).data('payload')
+      $('#staticBackdropLabel').text('Editing ' + payload.name)
+  
+      $('input[name=name]').removeAttr('required')
+      $('input[name=email]').removeAttr('required')
+      $('input[name=profile_pic_filename]').removeAttr('required')
+      $('input[name=password]').removeAttr('required')
+      $('input[id=confirm_password]').removeAttr('required')
+  
+
+  	  $('select[name=role_title]').removeAttr('required')
+  	  $('select[name=role_title]').attr('disabled', true)
+      $('select[name=role_title]').val(payload.role_title).change()
+
+      $('input[name=name]').val(payload.name)
+      $('input[name=email]').val(payload.email)
+      $('input[name=contact_num]').val(payload.contact_num)
+      
+      $('form').attr('action', base_url + 'cms/users/update/' + payload.id)
+
+      $('#pfp').attr('src', payload.profile_pic_path)
+      
+      $('#staticBackdrop').modal()
+    })
+  
+    // Adding
+    $('.add-btn').on('click', function() {
+      $('#edit-form')[0].reset() // reset the form
+      $('#staticBackdropLabel').text('Add new')
+
+      $('select[name=role_title]').attr('disabled', false)
+      $('input[name=name]').attr('required', 'required')
+      $('input[name=email]').attr("required", 'required')
+      $('input[name=password]').attr("required", 'required')
+      $('input[name=contact_num]').attr("required", 'required')
+      $('input[id=confirm_password]').attr("required", 'required')
+
+      $('#pfp').attr('src', '')
+
+      $('form').attr('action', base_url + 'cms/users/add')
+      $('#staticBackdrop').modal()
+    })
+  
+    //Deleting
+    // $('.btn-delete').on('click', function(){
+  
+    //   let p = prompt("Are you sure you want to delete this? Type DELETE to continue", "");
+    //   if (p === 'DELETE') {
+    //     const id = $(this).data('id')
+  
+    //     invokeForm(base_url + 'cms/users/delete', {id: id});
+    //   }
+  
+    // })
+  
+    $('#edit-form').on('submit', function (){
+  
+      let p = $('input[name=password]').val()
+      let cp = $('input[id=confirm_password]').val()
+  
+    if (!(p === cp)) {
+      swal("Passwords don't match", "Please try again or leave them blank when adding a new user", {
+        icon : "error",
+        buttons: {              
+          confirm: {
+            className : 'btn btn-danger'
+          }
+        },
+      });
+        return false
+      }
+  
+    })
+
+ $('.btn-delete').click(function(e) {
+      swal({
+        title: 'Are you sure you want to delete ' + $(this).data('payload').name + '?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        buttons:{
+          cancel: {
+            visible: true,
+            text : 'No, cancel!',
+            className: 'btn btn-danger'
+          },              
+          confirm: {
+            text : 'Yes, delete ' + $(this).data('payload').name,
+            className : 'btn btn-success'
+          }
+        }
+      }).then((willDelete) => {
+        if (willDelete) {
+          swal($(this).data('payload').name + " deleted successfully", {
+            icon: "success",
+            buttons : {
+              confirm : {
+                className: 'btn btn-success'
+              }
+            }
+          });
+
+          invokeForm(base_url + 'cms/users/delete', {id: $(this).data('payload').id});
+        } else {
+          swal("Operation cancelled", {
+            buttons : {
+              confirm : {
+                className: 'btn btn-success'
+              }
+            }
+          });
+        }
+      });
+    })
+  
+})
+
+
 <?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
 swal("Success", "<?php echo $flash['message'] ?>", {
 	icon : "success",

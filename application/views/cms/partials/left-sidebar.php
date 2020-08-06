@@ -85,13 +85,7 @@
                 <i class="fas fa-users"></i>
                 <p>Users Management</p>
               </a> 
-            </li>
-            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'quota' ? 'active' : '' ?>">
-              <a href="<?php echo base_url('cms/quota') ?>">
-                <i class="fas fa-chart-bar"></i>
-                <p>Quota Management</p>
-              </a> 
-            </li>
+            </li> 
             <?php endif ?>
 
             <?php if (in_array($this->session->role, ['superadmin', 'sales'])): ?>

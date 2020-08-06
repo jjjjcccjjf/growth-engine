@@ -16,29 +16,29 @@ class Quota extends Admin_core_controller {
     $this->wrapper('cms/quota', $data);
   }
 
-  public function update()
-  {
-    $id = $this->input->post('id');
-    $data = $this->input->post();
-    unset($data['id']);
+  // public function update()
+  // {
+  //   $id = $this->input->post('id');
+  //   $data = $this->input->post();
+  //   unset($data['id']);
 
-    if($this->quota_model->update($id, $data)){
-      $this->session->set_flashdata('flash_msg', ['message' => 'Client information updated successfully', 'color' => 'green']);
-    } else {
-      $this->session->set_flashdata('flash_msg', ['message' => 'Error updating client', 'color' => 'red']);
-    }
-    redirect('cms/quota');
-  }
+  //   if($this->quota_model->update($id, $data)){
+  //     $this->session->set_flashdata('flash_msg', ['message' => 'Client information updated successfully', 'color' => 'green']);
+  //   } else {
+  //     $this->session->set_flashdata('flash_msg', ['message' => 'Error updating client', 'color' => 'red']);
+  //   }
+  //   redirect('cms/quota');
+  // }
 
   public function add()
   {
-    $last_id = $this->quota_model->add($this->input->post());
+    $last_id = $this->quota_model->addQuota($this->input->post('user_id'), $this->input->post());
     if($last_id){
-      $this->session->set_flashdata('flash_msg', ['message' => 'New quota added successfully', 'color' => 'green']);
+      $this->session->set_flashdata('flash_msg', ['message' => 'Quota updated successfully', 'color' => 'green']);
     } else {
-      $this->session->set_flashdata('flash_msg', ['message' => 'Error adding quota. Year already exists.', 'color' => 'red']);
+      $this->session->set_flashdata('flash_msg', ['message' => 'Error updating quota. Year already exists.', 'color' => 'red']);
     }
-    redirect('cms/quota');
+    redirect('cms/users/quota/' . $this->input->post('user_id'));
   }
 
  

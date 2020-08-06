@@ -8,6 +8,7 @@ class Dashboard extends Admin_core_controller {
     parent::__construct();
 
     $this->load->model('cms/users_model');
+    $this->load->model('cms/sales_model');
   }
 
   public function index()
@@ -18,8 +19,9 @@ class Dashboard extends Admin_core_controller {
   public function dashboard()
   {
     // $res = $this->admin_model->all();
-
-    $data['res'] = null;
+    $data['sales_unverified_array'] = $this->sales_model->getSaleCountPerSaleForGraph();
+    $data['sales_verified_array'] = $this->sales_model->getVerifiedSaleCountPerSaleForGraph();
+    $data['sales_array'] = $this->sales_model->getSalesArrayForGraph();
     $this->wrapper('cms/index', $data);
   }
  

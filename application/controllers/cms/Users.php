@@ -9,6 +9,7 @@ class Users extends Admin_core_controller {
 
     $this->load->model('cms/users_model');
     $this->load->model('cms/options_model');
+    $this->load->model('cms/quota_model');
   }
 
   public function index()
@@ -16,6 +17,14 @@ class Users extends Admin_core_controller {
     $data['res'] = $this->users_model->all();
     $data['roles'] = $this->options_model->getRoles();
     $this->wrapper('cms/users', $data);
+  }
+
+  public function quota($user_id)
+  {
+    $data['user'] = $this->users_model->get($user_id);
+    $data['quota'] = $this->quota_model->get($user_id);
+
+    $this->wrapper('cms/quota', $data);
   }
 
   public function update($id)
