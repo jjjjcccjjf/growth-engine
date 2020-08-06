@@ -29,7 +29,7 @@ class Sales extends Admin_core_controller {
     $data['categories'] = $this->options_model->getSalesCategories();
     $data['clients'] = $this->clients_model->all();
     $data['invoices'] = $this->finance_model->getInvoicesBySale($sale_id);
-    $data['verified_status'] = ($data['res']->is_verified) ? '<button class="btn-success btn btn-xs" title="At least one collection"><i class="fas fa-check"></i> VERIFIED</button>' : '<button class="btn-warning btn btn-xs"><i class="fas fa-exclamation-triangle"></i> UNVERIFIED</button>';
+    $data['verified_status'] = ($data['res']->is_verified) ? '<button class="btn-success btn btn-xs btn-round" title="At least one collection"><i class="fas fa-check"></i> VERIFIED</button>' : '<button class="btn-warning btn btn-xs btn-round"><i class="fas fa-exclamation-triangle"></i> UNVERIFIED</button>';
     $this->wrapper('cms/view_sale', $data);
   }
 
@@ -62,7 +62,7 @@ class Sales extends Admin_core_controller {
     redirect('cms/sales');
   }
 
-  public function delete($id)
+  public function delete()
   {
     if($this->sales_model->delete($this->input->post('id'))){
       $this->session->set_flashdata('flash_msg', ['message' => 'Sale deleted successfully', 'color' => 'green']);

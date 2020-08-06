@@ -10,7 +10,7 @@
 						<div class="card-body">
 							<div class="card-title fw-mediumbold">Notifications</div>
 							<div class="card-list">
-								<?php if(@$res): foreach ($res as $value): ?>
+								<?php if(@$all_notifs): foreach ($all_notifs as $value): ?>
 									<div class="item-list">
 										<button class="btn btn-icon btn-primary btn-round btn-xs">
 										<i class="<?php echo $value->icon ?>"></i>

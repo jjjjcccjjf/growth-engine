@@ -15,6 +15,16 @@ class Finance extends Admin_core_controller {
 
   public function issue_invoice()
   {
+    $data['title'] = 'Pending Invoices';
+    $data['sales'] = $this->sales_model->allPending();
+    $data['categories'] = $this->options_model->getSalesCategories();
+    $data['unique_clients'] = $this->sales_model->getUniqueClients();
+    $this->wrapper('cms/issue_invoice', $data);
+  }
+
+  public function issue_invoice_all()
+  {
+    $data['title'] = 'List of Sales';
     $data['sales'] = $this->sales_model->all();
     $data['categories'] = $this->options_model->getSalesCategories();
     $data['unique_clients'] = $this->sales_model->getUniqueClients();
@@ -23,9 +33,25 @@ class Finance extends Admin_core_controller {
 
   public function invoice_management()
   {
-    if(!@$_GET['show_all']) { # pag naka show all. pag default lang use this WHERE
-      $this->db->where('MONTH(invoice.due_date) = MONTH(CURRENT_DATE()) AND (invoice.collected_date IS NULL OR invoice.collected_date = "0000-00-00 00:00:00")');
-    }
+    // if(!@$_GET['show_all']) { # pag naka show all. pag default lang use this WHERE
+    $data['title'] = 'Unollected Invoices';
+    $this->db->where('MONTH(invoice.due_date) = MONTH(CURRENT_DATE()) AND (invoice.collected_date IS NULL OR invoice.collected_date = "0000-00-00 00:00:00")');
+    // }
+    $data['invoices'] = $this->finance_model->getInvoices();
+    // var_dump($this->db->last_query()); die();
+    $data['categories'] = $this->options_model->getSalesCategories();
+    $data['unique_clients'] = $this->sales_model->getUniqueClients();
+
+    $this->wrapper('cms/invoice_management', $data);
+  }
+
+  public function invoice_management_collected()
+  {
+    // if(!@$_GET['show_all']) { # pag naka show all. pag default lang use this WHERE
+    // $this->db->where('MONTH(invoice.due_date) = MONTH(CURRENT_DATE()) AND (invoice.collected_date IS NULL OR invoice.collected_date = "0000-00-00 00:00:00")');
+    $this->db->where('collected_date IS NOT NULL');
+    // }
+    $data['title'] = 'Collected Invoices';
     $data['invoices'] = $this->finance_model->getInvoices();
     // var_dump($this->db->last_query()); die();
     $data['categories'] = $this->options_model->getSalesCategories();
@@ -74,10 +100,32 @@ class Finance extends Admin_core_controller {
 
   public function collect()
   {
+    $attachments = $this->finance_model->batch_upload($_FILES['attachments']);
     $data = $this->input->post();
 
-    if($this->finance_model->updateCollection($data)){
+    if ($attachments) {
+      $attachment_success = $this->finance_model->addAttachments($attachments, $data['id']);
+    }
+
+    if($this->finance_model->updateCollection($data) || @$attachment_success){
       $this->session->set_flashdata('flash_msg', ['message' => 'Invoice tagged as collected successfully', 'color' => 'green']);
+    } else {
+      $this->session->set_flashdata('flash_msg', ['message' => 'Failed updating collection', 'color' => 'red']);
+    }
+    redirect('cms/finance/invoice_management');
+  } 
+
+  public function deliver()
+  {
+    $attachments = $this->finance_model->batch_upload($_FILES['attachments']);
+    $data = $this->input->post();
+
+    if ($attachments) {
+      $attachment_success = $this->finance_model->addAttachments($attachments, $data['id']);
+    }
+
+    if($this->finance_model->updateCollection($data) || @$attachment_success){
+      $this->session->set_flashdata('flash_msg', ['message' => 'Invoice tagged as delivered successfully', 'color' => 'green']);
     } else {
       $this->session->set_flashdata('flash_msg', ['message' => 'Failed updating collection', 'color' => 'red']);
     }
@@ -90,7 +138,10 @@ class Finance extends Admin_core_controller {
     $data = $this->input->post();
 
     $last_id = $this->finance_model->add($this->input->post());
-    if($last_id && $this->finance_model->addAttachments($attachments, $last_id)){
+    if ($attachments) {
+      $attachment_success = $this->finance_model->addAttachments($attachments, $last_id);
+    }
+    if($last_id || @$attachment_success){
       $this->session->set_flashdata('flash_msg', ['message' => 'New invoice added successfully', 'color' => 'green']);
     } else {
       $this->session->set_flashdata('flash_msg', ['message' => 'Error adding invoice.', 'color' => 'red']);
@@ -101,7 +152,11 @@ class Finance extends Admin_core_controller {
   public function add_attachments($invoice_id)
   {
     $attachments = $this->finance_model->batch_upload($_FILES['attachments']);
-    if($this->finance_model->addAttachments($attachments, $invoice_id)){
+
+    if ($attachments)
+    $add_attachments = $this->finance_model->addAttachments($attachments, $invoice_id);
+
+    if(@$add_attachments){
       $this->session->set_flashdata('flash_msg', ['message' => 'Attachments added successfully', 'color' => 'green']);
     } else {
       $this->session->set_flashdata('flash_msg', ['message' => 'Error adding attachments.', 'color' => 'red']);

@@ -28,7 +28,10 @@ class Admin_core_controller extends CI_Controller
     $last_checked_notif_at = @$this->db->get('users')->row()->last_checked_notif_at ?: 0;
     $notifications_count = $this->notifications_model->countUnreadNotifs($last_checked_notif_at, $this->session->role);
 
-    $this->load->view('cms/partials/header', ['notifications_count' => $notifications_count]);
+    $this->db->where("created_at > '$last_checked_notif_at'");
+    $new_notifs = $this->notifications_model->getNotifications($this->session->role);
+    
+    $this->load->view('cms/partials/header', ['notifications_count' => $notifications_count, 'new_notifs' => $new_notifs]);
     $this->load->view('cms/partials/left-sidebar');
     $this->load->view($body, $data);
     $this->load->view('cms/partials/footer');

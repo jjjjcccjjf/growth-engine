@@ -11,7 +11,7 @@ class Notifications extends Admin_core_controller { # see application/core/MY_Co
 
   public function index()
   {
-    $data['res'] = $this->notifications_model->getNotifications($this->session->role);
+    $data['all_notifs'] = $this->notifications_model->getNotifications($this->session->role);
     $this->users_model->updateLastChecked($this->session->id);
     $this->wrapper('cms/notifications', $data);
   } 

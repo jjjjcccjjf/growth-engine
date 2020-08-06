@@ -63,7 +63,7 @@ $(document).ready(function() {
       let cp = $('input[id=confirm_password]').val()
   
     if (!(p === cp)) {
-      swal("Passwords don't match", "Please try again or leave them blank", {
+      swal("Passwords don't match", "Please try again or leave them blank when adding a new user", {
         icon : "error",
         buttons: {              
           confirm: {

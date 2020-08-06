@@ -23,7 +23,7 @@
               </div>
               <div class="form-group col-md-6">
                 <label >Contact No.</label>
-                <input type="text" class="form-control" name="contact_num" placeholder="Contact No." value="<?php echo $user->email ?>">
+                <input type="text" class="form-control" name="contact_num" placeholder="Contact No." value="<?php echo $user->contact_num ?>">
               </div>
               <div class="form-group col-md-6">
                 <label >Role</label>

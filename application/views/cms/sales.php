@@ -156,10 +156,10 @@ $(document).ready(function($) {
 		  {
 		    "targets": 4,
 		    "render": function ( data, type, row, meta ) {
-		      if (data) {
-		      	return '<button class="btn-success btn btn-xs" title="At least one collection"><i class="fas fa-check"></i> VERIFIED</button>'
+		      if (parseInt(data)) {
+		      	return '<button class="btn-success btn btn-xs btn-round" title="At least one collection"><i class="fas fa-check"></i> VERIFIED</button>'
 		      } else {
-		      	return '<button class="btn-warning btn btn-xs"><i class="fas fa-exclamation-triangle"></i> UNVERIFIED</button>'
+		      	return '<button class="btn-warning btn btn-xs btn-round"><i class="fas fa-exclamation-triangle"></i> UNVERIFIED</button>'
 		      }
 		    }
 		  },

@@ -165,12 +165,12 @@
                 </a>
               <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
                 <li>
-                  <div class="dropdown-title">You have 4 new notification</div>
+                  <div class="dropdown-title">You have <?php echo $notifications_count ?: "no" ?> new notification(s)</div>
                 </li>
                 <li>
                   <div class="notif-scroll scrollbar-outer">
                     <div class="notif-center">
-                      <a href="#">
+                      <!-- <a href="#">
                         <div class="notif-icon notif-primary"> <i class="fa fa-user-plus"></i> </div>
                         <div class="notif-content">
                           <span class="block">
@@ -207,12 +207,36 @@
                           </span>
                           <span class="time">17 minutes ago</span> 
                         </div>
+                      </a> -->
+
+                      <?php if(@$new_notifs): foreach ($new_notifs as $value): ?>
+                      <a href="<?php echo $value->link ?>">
+                        <div class="notif-icon notif-primary"> <i class="<?php echo $value->icon ?>"></i> </div>
+                        <div class="notif-content">
+                          <span class="block">
+                            <?php echo $value->header ?>
+                          </span>
+                          <span class="time"><?php echo $value->body ?></span> 
+                          <!-- <span class="time">17 minutes ago</span>  -->
+                        </div>
                       </a>
+                      <?php endforeach; else: ?>
+                      <a href="javascript:void(0)">
+                        <div class="notif-icon notif-primary"> <i class="fas fa-smile-beam"></i> </div>
+                        <div class="notif-content">
+                          <span class="block">
+                            All caught up! 
+                          </span>
+                          <span class="time">There are no new notifications <i class="fa fa-bell"></i></span> 
+                          <!-- <span class="time">17 minutes ago</span>  -->
+                        </div> 
+                      </a>
+                      <?php endif ?>
                     </div>
                   </div>
                 </li>
                 <li>
-                  <a class="see-all" href="javascript:void(0);">See all notifications<i class="fa fa-angle-right"></i> </a>
+                  <a class="see-all" href="<?php echo base_url('cms/notifications') ?>">See all notifications<i class="fa fa-angle-right"></i> </a>
                 </li>
               </ul>
             </li>
@@ -290,7 +314,7 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="<?php echo base_url('cms/profile') ?>">My Profile</a>
                     <!-- <a class="dropdown-item" href="#">My Balance</a> -->
-                    <a class="dropdown-item" href="#">Notifications</a>
+                    <a class="dropdown-item" href="<?php echo base_url('cms/notifications') ?>">Notifications</a>
                     <div class="dropdown-divider"></div>
                     <!-- <a class="dropdown-item" href="#">Account Setting</a> -->
                     <!-- <div class="dropdown-divider"></div> -->

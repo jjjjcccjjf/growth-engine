@@ -134,7 +134,7 @@ $(document).ready(function($) {
 		    "targets": 3,
 		    "render": function ( data, type, row, meta ) {
 	    	 data = JSON.parse(data)
-		      return '<button data-id="'+ data.id +'" data-client_name="'+data.client_name+'" data-remarks="'+data. remarks+'" class="edit-client btn btn-link btn-sm"><i class="fas fa-book"> Edit</button>';
+		      return '<button data-id="'+ data.id +'" data-client_name="'+data.client_name+'" data-remarks="'+data.remarks+'" class="edit-client btn btn-link btn-sm"><i class="fas fa-book"> Edit</button>';
 		    }
 		  }
  	   ]

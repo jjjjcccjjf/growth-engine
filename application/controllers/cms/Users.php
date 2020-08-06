@@ -40,7 +40,7 @@ class Users extends Admin_core_controller {
     }
     redirect('cms/users');
   }
-  public function delete($id)
+  public function delete()
   {
     if($this->users_model->delete($this->input->post('id'))){
       $this->session->set_flashdata('flash_msg', ['message' => 'User deleted successfully', 'color' => 'green']);

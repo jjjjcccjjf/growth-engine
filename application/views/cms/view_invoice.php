@@ -19,7 +19,7 @@
 								<i class="flaticon-right-arrow"></i>
 							</li>
 							<li class="nav-item">
-								<a href="#">Invoice ID # <?php echo $res->id ?></a>
+								<a href="#">Invoice ID # <?php echo $res->id ?> </a>
 							</li>
 						</ul>
 					</div>
@@ -27,8 +27,16 @@
 						<div class="col-md-12">
 							<div class="card">
 								<div class="card-header">
-									<div class="card-title"><?php echo $res->invoice_name ?>
-										<a href="<?php echo base_url('cms/finance/invoice_management') ?>"><button class='btn btn-primary btn-sm pull-right'>&laquo; Return to invoice list</button></a>
+									<div class="card-title">
+										<?php echo $res->invoice_name ?>
+										<?php if ($res->collected_date): ?>
+											<button class="btn btn-round btn-success btn-xs"><i class="fas fa-check"></i> COLLECTED</button>
+										<?php else: ?>
+											<button class="btn btn-round btn-warning btn-xs"><i class="fas fa-exclamation-triangle"></i> UNCOLLECTED</button>
+										<?php endif ?>
+
+										<a href="<?php echo base_url('cms/finance/invoice_management_collected') ?>"><button class='btn btn-success btn-sm pull-right'>&laquo; Return to Collected Invoices</button></a>
+										<a href="<?php echo base_url('cms/finance/invoice_management') ?>"><button class='btn btn-warning btn-sm pull-right' style="margin-right:12px">&laquo; Return to Uncollected Invoices</button></a>
 									</div>
 								</div>
 								<div class="card-body">
@@ -82,6 +90,14 @@
 							              <label >Quickbooks ID</label>
 							              <input type="text"  class="form-control" name="quickbooks_id" placeholder="Quickbooks ID" value="<?php echo $res->quickbooks_id ?>">
 							            </div> 
+							            <div class="form-group col-md-4">
+							              <label >Date sent</label>
+							              <input type="date"  class="form-control" name="sent_date" value="<?php echo $res->sent_date ?>">
+							            </div> 
+							            <div class="form-group col-md-4">
+							              <label >Received by</label>
+							              <input type="text"  class="form-control" name="received_by" placeholder="Received by" value="<?php echo $res->received_by ?>">
+							            </div> 
 						                <!-- <input type="hidden" class="form-control" name="user_id" value="<?php echo $this->session->id ?>"> -->
 						         	</div>
 						          </div>
@@ -111,13 +127,13 @@
 						type: 'warning',
 						icon: 'warning',
 						buttons:{
-							confirm: {
-								text : 'Yes, delete it!',
-								className : 'btn btn-success'
-							},
 							cancel: {
 								visible: true,
 								className: 'btn btn-danger'
+							},
+							confirm: {
+								text : 'Yes, delete it!',
+								className : 'btn btn-success'
 							}
 						}
 					}).then((Delete) => {

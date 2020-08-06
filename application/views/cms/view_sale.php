@@ -40,7 +40,8 @@
 						<div class="card-header">
 							<div class="card-title"><?php echo $res->project_name ?> <?php echo $verified_status ?>
 								<?php if(in_array($this->session->role, ['finance', 'superadmin'])): ?>
-								<a href="<?php echo base_url('cms/finance/issue_invoice') ?>"><button class='btn btn-primary btn-sm pull-right'>&laquo; Return to sales list</button></a>
+								<a href="<?php echo base_url('cms/finance/issue_invoice_all') ?>"><button class='btn btn-primary btn-sm pull-right'>&laquo; Return to List of Sales</button></a>
+								<a href="<?php echo base_url('cms/finance/issue_invoice') ?>"><button class='btn btn-primary btn-sm pull-right' style="margin-right:12px">&laquo; Return to Pending Invoices</button></a>
 								<?php endif; ?>
 								<?php if(in_array($this->session->role, ['sales'])): ?>
 								<a href="<?php echo base_url('cms/sales') ?>"><button class='btn btn-primary btn-sm pull-right'>&laquo; Return to sales list</button></a>
@@ -159,9 +160,9 @@
 												<div class="col-md-8">
 													<h3><?php echo $value->invoice_name ?>
 													<?php if ($value->collected_date): ?>
-														<button class="btn btn-xs btn-success"><i class="fas fa-check"></i> Collected</button>
+														<button class="btn btn-xs btn-success btn-round"><i class="fas fa-check"></i> Collected</button>
 													<?php else: ?>
-														<button class="btn btn-xs btn-warning"><i class="fas fas fa-exclamation-triangle"></i> Uncollected</button>
+														<button class="btn btn-xs btn-warning btn-round"><i class="fas fas fa-exclamation-triangle"></i> Uncollected</button>
 													<?php endif ?>
 													</h3>
 														<small>Collected amount: <span style="font-weight:bold"><?php echo $value->collected_amount ?></span></small><br>
@@ -214,62 +215,67 @@
 
 <script>
 	$(document).ready(function($) {
-$('select[name=category]').val('<?php echo $res->category ?>').change()
-$('select[name=client_id]').val('<?php echo $res->client_id ?>').change()
-$('.delete-me').on('click', function(e){
-e.preventDefault();
-swal({
-title: 'Are you sure you want to delete this?',
-text: "You won't be able to revert this!",
-type: 'warning',
-icon: 'warning',
-buttons:{
-confirm: {
-text : 'Yes, delete it!',
-className : 'btn btn-success'
-},
-cancel: {
-visible: true,
-className: 'btn btn-danger'
-}
-}
-}).then((Delete) => {
-if (Delete) {
-let file_attachment_id =  $(this).data('id')
-$.getJSON( "<?php echo base_url('cms/sales/attachment_delete/') ?>" + file_attachment_id, function( data ) {
+		$('select[name=category]').val('<?php echo $res->category ?>').change()
+		$('select[name=client_id]').val('<?php echo $res->client_id ?>').change()
+		$('.delete-me').on('click', function(e){
+		e.preventDefault();
+		
+		swal({
+			title: 'Are you sure you want to delete this?',
+			text: "You won't be able to revert this!",
+			type: 'warning',
+			icon: 'warning',
+			buttons:{
+				confirm: {
+					text : 'Yes, delete it!',
+					className : 'btn btn-success'
+				},
+				cancel: {
+					visible: true,
+					className: 'btn btn-danger'
+				}
+			}
+		}).then((Delete) => {
+			if (Delete) {
+			let file_attachment_id =  $(this).data('id')
+			$.getJSON( "<?php echo base_url('cms/sales/attachment_delete/') ?>" + file_attachment_id, function( data ) {
+				$('.attachment_count').text($('.attachment_count').text() - 1)
+				$('.file-wrapper-' + file_attachment_id).remove()
+				
+				swal({
+					title: 'Deleted!',
+					text: 'Your file has been deleted.',
+					type: 'success',
+					icon: 'success',
+					buttons : {
+						confirm: {
+							className : 'btn btn-success'
+						}
+					}
+				});
+			});
+			} else {
+				swal.close();
+			}
+		});
+	}) // end swal
 
-$('.attachment_count').text($('.attachment_count').text() - 1)
-$('.file-wrapper-' + file_attachment_id).remove()
-swal({
-title: 'Deleted!',
-text: 'Your file has been deleted.',
-type: 'success',
-icon: 'success',
-buttons : {
-confirm: {
-className : 'btn btn-success'
-}
-}
-});
-});
-} else {
-swal.close();
-}
-});
-}) // end swal
-<?php if(in_array($this->session->role, ['finance'])): ?>
-$('form#upload_attachment, input[type=submit]').hide()
-$('input, textarea, select').attr('readonly', 'readonly').css('color', 'black')
-<?php endif; ?>
-<?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
-swal("Success", "<?php echo $flash['message'] ?>", {
-icon : "success",
-buttons: {
-confirm: {
-className : 'btn btn-success'
-}
-},
-});
-<?php endif; ?>
+
+	<?php if(in_array($this->session->role, ['finance'])): ?>
+		$('form#upload_attachment, input[type=submit]').hide()
+		$('.delete-me').hide()
+		$('input, textarea, select').attr('readonly', 'readonly').css('color', 'black')
+	<?php endif; ?>
+	<?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
+		swal("Success", "<?php echo $flash['message'] ?>", {
+			icon : "success",
+			buttons: {
+				confirm: {
+				className : 'btn btn-success'
+				}
+			},
+		});
+	<?php endif; ?>
+
 });
 </script>

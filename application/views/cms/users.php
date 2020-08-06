@@ -98,7 +98,7 @@
 	              <input type="file" class="form-control" name="profile_pic_filename">
 	            </div> 
 	            <div class="form-group col-md-6">
-	            	<img src="" id="pfp" style="width: 100px">
+	            	<img src="" id="pfp" style="width: 100px" onerror="this.src='<?php echo base_url('public/admin/') ?>/assets/img/optimind-logo.png'">
 	            </div> 
 	            <div class="form-group col-md-12">
 	            	<hr>
@@ -123,3 +123,15 @@
   </div>
 </div>
 <script src="<?php echo base_url('public/admin/assets/js/custom/users_management.js') ?>"></script>
+<script>
+<?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
+swal("Success", "<?php echo $flash['message'] ?>", {
+	icon : "success",
+	buttons: {        			
+		confirm: {
+			className : 'btn btn-success'
+		}
+	},
+});
+<?php endif; ?>
+</script>

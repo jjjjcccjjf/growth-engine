@@ -22,6 +22,21 @@ class Sales_model extends Admin_core_model
     return $this->formatRes($res);
   }
 
+  public function allPending()
+  {
+    $res = $this->db->get($this->table)->result();
+    $data = $this->formatRes($res);
+
+    $new_res = [];
+    foreach ($data as $value) {
+      if ($value->invoice_remaining) {
+        $new_res[] = $value;
+      }
+    }
+
+    return $new_res;
+  }
+
   // public function get($id)
   // {
   //    $res = $this->db->get_where($this->table, array('id' => $id))->row();
@@ -94,6 +109,10 @@ class Sales_model extends Admin_core_model
 
     $this->db->where('sale_id', $id);
     $this->db->delete('invoice');
+
+    $this->db->where('meta_id', $id);
+    $this->db->where('type', 'sales');
+    $this->db->delete('notifications'); # delete associated notification
 
     $this->db->where('meta_id', $id);
     $this->db->where('type', 'sales_attachment');

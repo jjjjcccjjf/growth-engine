@@ -2,14 +2,14 @@
 	<div class="content">
 		<div class="page-inner">
 			<div class="page-header">
-				<h4 class="page-title">Create invoice for a Sale </h4>
+				<h4 class="page-title"><?php echo $title ?> </h4>
 			</div>
 			<div class="row">
 				<div class="col-md-12">
 					<div class="card"> 
 						<div class="card-header">
 							<h4 class="card-title">
-								List of sales
+								<?php echo $title ?>
 								<!-- <button class="add-new btn btn-sm btn-info pull-right"><i class="fa fa-plus"></i> Add new</button> -->
 							</h4>
 						</div>
@@ -23,9 +23,9 @@
 											<th>Amount left</th>
 											<th>Client Name</th>
 											<!-- <th>Payment Terms</th> -->
-											<!-- <th>Duration</th> -->
+											<th>Status</th>
 											<th>Invoice(s) remaining</th>
-											<th>Date created</th>
+											<!-- <th>Date created</th> -->
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -35,9 +35,9 @@
 											<th>Amount left</th>
 											<th>Client Name</th>
 											<!-- <th>Payment Terms</th> -->
-											<!-- <th>Duration</th> -->
+											<th>Status</th>
 											<th>Invoice(s) remaining</th>
-											<th>Date created</th>
+											<!-- <th>Date created</th> -->
 											<th>Action</th>
 										</tr>
 									</tfoot>
@@ -49,9 +49,9 @@
 											<td><?php echo $value->amount_left ?></td>
 											<td><?php echo $value->client_name ?></td>
 											<!-- <td><?php echo $value->payment_terms ?></td> -->
-											<!-- <td><?php echo $value->duration ?></td> -->
+											 <td><?php echo $value->is_verified ?></td> 
 											<td><?php echo $value->invoice_remaining ?></td>
-											<td><?php echo $value->created_at ?></td>
+											<!-- <td><?php echo $value->created_at ?></td> -->
 											<td>{"id": "<?php echo $value->id ?>", "invoice_remaining": "<?php echo $value->invoice_remaining ?>"}</td>
 										</tr>
 										 <?php endforeach ?>
@@ -85,7 +85,7 @@
 	              <input type="text" class="form-control" name="invoice_name" placeholder="Invoice name">
 	            </div> 
 	            <div class="form-group col-md-6">
-	              <label >Project name</label>
+	              <label >Project</label>
 	              <select class="form-control" name='sale_id'>
 	              	<?php foreach ($sales as $value): ?>
 	              		<option value="<?php echo $value->id ?>"><?php echo $value->project_name ?></option>
@@ -142,8 +142,17 @@ $(document).ready(function($) {
 		    "render": function ( data, type, row, meta ) {
 		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		    }
-		  }
-		   ]
+		  },
+  		  {
+		    "targets": 4,
+		    "render": function ( data, type, row, meta ) {
+		       if (parseInt(data)) {
+		      	return '<button class="btn-success btn btn-xs btn-round" title="At least one collection"><i class="fas fa-check"></i> VERIFIED</button>'
+		      } else {
+		      	return '<button class="btn-warning btn btn-xs btn-round"><i class="fas fa-exclamation-triangle"></i> UNVERIFIED</button>'
+		      }
+		    }
+		  }]
 	});
 
 	$('.add-new').on('click', function(){

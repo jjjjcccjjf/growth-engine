@@ -86,6 +86,12 @@
                 <p>Users Management</p>
               </a> 
             </li>
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'quota' ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/quota') ?>">
+                <i class="fas fa-chart-bar"></i>
+                <p>Quota Management</p>
+              </a> 
+            </li>
             <?php endif ?>
 
             <?php if (in_array($this->session->role, ['superadmin', 'sales'])): ?>
@@ -110,16 +116,28 @@
             <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && $this->uri->segment(3) == 'issue_invoice' ? 'active' : '' ?>">
               <a href="<?php echo base_url('cms/finance/issue_invoice') ?>">
                 <i class="fas fas fa-money-check-alt"></i>
-                <p>Issue Invoice</p>
+                <p>Pending Invoices</p>
+              </a> 
+            </li>
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && $this->uri->segment(3) == 'issue_invoice_all' ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/finance/issue_invoice_all') ?>">
+                <i class="fas fas fa-money-check-alt"></i>
+                <p>List of Sales</p>
               </a> 
             </li>
             <?php endif ?>
             
             <?php if (in_array($this->session->role, ['collection', 'finance', 'superadmin'])): ?>
-            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && ($this->uri->segment(3) == 'invoice_management' || $this->uri->segment(3) == 'view_invoice')  ? 'active' : '' ?>">
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && ($this->uri->segment(3) == 'invoice_management')  ? 'active' : '' ?>">
               <a href="<?php echo base_url('cms/finance/invoice_management') ?>">
                 <i class="fas fas fas fa-list-ul"></i>
-                <p>Invoice Management</p>
+                <p>Uncollected Invoices</p>
+              </a> 
+            </li>
+            <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && ($this->uri->segment(3) == 'invoice_management_collected')  ? 'active' : '' ?>">
+              <a href="<?php echo base_url('cms/finance/invoice_management_collected') ?>">
+                <i class="fas fas fas fa-list-ul"></i>
+                <p>Collected Invoices</p>
               </a> 
             </li>
             <?php endif ?>

@@ -41,7 +41,12 @@ class Finance_model extends Admin_core_model
   function updateCollection($data)
   {
     $this->db->where('id', $data['id']);
-    return $this->db->update('invoice', ['collected_date' => $data['collected_date']]);
+    $update =  $this->db->update('invoice', ['collected_date' => $data['collected_date'], 'received_by' => $data['received_by'], 'sent_date' => $data['sent_date']]);
+
+    if ($update) {
+      $this->notifications_model->createNotif($data['id'], 'collection');
+    }
+    return $update;
   }
 
   function updateInvoice($invoice_id, $data)
@@ -172,7 +177,7 @@ class Finance_model extends Admin_core_model
 
   function getVerifiedStatus($sale_id)
   {
-    return (bool) $this->countAllCollected($sale_id);
+    return $this->countAllCollected($sale_id) ? 1 : 0 ;
   }
 
   function countAllCollected($sale_id)
@@ -210,7 +215,13 @@ class Finance_model extends Admin_core_model
   public function add($data)
   {
     $this->db->insert('invoice', $data);
-    return $this->db->insert_id();
+    $last_id = $this->db->insert_id();
+    
+    if ($last_id) {
+      $this->notifications_model->createNotif($last_id, 'invoice');
+    }
+
+    return $last_id;
   }
 
 
@@ -249,20 +260,22 @@ class Finance_model extends Admin_core_model
       mkdir($upload_path, DEFAULT_FOLDER_PERMISSIONS, true); # You can set DEFAULT_FOLDER_PERMISSIONS constant in application/config/constants.php
     }
 
-    foreach ($files['name'] as $key => $image) {
-      $_FILES[$k]['name'] = $files['name'][$key];
-      $_FILES[$k]['type'] = $files['type'][$key];
-      $_FILES[$k]['tmp_name'] = $files['tmp_name'][$key];
-      $_FILES[$k]['error'] = $files['error'][$key];
-      $_FILES[$k]['size'] = $files['size'][$key];
+    if ($files['name'][0] != "") {
+      foreach ($files['name'] as $key => $image) {
+        $_FILES[$k]['name'] = $files['name'][$key];
+        $_FILES[$k]['type'] = $files['type'][$key];
+        $_FILES[$k]['tmp_name'] = $files['tmp_name'][$key];
+        $_FILES[$k]['error'] = $files['error'][$key];
+        $_FILES[$k]['size'] = $files['size'][$key];
 
-      $filename = time() . "_" . $files['name'][$key]; # Renames the filename into timestamp_filename
-      $images[] = $uploaded_files[$k][] = $filename; # Appends all filenames to our return array with the key
+        $filename = time() . "_" . $files['name'][$key]; # Renames the filename into timestamp_filename
+        $images[] = $uploaded_files[$k][] = $filename; # Appends all filenames to our return array with the key
 
-      $config['file_name'] = $filename;
-      $this->upload->initialize($config);
+        $config['file_name'] = $filename;
+        $this->upload->initialize($config);
 
-      $this->upload->do_upload($k);
+        $this->upload->do_upload($k);
+      }
     }
 
     return $uploaded_files;
