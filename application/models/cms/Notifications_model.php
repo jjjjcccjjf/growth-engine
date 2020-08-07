@@ -69,8 +69,11 @@ class Notifications_model extends Admin_core_model
           break;
 
         case 'invoice': # pag may invoice na nagawa
-          $value->header = 'New invoice';
-          $value->body = @$this->db->get_Where('invoice', ['id' => $value->meta_id])->row()->invoice_name . " has been created";
+          $invoice = @$this->db->get_Where('invoice', ['id' => $value->meta_id])->row();
+          $sale = @$this->db->get_Where('sales', ['id' => $invoice->sale_id])->row();
+
+          $value->header = 'New invoice [' . $sale->project_name . ']';
+          $value->body = $invoice->invoice_name . " has been created";
           $value->icon = 'fas fa-file-invoice-dollar';
           $value->created_at_f = date('Y-m-d H:i:s', strtotime($value->created_at));
           $value->link = base_url('cms/finance/invoice_management');
@@ -78,8 +81,11 @@ class Notifications_model extends Admin_core_model
           break;
 
         case 'collection': # pag may invoice na nagawa
-          $value->header = 'New collection';
-          $value->body = @$this->db->get_Where('invoice', ['id' => $value->meta_id])->row()->invoice_name . " has been collected";
+          $invoice = @$this->db->get_Where('invoice', ['id' => $value->meta_id])->row();
+          $sale = @$this->db->get_Where('sales', ['id' => $invoice->sale_id])->row();
+
+          $value->header = 'New collection [' . $sale->project_name . ']';
+          $value->body = $invoice->invoice_name . " has been collected";
           $value->icon = 'fas fa-donate';
           $value->created_at_f = date('Y-m-d H:i:s', strtotime($value->created_at));
           $value->link = base_url('cms/finance/invoice_management');

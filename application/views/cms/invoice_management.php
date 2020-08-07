@@ -146,7 +146,7 @@
           </div>
           <div class="modal-footer card-footer">
             <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-            <input class="btn btn-primary" type="submit" value="Tag as collected">
+            <input class="btn btn-primary" type="submit" value="Tag as delivered">
           </div>
         </form>
       </div>
