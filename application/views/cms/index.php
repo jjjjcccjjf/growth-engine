@@ -336,10 +336,10 @@ var chart = Highcharts.chart('container', {
     }, {
         name: 'Current Amount',
         id: 'main',
-        dataSorting: {
-            enabled: true,
-            matchByName: true
-        },
+        // dataSorting: {
+        //     enabled: true,
+        //     matchByName: true
+        // },
         dataLabels: [{
             enabled: true,
             inside: true,
