@@ -72,8 +72,8 @@ class Notifications_model extends Admin_core_model
           $invoice = @$this->db->get_Where('invoice', ['id' => $value->meta_id])->row();
           $sale = @$this->db->get_Where('sales', ['id' => $invoice->sale_id])->row();
 
-          $value->header = 'New invoice [' . $sale->project_name . ']';
-          $value->body = $invoice->invoice_name . " has been created";
+          $value->header = 'New invoice [' . @$sale->project_name . ']';
+          $value->body = @$invoice->invoice_name . " has been created";
           $value->icon = 'fas fa-file-invoice-dollar';
           $value->created_at_f = date('Y-m-d H:i:s', strtotime($value->created_at));
           $value->link = base_url('cms/finance/invoice_management');
@@ -84,8 +84,8 @@ class Notifications_model extends Admin_core_model
           $invoice = @$this->db->get_Where('invoice', ['id' => $value->meta_id])->row();
           $sale = @$this->db->get_Where('sales', ['id' => $invoice->sale_id])->row();
 
-          $value->header = 'New collection [' . $sale->project_name . ']';
-          $value->body = $invoice->invoice_name . " has been collected";
+          $value->header = 'New collection [' . @$sale->project_name . ']';
+          $value->body = @@$invoice->invoice_name . " has been collected";
           $value->icon = 'fas fa-donate';
           $value->created_at_f = date('Y-m-d H:i:s', strtotime($value->created_at));
           $value->link = base_url('cms/finance/invoice_management');

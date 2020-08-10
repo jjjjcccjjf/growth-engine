@@ -28,7 +28,7 @@
   
 <?php if ($years_for_verified): ?>
   
-      <ul class="nav nav-pills nav-primary buttons">
+      <ul class="nav nav-pills nav-primary buttons1">
         <?php $first_item = 1; foreach ($years_for_verified as $value): ?>
           <li class="nav-item">
             <button class="nav-link <?php echo ($first_item) ? 'active' : '' ?>" id='<?php echo $value ?>'>
@@ -69,7 +69,7 @@ var data2 = <?php echo json_encode($total_verified_sales) ?>
 var countries2 = <?php echo json_encode($quarters_array) ?>
  
 
-var chart = Highcharts.chart('container2', {
+var chart2 = Highcharts.chart('container2', {
     chart: {
         type: 'column'
     },
@@ -146,19 +146,19 @@ var chart = Highcharts.chart('container2', {
     }
 });
 
-var years = <?php echo json_encode($years_for_verified) ?>;
+var years2 = <?php echo json_encode($years_for_verified) ?>;
 
-years.forEach(function (year) {
+years2.forEach(function (year) {
     var btn = document.getElementById(year);
 
     btn.addEventListener('click', function () {
 
-        document.querySelectorAll('.buttons button.active').forEach(function (active) {
+        document.querySelectorAll('.buttons1 button.active').forEach(function (active) {
             active.className = 'nav-link';
         });
         btn.className = 'nav-link active';
 
-        chart.update({
+        chart2.update({
             title: {
                 text: 'Verified Sales of <?php echo $for_user ?>'
             },
@@ -244,14 +244,14 @@ years.forEach(function (year) {
           <button class="nav-link active" id='2016'>2016</button>
         </li>
       </ul> -->
-<!--  
+ 
 
-<?php if ($years): ?>
+<?php if ($years_for_verified): ?>
   
-      <ul class="nav nav-pills nav-primary buttons">
-        <?php $first_item = 1; foreach ($years as $value): ?>
+      <ul class="nav nav-pills nav-primary buttons2">
+        <?php $first_item = 1; foreach ($years_for_verified as $value): ?>
           <li class="nav-item">
-            <button class="nav-link <?php echo ($first_item) ? 'active' : '' ?>" id='<?php echo $value ?>'>
+            <button class="nav-link <?php echo ($first_item) ? 'active' : '' ?>" id='<?php echo $value ?>_'>
             <?php echo $value ?>
             </button>
           </li>
@@ -265,20 +265,19 @@ years.forEach(function (year) {
       </ul> 
 <?php endif ?>
 
-<div id="container2"></div>
+<div id="container"></div>
 
 
 
     <script type="text/javascript">
-var dataPrev2 = <?php echo json_encode($total_sales) ?>
+var dataPrev = <?php echo json_encode($sales_default_quota) ?>
 
-var data2 = <?php echo json_encode($total_verified_sales) ?>
+var data = <?php echo json_encode($sales_quota_met) ?>
+
+var countries = <?php echo json_encode($quarters_array) ?>
  
 
-var countries2 = <?php echo json_encode($sales_array) ?>
- 
-
-var chart = Highcharts.chart('container2', {
+var chart = Highcharts.chart('container', {
     chart: {
         type: 'column'
     },
@@ -312,7 +311,7 @@ var chart = Highcharts.chart('container2', {
                 var value = this.value,
                     output;
 
-                countries2.forEach(function (country) {
+                countries.forEach(function (country) {
                     if (country.name === value) {
                         output = country.flag;
                     }
@@ -332,7 +331,7 @@ var chart = Highcharts.chart('container2', {
         color: 'rgb(158, 159, 163)',
         pointPlacement: -0.2,
         linkedTo: 'main',
-        data: dataPrev2[<?php echo $first_year ?>].slice(),
+        data: dataPrev[<?php echo $first_year ?>].slice(),
         name: 'Quota'
     }, {
         name: 'Current Amount',
@@ -348,21 +347,21 @@ var chart = Highcharts.chart('container2', {
                 fontSize: '16px'
             }
         }],
-        data: getData(data2[<?php echo $first_year ?>].slice())
+        data: getData(data[<?php echo $first_year ?>].slice())
     }],
     exporting: {
         allowHTML: true
     }
 });
 
-var years = <?php echo json_encode($years) ?>;
+var years = <?php echo json_encode($years_for_verified) ?>;
 
 years.forEach(function (year) {
-    var btn = document.getElementById(year);
+    var btn = document.getElementById(year + "_");
 
     btn.addEventListener('click', function () {
 
-        document.querySelectorAll('.buttons button.active').forEach(function (active) {
+        document.querySelectorAll('.buttons2 button.active').forEach(function (active) {
             active.className = 'nav-link';
         });
         btn.className = 'nav-link active';
@@ -376,10 +375,10 @@ years.forEach(function (year) {
             },
             series: [{
                 name: 'Quota',
-                data: dataPrev2[year].slice()
+                data: dataPrev[year].slice()
             }, {
                 name: 'Current Amount',
-                data: getData(data2[year]).slice()
+                data: getData(data[year]).slice()
             }]
         }, true, false, {
             duration: 800
@@ -387,7 +386,7 @@ years.forEach(function (year) {
     });
 });
 
-    </script> -->
+    </script> 
 
 
 
