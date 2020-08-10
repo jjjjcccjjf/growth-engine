@@ -144,7 +144,13 @@ class Quota_model extends Admin_core_model
 
     foreach ($quarters as $value) {
         $this->db->where('YEAR(created_at)', $year);
-        // $this->db->where('user_id', $value->id);
+
+        #######################################################
+        if ($this->input->get('u')) {
+          $this->db->where('user_id', $this->input->get('u'));
+        }
+        #######################################################
+
         $this->db->where('QUARTER(created_at)', $value);
         $amount = @$this->db->count_all_results('sales');
         // var_dump($this->db->last_query()); die();
@@ -261,6 +267,11 @@ class Quota_model extends Admin_core_model
       $this->db->where('QUARTER(sales.created_at)', $value);
       $this->db->where('YEAR(sales.created_at)', $year);
       $this->db->where('invoice.collected_date IS NOT NULL');
+      #######################################################
+        if ($this->input->get('u')) {
+          $this->db->where('sales.user_id', $this->input->get('u'));
+        }
+      #######################################################
       $this->db->join('sales', 'invoice.sale_id = sales.id', 'left');
       $collected_amount = @$this->db->count_all_results('invoice');
       // var_dump($this->db->last_query()); die();
