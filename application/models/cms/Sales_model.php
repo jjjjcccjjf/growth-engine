@@ -309,4 +309,14 @@ class Sales_model extends Admin_core_model
     return $res;
   }
 
+  function getSalesPersonLabel($user_id)
+  {
+    $name = @$this->db->get_where('users', ['id' => $user_id])->row()->name;
+    if ($name) {
+      return $name;
+    } else {
+      return 'All sales';
+    }
+  }
+
 }

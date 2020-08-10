@@ -26,6 +26,25 @@ class Quota_model extends Admin_core_model
     return $years;
   }
 
+
+  function getYearsFromSales()
+  {
+    $years = [];
+    if ($this->input->get('u')) {
+      $this->db->where('user_id', $this->input->get('u'));
+    }
+    $this->db->select('YEAR(created_at) as year');
+    $res = $this->db->get('sales')->result();
+    foreach ($res as $value) {
+      $years[] = (int)$value->year;
+    }
+
+    $years = array_unique($years);
+    rsort($years);
+    return $years;
+  }
+  
+
   public function all()
   {
     $this->db->order_by('year', 'desc');
@@ -43,6 +62,7 @@ class Quota_model extends Admin_core_model
       $this->db->insert($this->table, [
         'year' => $data['year'][$i],
         'quota_amount' => $data['quota_amount'][$i],
+        'quarter' => $data['quarter'][$i],
         'user_id' => $user_id
       ]);
     }
@@ -57,13 +77,29 @@ class Quota_model extends Admin_core_model
   }
 
 
-  function getDefaultQuota($years){
+  // function ___getDefaultQuota($years){
+  //   $res = (object)[];
+  //   $sales_people = $this->users_model->getSales();
+  //   if ($years) {
+
+  //     foreach ($years as $year) {
+  //       $res->{(int)$year} = $this->getQuarterAndSalesByYear($year, $sales_people);
+  //     }
+
+  //   } // end if years
+
+  //   return $res;
+  // }
+
+
+  function getTotalSales($years){
     $res = (object)[];
-    $sales_people = $this->users_model->getSales();
+    // $sales_people = $this->users_model->getSales();
     if ($years) {
 
       foreach ($years as $year) {
-        $res->{(int)$year} = $this->getSalesAndQuotaByYear($year, $sales_people);
+        $res->{(int)$year} = $this->getQuarterAndSalesByYear($year);
+        // $res->{(int)$year} = $this->getQuarterAndSalesByYear($year, $sales_people);
       }
 
     } // end if years
@@ -71,20 +107,48 @@ class Quota_model extends Admin_core_model
     return $res;
   }
 
-  function getSalesAndQuotaByYear($year, $sales_people)
+
+  function getQuartersArrayForGraph()
   {
     $res = [];
+    $res[] = (object)['name' => 'Q1', 'flag' => 'Q1'];
+    $res[] = (object)['name' => 'Q2', 'flag' => 'Q2'];
+    $res[] = (object)['name' => 'Q3', 'flag' => 'Q3'];
+    $res[] = (object)['name' => 'Q4', 'flag' => 'Q4'];
+    return $res;
+  }
 
-    if ($sales_people) {
-      foreach ($sales_people as $value) {
+  // function ___getQuarterAndSalesByYear($year, $sales_people)
+  // {
+  //   $res = [];
 
-        $this->db->select('quota_amount');
-        $this->db->where('user_id', $value->id);
-        $this->db->where('year', $year);
-        $quota_amount = @$this->db->get('quota')->row()->quota_amount;
+  //   if ($sales_people) {
+  //     foreach ($sales_people as $value) {
 
-        $res[] = [$value->name, (int)$quota_amount];
-      }
+  //       $this->db->select('quota_amount');
+  //       $this->db->where('user_id', $value->id);
+  //       $this->db->where('year', $year);
+  //       $quota_amount = @$this->db->get('quota')->row()->quota_amount;
+
+  //       $res[] = [$value->name, (int)$quota_amount];
+  //     }
+  //   }
+
+  //   return $res; # return all benta for all users for that year 
+  // }
+
+  function getQuarterAndSalesByYear($year)
+  {
+    $quarters = [1,2,3,4];
+    $res = [];
+
+    foreach ($quarters as $value) {
+        $this->db->where('YEAR(created_at)', $year);
+        // $this->db->where('user_id', $value->id);
+        $this->db->where('QUARTER(created_at)', $value);
+        $amount = @$this->db->count_all_results('sales');
+        // var_dump($this->db->last_query()); die();
+        $res[] = ["Q{$value}", (int)$amount];
     }
 
     return $res; # return all benta for all users for that year 
@@ -97,7 +161,7 @@ class Quota_model extends Admin_core_model
 
   //     foreach ($years as $year) {
   //       $sales_in_that_year = [];
-  //       foreach ($this->getSalesAndQuotaByYear($year) as $value) {
+  //       foreach ($this->getQuarterAndSalesByYear($year) as $value) {
   //         $sales_in_that_year[] = [
   //           $value->name,
   //           (int)$value->quota_amount
@@ -114,7 +178,7 @@ class Quota_model extends Admin_core_model
   // }
 
 
-  // function getSalesAndQuotaByYear($year)
+  // function getQuarterAndSalesByYear($year)
   // {
   //   $this->db->select('users.name, quota.quota_amount');
   //   $this->db->where('year', $year);
@@ -123,13 +187,26 @@ class Quota_model extends Admin_core_model
   // }
 
 
-  function getQuotaMet($years){
+  // function ___getVerifiedSales($years){
+  //   $res = (object)[];
+  //   $sales_people = $this->users_model->getSales();
+  //   if ($years) {
+
+  //     foreach ($years as $year) {
+  //       $res->{(int)$year} = $this->getVerifiedSalesByYear($year, $sales_people);
+  //     }
+
+  //   } // end if years
+
+  //   return $res;
+  // }
+
+  function getVerifiedSales($years){
     $res = (object)[];
-    $sales_people = $this->users_model->getSales();
     if ($years) {
 
       foreach ($years as $year) {
-        $res->{(int)$year} = $this->getTotalSalesByYear($year, $sales_people);
+        $res->{(int)$year} = $this->getVerifiedSalesByYear($year);
       }
 
     } // end if years
@@ -139,31 +216,55 @@ class Quota_model extends Admin_core_model
 
 
   # get mga benta for that $year
-  function getTotalSalesByYear($year, $sales_people)
+  // function ___getVerifiedSalesByYear($year, $sales_people)
+  // {
+  //   $res = [];
+
+  //   if ($sales_people) {
+  //     foreach ($sales_people as $value) {
+        
+  //       $this->db->select('sales.id');
+  //       $this->db->where("YEAR(sales.created_at) = '{$year}'");
+  //       $this->db->where('sales.user_id', $value->id);
+  //       $sales = $this->db->get('sales')->result();
+
+  //       $sales_id_array = array_map(function($e) {
+  //           return is_object($e) ? $e->id : $e['id'];
+  //       }, $sales);
+
+  //       $amount = 0;
+  //       if ($sales_id_array) {
+  //         $this->db->select('SUM(invoice.collected_amount) as amount');
+  //         $this->db->where_in('invoice.sale_id', $sales_id_array);
+  //         $amount = $this->db->get('invoice')->row()->amount;
+  //       } 
+
+  //       $res[] = [$value->name, (int)$amount];
+  //     }
+  //   }
+
+  //   return $res; # return all benta for all users for that year
+  // }
+
+  # get mga benta for that $year
+  function getVerifiedSalesByYear($year)
   {
     $res = [];
 
-    if ($sales_people) {
-      foreach ($sales_people as $value) {
-        
-        $this->db->select('sales.id');
-        $this->db->where("YEAR(sales.created_at) = '{$year}'");
-        $this->db->where('sales.user_id', $value->id);
-        $sales = $this->db->get('sales')->result();
+    $quarters = [1,2,3,4];
 
-        $sales_id_array = array_map(function($e) {
-            return is_object($e) ? $e->id : $e['id'];
-        }, $sales);
+    foreach ($quarters as $value) {
 
-        $amount = 0;
-        if ($sales_id_array) {
-          $this->db->select('SUM(invoice.collected_amount) as amount');
-          $this->db->where_in('invoice.sale_id', $sales_id_array);
-          $amount = $this->db->get('invoice')->row()->amount;
-        } 
-
-        $res[] = [$value->name, (int)$amount];
-      }
+      // $this->db->select('SUM(invoice.collected_amount) as collected_amount');
+      $this->db->distinct();
+      $this->db->select('invoice.sale_id');
+      $this->db->where('QUARTER(sales.created_at)', $value);
+      $this->db->where('YEAR(sales.created_at)', $year);
+      $this->db->where('invoice.collected_date IS NOT NULL');
+      $this->db->join('sales', 'invoice.sale_id = sales.id', 'left');
+      $collected_amount = @$this->db->count_all_results('invoice');
+      // var_dump($this->db->last_query()); die();
+      $res[] = ["Q{$value}", (int)$collected_amount];
     }
 
     return $res; # return all benta for all users for that year
