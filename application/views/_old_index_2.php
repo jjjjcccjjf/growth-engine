@@ -24,11 +24,33 @@
 <script src="<?php echo base_url('public/admin/assets/') ?>code/highcharts.js"></script>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/modules/exporting.js"></script>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/modules/export-data.js"></script>
- 
- 
-<br>
+
+  
+<?php if ($years_for_verified): ?>
+  
+      <ul class="nav nav-pills nav-primary buttons1">
+        <?php $first_item = 1; foreach ($years_for_verified as $value): ?>
+          <li class="nav-item">
+            <button class="nav-link <?php echo ($first_item) ? 'active' : '' ?>" id='<?php echo $value ?>'>
+            <?php echo $value ?>
+            </button>
+          </li>
+        <?php 
+        if ($first_item) {
+          $first_year = $value;
+        }
+
+        $first_item = 0; endforeach ?>
+        </li>
+      </ul> 
+<?php endif ?>
+
+<div id="container2"></div>
+
+
 
 <script type="text/javascript">
+
 function getData(data) {
     return data.map(function (country, i) {
         return {
@@ -38,7 +60,169 @@ function getData(data) {
         };
     });
 }
+
+var dataPrev2 = <?php echo json_encode($total_sales) ?>
+
+var data2 = <?php echo json_encode($total_verified_sales) ?>
+ 
+
+var countries2 = <?php echo json_encode($quarters_array) ?>
+ 
+
+var chart2 = Highcharts.chart('container2', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Verified Sales of <?php echo $for_user ?>'
+    },
+    subtitle: {
+        // text: 'Comparing to results from Summer Olympics 2012 - Source: <ahref="https://en.wikipedia.org/wiki/2016_Summer_Olympics_medal_table">Wikipedia</a>'
+    },
+    plotOptions: {
+        series: {
+            grouping: false,
+            borderWidth: 0
+        }
+    },
+    legend: {
+        enabled: false
+    },
+    tooltip: {
+        shared: true,
+        headerFormat: '<span style="font-size: 15px">{point.point.name}</span><br/>',
+        pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
+    },
+    xAxis: {
+        type: 'category',
+        max: 8,
+        labels: {
+            useHTML: true,
+            animate: true,
+            formatter: function () {
+                var value = this.value,
+                    output;
+
+                countries2.forEach(function (country) {
+                    if (country.name === value) {
+                        output = country.flag;
+                    }
+                });
+
+                return output;
+            }
+        }
+    },
+    yAxis: [{
+        title: {
+            text: 'Verified Sales'
+        },
+        showFirstLabel: false
+    }],
+    series: [{
+        color: 'rgb(158, 159, 163)',
+        pointPlacement: -0.2,
+        linkedTo: 'main',
+        data: dataPrev2[<?php echo $first_year ?>].slice(),
+        name: 'Total sales'
+    }, {
+        name: 'Verified Sales',
+        id: 'main',
+        // dataSorting: {
+        //     enabled: true,
+        //     matchByName: true
+        // },
+        dataLabels: [{
+            enabled: true,
+            inside: true,
+            style: {
+                fontSize: '16px'
+            }
+        }],
+        data: getData(data2[<?php echo $first_year ?>].slice())
+    }],
+    exporting: {
+        allowHTML: true
+    }
+});
+
+var years2 = <?php echo json_encode($years_for_verified) ?>;
+
+years2.forEach(function (year) {
+    var btn = document.getElementById(year);
+
+    btn.addEventListener('click', function () {
+
+        document.querySelectorAll('.buttons1 button.active').forEach(function (active) {
+            active.className = 'nav-link';
+        });
+        btn.className = 'nav-link active';
+
+        chart2.update({
+            title: {
+                text: 'Verified Sales of <?php echo $for_user ?>'
+            },
+            subtitle: {
+                // text: 'Comparing to results from Summer Olympics ' + (year - 4) + ' - Source: <ahref="https://en.wikipedia.org/wiki/' + (year) + '_Summer_Olympics_medal_table">Wikipedia</a>'
+            },
+            series: [{
+                name: 'Total sales',
+                data: dataPrev2[year].slice()
+            }, {
+                name: 'Verified Sales',
+                data: getData(data2[year]).slice()
+            }]
+        }, true, false, {
+            duration: 800
+        });
+    });
+});
+
 </script>
+
+
+
+
+
+
+
+
+
+
+ 
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////quota graph/////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+ <!-- /////////////////////////////////////////////////////////////////////////// -->
+
+
+
+<br>
+<br>
+<br>
+
+
 
 
 <!-- 
@@ -83,8 +267,9 @@ function getData(data) {
 
 <div id="container"></div>
 
-<script type="text/javascript">
 
+
+    <script type="text/javascript">
 var dataPrev = <?php echo json_encode($sales_default_quota) ?>
 
 var data = <?php echo json_encode($sales_quota_met) ?>
@@ -97,7 +282,7 @@ var chart = Highcharts.chart('container', {
         type: 'column'
     },
     title: {
-        text: 'Total Sales Quota of <?php echo $for_user ?>'
+        text: 'Sales Quota of <?php echo $for_user ?>'
     },
     subtitle: {
         // text: 'Comparing to results from Summer Olympics 2012 - Source: <ahref="https://en.wikipedia.org/wiki/2016_Summer_Olympics_medal_table">Wikipedia</a>'
@@ -149,7 +334,7 @@ var chart = Highcharts.chart('container', {
         data: dataPrev[<?php echo $first_year ?>].slice(),
         name: 'Quota'
     }, {
-        name: 'Total Amount',
+        name: 'Current Amount',
         id: 'main',
         // dataSorting: {
         //     enabled: true,
@@ -183,7 +368,7 @@ years.forEach(function (year) {
 
         chart.update({
             title: {
-                text: 'Total Sales Quota of <?php echo $for_user ?>'
+                text: 'Sales Quota of <?php echo $for_user ?>'
             },
             subtitle: {
                 // text: 'Comparing to results from Summer Olympics ' + (year - 4) + ' - Source: <ahref="https://en.wikipedia.org/wiki/' + (year) + '_Summer_Olympics_medal_table">Wikipedia</a>'
@@ -192,174 +377,8 @@ years.forEach(function (year) {
                 name: 'Quota',
                 data: dataPrev[year].slice()
             }, {
-                name: 'Total Amount',
+                name: 'Current Amount',
                 data: getData(data[year]).slice()
-            }]
-        }, true, false, {
-            duration: 800
-        });
-    });
-});
-
-    </script> 
-
-
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-<!-- #############################################/ -->
-
-
-
-
-<?php if ($years_for_verified): ?>
-  
-      <ul class="nav nav-pills nav-primary buttons1">
-        <?php $first_item = 1; foreach ($years_for_verified as $value): ?>
-          <li class="nav-item">
-            <button class="nav-link <?php echo ($first_item) ? 'active' : '' ?>" id='<?php echo $value ?>_1'>
-            <?php echo $value ?>
-            </button>
-          </li>
-        <?php 
-        if ($first_item) {
-          $first_year = $value;
-        }
-
-        $first_item = 0; endforeach ?>
-        </li>
-      </ul> 
-<?php endif ?>
-
-<div id="container1"></div>
-
-<script type="text/javascript">
-
-var dataPrev1 = <?php echo json_encode($sales_default_quota) ?>
-
-var data1 = <?php echo json_encode($sales_quota_met_verified) ?>
-
-var countries1 = <?php echo json_encode($quarters_array) ?>
- 
-
-var chart1 = Highcharts.chart('container1', {
-    chart: {
-        type: 'column'
-    },
-    title: {
-        text: 'Total Verified Sales Quota of <?php echo $for_user ?>'
-    },
-    subtitle: {
-        // text: 'Comparing to results from Summer Olympics 2012 - Source: <ahref="https://en.wikipedia.org/wiki/2016_Summer_Olympics_medal_table">Wikipedia</a>'
-    },
-    plotOptions: {
-        series: {
-            grouping: false,
-            borderWidth: 0
-        }
-    },
-    legend: {
-        enabled: false
-    },
-    tooltip: {
-        shared: true,
-        headerFormat: '<span style="font-size: 15px">{point.point.name}</span><br/>',
-        pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
-    },
-    xAxis: {
-        type: 'category',
-        max: 8,
-        labels: {
-            useHTML: true,
-            animate: true,
-            formatter: function () {
-                var value = this.value,
-                    output;
-
-                countries.forEach(function (country) {
-                    if (country.name === value) {
-                        output = country.flag;
-                    }
-                });
-
-                return output;
-            }
-        }
-    },
-    yAxis: [{
-        title: {
-            text: 'Sales amount'
-        },
-        showFirstLabel: false
-    }],
-    series: [{
-        color: 'rgb(158, 159, 163)',
-        pointPlacement: -0.2,
-        linkedTo: 'main',
-        data: dataPrev1[<?php echo $first_year ?>].slice(),
-        name: 'Quota'
-    }, {
-        name: 'Total Verified Amount',
-        id: 'main',
-        // dataSorting: {
-        //     enabled: true,
-        //     matchByName: true
-        // },
-        dataLabels: [{
-            enabled: true,
-            inside: true,
-            style: {
-                fontSize: '16px'
-            }
-        }],
-        data: getData(data1[<?php echo $first_year ?>].slice())
-    }],
-    exporting: {
-        allowHTML: true
-    }
-});
-
-var years1 = <?php echo json_encode($years_for_verified) ?>;
-
-years1.forEach(function (year) {
-    var btn = document.getElementById(year + "_1");
-
-    btn.addEventListener('click', function () {
-
-        document.querySelectorAll('.buttons1 button.active').forEach(function (active) {
-            active.className = 'nav-link';
-        });
-        btn.className = 'nav-link active';
-
-        chart1.update({
-            title: {
-                text: 'Total Verified Sales Quota of <?php echo $for_user ?>'
-            },
-            subtitle: {
-                // text: 'Comparing to results from Summer Olympics ' + (year - 4) + ' - Source: <ahref="https://en.wikipedia.org/wiki/' + (year) + '_Summer_Olympics_medal_table">Wikipedia</a>'
-            },
-            series: [{
-                name: 'Quota',
-                data: dataPrev1[year].slice()
-            }, {
-                name: 'Total Amount',
-                data: getData(data1[year]).slice()
             }]
         }, true, false, {
             duration: 800

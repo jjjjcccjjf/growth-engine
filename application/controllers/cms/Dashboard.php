@@ -25,6 +25,26 @@ class Dashboard extends Admin_core_controller {
     $data['sales_people'] = $this->users_model->getSales();
     $data['quarters_array'] = $this->quota_model->getQuartersArrayForGraph(); # should always be included
 
+    $data['years_for_verified'] = $this->quota_model->getYearsFromSales(); 
+
+    $data['for_user'] = $this->sales_model->getSalesPersonLabel($salesperson_id);
+
+    $data['sales_default_quota'] = $this->quota_model->getDefaultQuota($data['years_for_verified']);
+    $data['sales_quota_met'] = $this->quota_model->getQuotaMet($data['years_for_verified']);
+    $data['sales_quota_met_verified'] = $this->quota_model->getQuotaMetVerified($data['years_for_verified']);
+    // var_dump($data); die();
+
+
+    $this->wrapper('cms/index', $data);
+  }
+
+  public function old_dashboard_2()
+  {
+
+    $salesperson_id = $this->input->get('u');
+
+    $data['sales_people'] = $this->users_model->getSales();
+    $data['quarters_array'] = $this->quota_model->getQuartersArrayForGraph(); # should always be included
 
     $data['years_for_verified'] = $this->quota_model->getYearsFromSales();
     $data['total_sales'] = $this->quota_model->getTotalSales($data['years_for_verified']);

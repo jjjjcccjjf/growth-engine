@@ -35,7 +35,9 @@ class Login extends Admin_core_controller {
     $res = $this->users_model->getByEmail($email);
     if($res && password_verify($password, $res->password)){
       $this->session->set_userdata(['role' => $res->role_title, 'id' => $res->id, 'name' => $res->name, 'profile_pic_path' => $res->profile_pic_path]);
-      redirect('cms/dashboard');
+
+      $qs = $res->role_title == 'sales' ? '?u=' . $res->id : '';
+      redirect('cms/dashboard' . $qs);
     } else {
       $this->session->set_flashdata('login_msg', ['message' => 'Incorrect email or password', 'color' => 'red']);
       redirect('cms/login');

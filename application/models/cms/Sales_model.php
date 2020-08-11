@@ -315,7 +315,7 @@ class Sales_model extends Admin_core_model
     if ($name) {
       return $name;
     } else {
-      return 'All sales';
+      return 'All';
     }
   }
 

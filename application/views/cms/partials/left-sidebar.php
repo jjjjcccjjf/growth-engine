@@ -72,8 +72,9 @@
                 </ul>
               </div>
             </li> -->
+
             <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'dashboard' ? 'active' : '' ?>">
-              <a href="<?php echo base_url() ?>">
+              <a href="<?php echo base_url('cms/dashboard') ?><?php echo ($this->session->role == 'sales') ? '?u=' . $this->session->id : '' ?>">
                 <i class="fas fa-home"></i>
                 <p>Dashboard</p>
               </a> 
