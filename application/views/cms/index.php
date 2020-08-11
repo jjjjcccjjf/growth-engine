@@ -282,7 +282,7 @@ var chart = Highcharts.chart('container', {
         type: 'column'
     },
     title: {
-        text: 'Sales Quota'
+        text: 'Sales Quota of <?php echo $for_user ?>'
     },
     subtitle: {
         // text: 'Comparing to results from Summer Olympics 2012 - Source: <ahref="https://en.wikipedia.org/wiki/2016_Summer_Olympics_medal_table">Wikipedia</a>'
@@ -368,7 +368,7 @@ years.forEach(function (year) {
 
         chart.update({
             title: {
-                text: 'Sales Quota'
+                text: 'Sales Quota of <?php echo $for_user ?>'
             },
             subtitle: {
                 // text: 'Comparing to results from Summer Olympics ' + (year - 4) + ' - Source: <ahref="https://en.wikipedia.org/wiki/' + (year) + '_Summer_Olympics_medal_table">Wikipedia</a>'
