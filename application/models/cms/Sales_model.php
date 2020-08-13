@@ -288,7 +288,7 @@ class Sales_model extends Admin_core_model
 
     foreach ($res as $key => $value) {
       $value->client_name = $this->clients_model->get($value->client_id)->client_name;
-      $value->sales_rep = $this->users_model->get($value->user_id)->name;
+      $value->sales_rep = @$this->users_model->get($value->user_id)->name;
       $value->invoice_remaining = $this->finance_model->getInvoiceRemaining($value->id);
       $value->amount_left = $this->finance_model->getAmountLeft($value->id);
       $value->created_at = date('Y-m-d', strtotime($value->created_at));

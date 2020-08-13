@@ -136,6 +136,11 @@
 													<?php endforeach ?>
 												</select>
 											</div>
+											<div class="form-group col-md-6">
+												<label >Sale date</label>
+												<input type="date" class="form-control" name="created_at" placeholder="Sale date" value="<?php echo $res->created_at ?>">
+												<!-- <small class="form-text text-muted">Example: 12 months</small> -->
+											</div>
 											<!-- <input type="hidden" class="form-control" name="user_id" value="<?php echo $this->session->id ?>"> -->
 										</div>
 										<div class="modal-footer card-footer">
