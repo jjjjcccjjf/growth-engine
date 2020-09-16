@@ -66,7 +66,7 @@
 												Attachment count: <span class="attachment_count"><?php echo $res->attachment_count ?></span><br>
 												<?php foreach ($res->attachments as $value): ?>
 												<span class="file-wrapper-<?php echo $value->id ?>">
-													<a href="<?php echo $value->attachment_path ?>"><i class="fa fa-file"></i> <?php echo $value->attachment_name ?></a>
+													<a href="<?php echo $value->attachment_path ?>" target="_blank"><i class="fa fa-file"></i> <?php echo $value->attachment_name ?></a>
 													<i class="fa fa-times delete-me" style="color:red; cursor:pointer" title="Delete" data-id="<?php echo $value->id ?>"></i>
 													</br>
 												</span>
@@ -104,7 +104,7 @@
 											</div>
 											<div class="form-group col-md-3">
 												<label >Amount (in peso)</label>
-												<input type="number" step="0.5" min="0" class="form-control" name="amount" placeholder="Amount" value="<?php echo $res->amount ?>">
+												<input type="number" step="0.01" min="0" class="form-control" name="amount" placeholder="Amount" value="<?php echo $res->amount ?>">
 											</div>
 											<div class="form-group col-md-3">
 												<label >VAT (in percent %)</label>
@@ -126,7 +126,7 @@
 											</div>
 											<div class="form-group col-md-6">
 												<label >Number of Invoices</label>
-												<input type="number" class="form-control" readonly="readonly" placeholder="Number of Invoices" min="0" value="<?php echo $res->num_of_invoices ?>" style="color:black">
+												<input type="number" class="form-control" placeholder="Number of Invoices" min="1" value="<?php echo $res->num_of_invoices ?>" >
 											</div>
 											<div class="form-group col-md-6">
 												<label >Category</label>
@@ -180,7 +180,7 @@
 													<h3>Attachments: <span class="attachment_count"><?php echo $value->attachment_count ?></span></h3>
 													<?php foreach ($value->attachments as $attch): ?>
 													<span class="file-wrapper-<?php echo $attch->id ?>">
-														<a href="<?php echo $attch->attachment_path ?>"><i class="fa fa-file"></i> <?php echo $attch->attachment_name ?></a>
+														<a href="<?php echo $attch->attachment_path ?>" target="_blank"><i class="fa fa-file"></i> <?php echo $attch->attachment_name ?></a>
 														<i class="fa fa-times delete-me" style="color:red; cursor:pointer" title="Delete" data-id="<?php echo $attch->id ?>"></i>
 														</br>
 													</span>

@@ -93,7 +93,7 @@
 	            </div>
 	            <div class="form-group col-md-3">
 	              <label >Amount (in peso)</label>
-	              <input type="number" step="0.5" min="0" class="form-control" name="amount" placeholder="Amount">
+	              <input type="number" step="0.01" min="0" class="form-control" name="amount" placeholder="Amount">
 	            </div>
 	            <div class="form-group col-md-3">
 	              <label >VAT (in percent %)</label>
@@ -115,7 +115,7 @@
 	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Number of Invoices</label>
-	              <input type="number" class="form-control" name="num_of_invoices" min="0" placeholder="Number of Invoices">
+	              <input type="number" class="form-control" name="num_of_invoices" min="1" placeholder="Number of Invoices">
 	            </div> 
 	            <div class="form-group col-md-6">
 	              <label >Attachments</label>
@@ -178,7 +178,7 @@ $(document).ready(function($) {
  	   ]
 	});
 
-	$('.add-new').on('click', function(){
+	$('html').on('click', '.add-new', function(){
 		$('.modal').modal()
 	})
 
@@ -193,7 +193,7 @@ $(document).ready(function($) {
 	});
 	<?php endif; ?>
 
-	 $('.btn-delete').click(function(e) {
+	 $('html').on('click', '.btn-delete', function(e) {
       swal({
         title: 'Are you sure you want to delete this?',
         text: "You won't be able to revert this!",

@@ -19,8 +19,13 @@
               </div>
               <div class="card-list">
                   <!-- <div class="item-list" > -->
-                    <!-- <h3>Heads up! <i class="fas fa-wrench"></i> The Dashboard is still under construction </h3> -->
+                    <?php if (@!$have_sales): ?>
+                        
+                    <br>
+                    <br>
+                    <h3><i class="fas fa-exclamation-triangle"></i> No recorded sale yet. </h3>
  
+                    <?php endif ?>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/highcharts.js"></script>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/modules/exporting.js"></script>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/modules/export-data.js"></script>

@@ -268,7 +268,7 @@ class Finance_model extends Admin_core_model
         $_FILES[$k]['error'] = $files['error'][$key];
         $_FILES[$k]['size'] = $files['size'][$key];
 
-        $filename = time() . "_" . $files['name'][$key]; # Renames the filename into timestamp_filename
+        $filename = time() . "_" . preg_replace(array('/\s/', '/\.[\.]+/', '/[^\w_\.\-]/'), array('_', '.', ''), $files['name'][$key]); # Renames the filename into timestamp_filename
         $images[] = $uploaded_files[$k][] = $filename; # Appends all filenames to our return array with the key
 
         $config['file_name'] = $filename;

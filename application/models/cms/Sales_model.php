@@ -22,6 +22,14 @@ class Sales_model extends Admin_core_model
     return $this->formatRes($res);
   }
 
+  function haveSales()
+  {
+    if ($this->input->get('u')) {
+      $this->db->where('user_id', $this->input->get('u'));
+    }
+    return $this->db->count_all_results('sales');
+  }
+
   public function allPending()
   {
     $res = $this->db->get($this->table)->result();
@@ -212,7 +220,7 @@ class Sales_model extends Admin_core_model
       $_FILES[$k]['error'] = $files['error'][$key];
       $_FILES[$k]['size'] = $files['size'][$key];
 
-      $filename = time() . "_" . $files['name'][$key]; # Renames the filename into timestamp_filename
+      $filename = time() . "_" . preg_replace(array('/\s/', '/\.[\.]+/', '/[^\w_\.\-]/'), array('_', '.', ''), $files['name'][$key]); # Renames the filename into timestamp_filename
       $images[] = $uploaded_files[$k][] = $filename; # Appends all filenames to our return array with the key
 
       $config['file_name'] = $filename;

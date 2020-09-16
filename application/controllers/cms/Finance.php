@@ -33,10 +33,13 @@ class Finance extends Admin_core_controller {
 
   public function invoice_management()
   {
-    // if(!@$_GET['show_all']) { # pag naka show all. pag default lang use this WHERE
-    $data['title'] = 'Unollected Invoices';
-    $this->db->where('MONTH(invoice.due_date) = MONTH(CURRENT_DATE()) AND (invoice.collected_date IS NULL OR invoice.collected_date = "0000-00-00 00:00:00")');
-    // }
+    if(@$_GET['show_all']) { # pag naka show all. pag default lang use this WHERE
+       $data['title'] = 'All Invoices';    
+    } else {
+       $data['title'] = 'Uncollected Invoices';
+        $this->db->where('MONTH(invoice.due_date) = MONTH(CURRENT_DATE()) AND (invoice.collected_date IS NULL OR invoice.collected_date = "0000-00-00 00:00:00")');
+    }
+    
     $data['invoices'] = $this->finance_model->getInvoices();
     // var_dump($this->db->last_query()); die();
     $data['categories'] = $this->options_model->getSalesCategories();
@@ -46,11 +49,9 @@ class Finance extends Admin_core_controller {
   }
 
   public function invoice_management_collected()
-  {
-    // if(!@$_GET['show_all']) { # pag naka show all. pag default lang use this WHERE
-    // $this->db->where('MONTH(invoice.due_date) = MONTH(CURRENT_DATE()) AND (invoice.collected_date IS NULL OR invoice.collected_date = "0000-00-00 00:00:00")');
+  { 
+
     $this->db->where('collected_date IS NOT NULL');
-    // }
     $data['title'] = 'Collected Invoices';
     $data['invoices'] = $this->finance_model->getInvoices();
     // var_dump($this->db->last_query()); die();

@@ -94,7 +94,7 @@
 	            </div>  
 	            <div class="form-group col-md-6">
 	              <label >Amount to be collected (in peso)</label>
-	              <input type="number" step="0.5" min="0" class="form-control" name="collected_amount" placeholder="Amount">
+	              <input type="number" step="0.0.1" min="0" class="form-control" name="collected_amount" placeholder="Amount">
 	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Due Date</label>
@@ -159,7 +159,7 @@ $(document).ready(function($) {
 		$('.modal').modal()
 	})
 
-	$('.issue-invoice').on('click', function(){
+	$('html').on('click', '.issue-invoice', function(){
 		let sale_id = $(this).data('id')
 		$('select[name=sale_id]').val(sale_id).change()
 		$('.modal').modal()

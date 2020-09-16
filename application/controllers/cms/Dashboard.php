@@ -23,6 +23,8 @@ class Dashboard extends Admin_core_controller {
     $salesperson_id = $this->input->get('u');
 
     $data['sales_people'] = $this->users_model->getSales();
+    $data['have_sales'] = $this->sales_model->haveSales();
+
     $data['quarters_array'] = $this->quota_model->getQuartersArrayForGraph(); # should always be included
 
     $data['years_for_verified'] = $this->quota_model->getYearsFromSales(); 

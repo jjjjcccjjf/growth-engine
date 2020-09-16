@@ -12,17 +12,19 @@
 								<?php echo $title ?> &nbsp; 
 								<br>
 								<small style="color:gainsboro">Scroll to the right or zoom out to see more options</small>
-<!-- 								<?php if (@$_GET['show_all']): ?>
+ 							<?php if ($this->uri->segment(3) == 'invoice_management'): ?>
+ 								<?php if (@$_GET['show_all']): ?>
 									(All) &nbsp; 
-									<a href="<?php echo base_url('cms/finance/invoice_management')?>">
+									<a href="<?php echo current_url()?>">
 										<button class="add-new btn btn-sm btn-info"><i class="fa fa-eye"></i> Show This Month & Uncollected only</button>
 									</a>
 								<?php else: ?>
 									(Uncollected) &nbsp; 
-									<a href="<?php echo base_url('cms/finance/invoice_management?show_all=1')?>">
+									<a href="<?php echo current_url() . '?show_all=1'?>">
 										<button class="add-new btn btn-sm btn-danger"><i class="fa fa-eye"></i> Show All</button>
 									</a>
-								<?php endif; ?> -->
+								<?php endif; ?> 
+							<?php endif; ?> 
 							</h4>
 						</div>
 						<div class="card-body">
@@ -218,14 +220,14 @@ $(document).ready(function($) {
 		   ]
 	});
 
-	$('.btn-collect').on('click', function(e){
+	$('html').on('click', '.btn-collect', function(e){
 		e.preventDefault()
 		$('input[name=id]').val($(this).data('id'))
 		$('#staticBackdropLabel').text('Collect date for ' + invoices[$(this).data('id')])
 		$('#staticBackdrop1').modal()
 	})
 
-	$('.btn-deliver').on('click', function(e){
+	$('html').on('click', '.btn-deliver', function(e){
 		e.preventDefault()
 		$('input[name=id]').val($(this).data('id'))
 		$('#staticBackdropLabel').text('Collect date for ' + invoices[$(this).data('id')])

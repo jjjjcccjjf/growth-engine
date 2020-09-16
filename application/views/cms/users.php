@@ -133,7 +133,7 @@
 $(document).ready(function() {
 
     //Updating
-    $('.edit-row').on('click', function(){
+    $('html').on('click', '.edit-row', function(){
       $('#edit-form')[0].reset() // reset the form
       const payload = $(this).data('payload')
       $('#staticBackdropLabel').text('Editing ' + payload.name)
@@ -209,7 +209,7 @@ $(document).ready(function() {
   
     })
 
- $('.btn-delete').click(function(e) {
+ $('html').on('click', '.btn-delete', function(e) {
       swal({
         title: 'Are you sure you want to delete ' + $(this).data('payload').name + '?',
         text: "You won't be able to revert this!",
