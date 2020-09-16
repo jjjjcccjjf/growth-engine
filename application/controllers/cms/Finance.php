@@ -99,6 +99,29 @@ class Finance extends Admin_core_controller {
     redirect('cms/finance/view_invoice/' . $invoice_id);
   } 
 
+  public function delete_invoice($invoice_id, $from = 'invoice_management')
+  {
+    if($this->finance_model->deleteInvoice($invoice_id)){
+      $this->session->set_flashdata('flash_msg', ['message' => 'Invoice deleted successfully', 'color' => 'green']);
+    } else {
+      $this->session->set_flashdata('flash_msg', ['message' => 'Error deleting invoice', 'color' => 'red']);
+    }
+
+    switch ($from) {
+      case 'invoice_management':
+        redirect('cms/finance/invoice_management');
+        break;
+      case 'invoice_management_show_all':
+        redirect('cms/finance/invoice_management?show_all=1');
+        break;
+      
+      default:
+        redirect('cms/sales/view/' . $from);
+        break;
+    }
+    
+  } 
+
   public function collect()
   {
     $attachments = $this->finance_model->batch_upload($_FILES['attachments']);

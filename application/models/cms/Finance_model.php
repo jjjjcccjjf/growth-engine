@@ -124,6 +124,28 @@ class Finance_model extends Admin_core_model
     return $file_deleted;
   }
 
+  function deleteInvoice($id)
+  {
+    # Delete attachments on invoice
+    $this->db->where('meta_id', $id);
+    $this->db->where('type', 'invoice');
+    $a = $this->db->get('attachments')->result();
+    foreach ($a as $value) {
+      $this->deleteAttachment($value->id);
+    }
+
+    # / Delete attachments on invoice
+    
+    # Delete notif invoice
+    $this->db->where('meta_id', $id);
+    $this->db->where('type', 'invoice');
+    $this->db->delete('notifications');
+    # /Delete notif invoice
+
+    $this->db->where('id', $id);
+    return $this->db->delete('invoice');
+  }
+
   public function deleteAttachment($id)
   {
     $this->deleteUploadedMedia($id);

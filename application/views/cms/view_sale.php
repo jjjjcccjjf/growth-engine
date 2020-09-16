@@ -169,6 +169,7 @@
 													<?php else: ?>
 														<button class="btn btn-xs btn-warning btn-round"><i class="fas fas fa-exclamation-triangle"></i> Uncollected</button>
 													<?php endif ?>
+														 <button class="btn btn-xs btn-danger pull-right btn-delete-invoice" data-id="<?php echo $value->id ?>"><i class="fas fas fa-trash"></i> Delete</button>
 													</h3>
 														<small>Collected amount: <span style="font-weight:bold"><?php echo $value->collected_amount ?></span></small><br>
 														<small>Due date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->due_date ?></span></small><br>
@@ -264,6 +265,37 @@
 			}
 		});
 	}) // end swal
+
+    $('html').on('click', '.btn-delete-invoice', function(e) {
+      swal({
+        title: 'Are you sure you want to delete this?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        buttons:{
+          cancel: {
+            visible: true,
+            text : 'No, cancel!',
+            className: 'btn btn-danger'
+          },              
+          confirm: {
+            text : 'Yes, delete it',
+            className : 'btn btn-success'
+          }
+        }
+      }).then((willDelete) => {
+        if (willDelete) {
+          invokeForm(base_url + 'cms/finance/delete_invoice/' + $(this).data('id') + '/' +  '<?php echo $res->id ?>', {});
+        } else {
+          swal("Operation cancelled", {
+            buttons : {
+              confirm : {
+                className: 'btn btn-success'
+              }
+            }
+          });
+        }
+      });
+    })
 
 
 	<?php if(in_array($this->session->role, ['finance'])): ?>

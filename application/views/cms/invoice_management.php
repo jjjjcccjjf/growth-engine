@@ -172,9 +172,10 @@ $(document).ready(function($) {
 		      	let collect_button = '<button data-id="' + data.id +'" class="btn btn-link btn-sm btn-collect" title="Tag as collected"><i class="fa fa-check"></i> Tag as collected</button>'
 		      	let delivered_button = '<button data-id="' + data.id +'" class="btn btn-link btn-sm btn-deliver" title="Tag as delivered"><i class="fa fa-box"></i> Tag as delivered</button>'
 		      	let view = '<a href="<?php echo base_url('cms/finance/view_invoice/') ?>'+ data.id +'"><button class="btn btn-link btn-sm view-invoice" title="View invoice"><i class="fas fa-book"></i> Details</button></a>'
+		      	let delete_invoice = '<button class="btn btn-link btn-sm btn-delete" title="Delete invoice" data-id="'+data.id+'"><i class="fas fa-times"></i> Delete</button>'
 		    	
 		    	if (!data.collected_date || !data.sent_date) {
-		    		stringy = view
+		    		stringy = view + delete_invoice
 		    		<?php if(in_array($this->session->role, ['collection'])): ?>
 		    			if (!data.sent_date) {
 		    				stringy = stringy + delivered_button
@@ -245,5 +246,37 @@ $(document).ready(function($) {
 		});
 	<?php endif; ?>
  
+	 $('html').on('click', '.btn-delete', function(e) {
+      swal({
+        title: 'Are you sure you want to delete this?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        buttons:{
+          cancel: {
+            visible: true,
+            text : 'No, cancel!',
+            className: 'btn btn-danger'
+          },              
+          confirm: {
+            text : 'Yes, delete it',
+            className : 'btn btn-success'
+          }
+        }
+      }).then((willDelete) => {
+        if (willDelete) {
+          invokeForm(base_url + 'cms/finance/delete_invoice/' + $(this).data('id') + '/' + 
+          	'<?php echo $this->input->get("show_all") ? "invoice_management_show_all" : "invoice_management"; ?>', {});
+        } else {
+          swal("Operation cancelled", {
+            buttons : {
+              confirm : {
+                className: 'btn btn-success'
+              }
+            }
+          });
+        }
+      });
+    })
+
 });
 </script>
