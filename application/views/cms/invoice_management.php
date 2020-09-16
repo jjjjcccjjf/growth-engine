@@ -175,7 +175,7 @@ $(document).ready(function($) {
 		      	let delete_invoice = '<button class="btn btn-link btn-sm btn-delete" title="Delete invoice" data-id="'+data.id+'"><i class="fas fa-times"></i> Delete</button>'
 		    	
 		    	if (!data.collected_date || !data.sent_date) {
-		    		stringy = view + delete_invoice
+		    		stringy = view
 		    		<?php if(in_array($this->session->role, ['collection'])): ?>
 		    			if (!data.sent_date) {
 		    				stringy = stringy + delivered_button
@@ -183,6 +183,9 @@ $(document).ready(function($) {
 		    			if (!data.collected_date) {
 		    				stringy = stringy + collect_button
 		    			}
+		    		<?php endif; ?>
+		    		<?php if(in_array($this->session->role, ['superadmin', 'finance'])): ?>
+		    			stringy = stringy + delete_invoice
 		    		<?php endif; ?>
 		    		return stringy
 		    	} else {
