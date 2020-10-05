@@ -38,13 +38,24 @@ class Finance_model extends Admin_core_model
     return $this->formatInvoiceRes([$res])[0];
   }
 
-  function updateCollection($data)
+  function updateCollect($data)
   {
     $this->db->where('id', $data['id']);
-    $update =  $this->db->update('invoice', ['collected_date' => $data['collected_date'], 'received_by' => $data['received_by'], 'sent_date' => $data['sent_date']]);
+    $update =  $this->db->update('invoice', ['collected_date' => $data['collected_date'], 'collected_amount' => $data['collected_amount']]);
 
     if ($update) {
       $this->notifications_model->createNotif($data['id'], 'collection');
+    }
+    return $update;
+  }
+
+  function updateDeliver($data)
+  {
+    $this->db->where('id', $data['id']);
+    $update =  $this->db->update('invoice', ['sent_date' => $data['sent_date'], 'received_by' => $data['received_by']]);
+
+    if ($update) {
+      $this->notifications_model->createNotif($data['id'], 'delivery');
     }
     return $update;
   }
@@ -95,16 +106,7 @@ class Finance_model extends Admin_core_model
 
   function getAmountLeft($sale_id)
   {
-    $this->db->where('sale_id', $sale_id);
-    $res = $this->db->get('invoice')->result();
-    $total_collected_amount = 0;
-    foreach ($res as $value) {
-      $total_collected_amount += $value->collected_amount;
-    }
-
-    $this->db->where('id', $sale_id);
-    $sale = $this->db->get('sales')->row();
-    return $sale->amount - $total_collected_amount;
+ 
   }
 
   public function deleteUploadedMedia($id)
@@ -161,6 +163,19 @@ class Finance_model extends Admin_core_model
     return $this->db->update($this->table, $data);
   }
 
+  function getBentaArray($user_id)
+  {
+    $this->db->select('id');
+    $this->db->where('user_id', $user_id);
+    $sales = $this->db->get('sales')->result();
+
+    $sales = array_map(function($e) {
+        return is_object($e) ? $e->id : $e['id'];
+    }, $sales);
+
+    return $sales;
+  }
+
   // function getSales($user_id)
   // {
   //   $res = $this->db->get_where($this->table, ['user_id' => $user_id])->result();
@@ -207,6 +222,142 @@ class Finance_model extends Admin_core_model
     $this->db->where('sale_id', $sale_id);
     $this->db->where('collected_date IS NOT NULL');
     return $this->db->count_all_results('invoice');
+  }
+
+  function getTotalCollection($role, $id, $current_month = true, $invoice_amount_instead = false)
+  {
+    switch ($role) {
+      case 'sales':
+      $sale_ids = $this->getBentaArray($id);
+      $this->db->reset_query();
+      ###
+      if ($sale_ids) {
+        $this->db->where_in('sale_id', $sale_ids);
+      } else {
+        $this->db->where("0");
+      }
+      break;
+      
+      case 'finance':
+      case 'superadmin':
+      default:
+      break;
+    }
+
+    if ($current_month) {
+      $this->db->where('MONTH(collected_date) = MONTH(CURRENT_DATE())');
+    }
+    if ($invoice_amount_instead) {
+      $this->db->select_sum('invoice_amount', 'collected_amount');
+    } else {
+      $this->db->select_sum('collected_amount', 'collected_amount');
+    }
+    return $this->db->get('invoice')->row()->collected_amount;
+  }
+
+  function getTotalUncollected($role, $id) {
+      return $this->getTotalInvoiceAmount($role, $id) - $this->getTotalCollection($role, $id, false, true);
+  }
+
+  /**
+   * sum of all values ng sales without invoice
+   * @param  [type] $role [description]
+   * @param  [type] $id   [description]
+   * @return [type]       [description]
+   */
+  function getTotalUninvoiced($role, $id) {
+      switch ($role) {
+        case 'sales':
+        $this->db->where('sales.user_id', $id);
+        break;
+        
+        case 'finance':
+        case 'superadmin':
+        default:
+        break;
+      }
+
+      $this->db->select_sum('sales.amount', 'amount');
+      $this->db->where('invoice_amount IS NULL');
+      $this->db->join('invoice', 'invoice.sale_id = sales.id', 'left');
+      return $this->db->get('sales')->row()->amount;
+  }
+
+  function getTotalSalesInvoicedAmount($role, $id)
+  {
+      switch ($role) {
+        case 'sales':
+        $sale_ids = $this->getBentaArray($id);
+        $this->db->reset_query();
+        ###
+        if ($sale_ids) {
+          $this->db->where_in('sale_id', $sale_ids);
+        } else {
+          $this->db->where("1");
+        }
+        break;
+        
+        case 'finance':
+        case 'superadmin':
+        default:
+        break;
+      }
+
+      // $this->db->select_sum('invoice.invoice_amount', 'amount');
+      $this->db->where('invoice.collected_date IS NULL OR invoice.collected_date = 0');
+
+      $this->db->select('id, sale_id, invoice_amount');
+      $res = $this->db->get('invoice')->result();
+
+      $unique_sale_ids = [];
+      foreach ($res as $value) {
+        $unique_sale_ids[$value->sale_id] = 0;
+      }
+
+      foreach ($unique_sale_ids as $key => $value) {
+          foreach ($res as $res_q) {
+            if ($key == $res_q->sale_id) {
+                $unique_sale_ids[$key] += $res_q->invoice_amount;
+            }          
+          }        
+      }
+
+      if (@$sale_ids) {
+          $this->db->where_in('id', $sale_ids);
+      }
+      $sales = $this->db->get('sales')->result();
+
+      $amount_remaining_sum = 0;
+      foreach ($sales as $value) {
+        if (@$unique_sale_ids[$value->id]) {
+          $amount_remaining_sum += $value->amount - $unique_sale_ids[$value->id];
+        }
+      }
+      return $amount_remaining_sum;
+  }
+
+  function getTotalInvoiceAmount($role, $id)
+  {
+    switch ($role) {
+      case 'sales':
+      $sale_ids = $this->getBentaArray($id);
+      $this->db->reset_query();
+      ###
+      if ($sale_ids) {
+        $this->db->where_in('sale_id', $sale_ids);
+      } else {
+        $this->db->where("0");
+      }
+      break;
+      
+      case 'finance':
+      case 'superadmin':
+      default:
+      break;
+    }
+
+    $this->db->select_sum('invoice_amount', 'invoice_amount');
+    return $this->db->get('invoice')->row()->invoice_amount;
   }
 
   function formatInvoiceRes($res)

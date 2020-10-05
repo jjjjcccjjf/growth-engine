@@ -131,7 +131,7 @@ class Finance extends Admin_core_controller {
       $attachment_success = $this->finance_model->addAttachments($attachments, $data['id']);
     }
 
-    if($this->finance_model->updateCollection($data) || @$attachment_success){
+    if($this->finance_model->updateCollect($data) || @$attachment_success){
       $this->session->set_flashdata('flash_msg', ['message' => 'Invoice tagged as collected successfully', 'color' => 'green']);
     } else {
       $this->session->set_flashdata('flash_msg', ['message' => 'Failed updating collection', 'color' => 'red']);
@@ -148,7 +148,7 @@ class Finance extends Admin_core_controller {
       $attachment_success = $this->finance_model->addAttachments($attachments, $data['id']);
     }
 
-    if($this->finance_model->updateCollection($data) || @$attachment_success){
+    if($this->finance_model->updateDeliver($data) || @$attachment_success){
       $this->session->set_flashdata('flash_msg', ['message' => 'Invoice tagged as delivered successfully', 'color' => 'green']);
     } else {
       $this->session->set_flashdata('flash_msg', ['message' => 'Failed updating collection', 'color' => 'red']);

@@ -75,16 +75,20 @@
 							              <input type="text" class="form-control" name="invoice_name" placeholder="Invoice name" value="<?php echo $res->invoice_name ?>">
 							            </div>  
 							            <div class="form-group col-md-4">
+							              <label >Invoice amount (in peso)</label>
+							              <input type="number" step="0.01" min="0" class="form-control" name="invoice_amount" placeholder="Invoice amount" value="<?php echo $res->invoice_amount ?>">
+							            </div> 
+							            <div class="form-group col-md-4">
 							              <label >Collected amount (in peso)</label>
 							              <input type="number" step="0.01" min="0" class="form-control" name="collected_amount" placeholder="Collected amount" value="<?php echo $res->collected_amount ?>">
 							            </div> 
 							            <div class="form-group col-md-4">
 							              <label >Collected date</label>
-							              <input type="date"  class="form-control" name="collected_date" placeholder="Collected amount" value="<?php echo $res->collected_date ?>">
+							              <input type="date"  class="form-control" name="collected_date" placeholder="Collected date" value="<?php echo $res->collected_date ?>">
 							            </div> 
 							            <div class="form-group col-md-4">
 							              <label >Due date</label>
-							              <input type="date"  class="form-control" name="due_date" placeholder="Collected amount" value="<?php echo $res->due_date?>">
+							              <input type="date"  class="form-control" name="due_date" placeholder="Due date" value="<?php echo $res->due_date?>">
 							            </div>  
 							            <div class="form-group col-md-4">
 							              <label >Quickbooks ID</label>

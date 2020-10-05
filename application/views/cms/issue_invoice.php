@@ -93,8 +93,8 @@
 	              </select>
 	            </div>  
 	            <div class="form-group col-md-6">
-	              <label >Amount to be collected (in peso)</label>
-	              <input type="number" step="0.0.1" min="0" class="form-control" name="collected_amount" placeholder="Amount">
+	              <label >Invoice amount (in peso)</label>
+	              <input type="number" step="0.01" min="0" class="form-control" name="invoice_amount" placeholder="Invoice amount">
 	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Due Date</label>

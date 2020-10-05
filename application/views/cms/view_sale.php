@@ -171,6 +171,7 @@
 													<?php endif ?>
 														 <button class="btn btn-xs btn-danger pull-right btn-delete-invoice" data-id="<?php echo $value->id ?>"><i class="fas fas fa-trash"></i> Delete</button>
 													</h3>
+														<small>Invoice amount: <span style="font-weight:bold"><?php echo $value->invoice_amount ?></span></small><br>											
 														<small>Collected amount: <span style="font-weight:bold"><?php echo $value->collected_amount ?></span></small><br>
 														<small>Due date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->due_date ?></span></small><br>
 														<small>Date sent (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->sent_date ?: 'Unspecified' ?></span></small><br>								

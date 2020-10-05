@@ -1,3 +1,6 @@
+<style>
+    .con { font-size: .8em }
+</style>
 <div class="main-panel">
   <div class="content">
     <div class="page-inner">
@@ -10,22 +13,90 @@
             <div class="card-body">
               <div class="card-title fw-mediumbold">
                 Dashboard
-                <select class="pull-right btn" name="sale_filter">
-                    <option value="">All sales</option>
-                    <?php foreach ($sales_people as $value): ?>
-                        <option <?php echo ($this->input->get('u') == $value->id) ?'selected' : '' ?> value="<?php echo $value->id ?>"><?php echo $value->name ?></option>
-                    <?php endforeach ?>
-                </select>
-              </div>
-              <div class="card-list">
-                  <!-- <div class="item-list" > -->
-                    <?php if (@!$have_sales): ?>
-                        
-                    <br>
-                    <br>
-                    <h3><i class="fas fa-exclamation-triangle"></i> No recorded sale yet. </h3>
- 
-                    <?php endif ?>
+<?php if (in_array($this->session->role, ['superadmin' ,'finance', 'sales'])): ?>
+<hr style="background-color:gainsboro">
+
+<!-- Row Card No Padding -->
+    <div class="row row-card-no-pd">
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body ">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center">
+                                <i class="flaticon-coins text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 col-stats">
+                            <div class="numbers">
+                                <p class="card-category">Total Collection Amount (this month)</p>
+                                <h4 class="card-title"><span class="con">₱ <?php echo @$total_collection?: 0 ?></span></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body ">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center">
+                                <i class="flaticon-coins text-success"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 col-stats">
+                            <div class="numbers">
+                                <p class="card-category">Total Uncollected (Invoice)</p>
+                                <h4 class="card-title"><span class="con">₱ <?php echo @$total_uncollected?: 0 ?></span></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center">
+                                <i class="flaticon-coins text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 col-stats">
+                            <div class="numbers">
+                                <p class="card-category">Total Uninvoiced (Sales)</p>
+                                <h4 class="card-title"><span class="con">₱ <?php echo @$total_uninvoiced?: 0 ?></span></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<hr style="background-color:gainsboro">
+<?php endif ?> 
+
+
+
+    <select class="pull-right btn" name="sale_filter">
+        <option value="">All sales</option>
+        <?php foreach ($sales_people as $value): ?>
+            <option <?php echo ($this->input->get('u') == $value->id) ?'selected' : '' ?> value="<?php echo $value->id ?>"><?php echo $value->name ?></option>
+        <?php endforeach ?>
+    </select>
+  </div>
+  <div class="card-list">
+      <!-- <div class="item-list" > -->
+        <?php if (@!$have_sales): ?>
+            
+        <br>
+        <br>
+        <h3><i class="fas fa-exclamation-triangle"></i> No recorded sale yet. </h3>
+
+        <?php endif ?>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/highcharts.js"></script>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/modules/exporting.js"></script>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/modules/export-data.js"></script>

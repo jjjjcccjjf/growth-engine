@@ -91,6 +91,17 @@ class Notifications_model extends Admin_core_model
           $value->link = base_url('cms/finance/invoice_management');
           $res[] = $value;
           break;
+        case 'delivery': # pag may invoice na nagawa
+          $invoice = @$this->db->get_Where('invoice', ['id' => $value->meta_id])->row();
+          $sale = @$this->db->get_Where('sales', ['id' => $invoice->sale_id])->row();
+
+          $value->header = 'New invoice delivered [' . @$sale->project_name . ']';
+          $value->body = @@$invoice->invoice_name . " has been delivered";
+          $value->icon = 'fas fa-donate';
+          $value->created_at_f = date('Y-m-d H:i:s', strtotime($value->created_at));
+          $value->link = base_url('cms/finance/invoice_management');
+          $res[] = $value;
+          break;
         
         default:
           // code...

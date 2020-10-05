@@ -34,7 +34,8 @@
 										<tr>
 											<th>Invoice name</th>
 											<th>Project name</th>
-											<th>Collect amount (in Peso)</th>
+											<th>Invoice amount</th>
+											<th>Collected amount</th>
 											<th>Due date</th>
 											<th>Status</th>
 											<th>Quickbooks ID</th>
@@ -46,7 +47,8 @@
 										<tr>
 											<th>Invoice name</th>
 											<th>Project name</th>
-											<th>Collect amount (in Peso)</th>
+											<th>Invoice amount</th>
+											<th>Collected amount</th>
 											<th>Due date</th>
 											<th>Status</th>
 											<th>Quickbooks ID</th>
@@ -59,6 +61,7 @@
 										<tr>
 											<td><?php echo $value->invoice_name ?></td>
 											<td><?php echo $value->project_name ?></td>
+											<td><?php echo $value->invoice_amount ?></td>
 											<td><?php echo $value->collected_amount ?></td>
 											<td><?php echo $value->due_date ?></td>
 											<td><?php echo json_encode(['collected_date' => $value->collected_date, 'sent_date' => $value->sent_date]) ?></td>
@@ -96,11 +99,15 @@
 	              <label >Collected date</label>
 	              <input type="date" class="form-control" name="collected_date" required="required">
 	              <small>This field is required.</small> 
+				  <br>	              
+				  <label >Collected amount</label>
+	              <input type="number" class="form-control" name="collected_amount" placeholder="Collected amount" required="required" step="0.01" min="0">
+	              <small>This field is required.</small> 
 				  <br>
 	              <label >Attachments</label>
 	              <input type="file" name="attachments[]" class="form-control" multiple>
 
-	              <input type="hidden"  name="id">
+	              <input type="hidden" name="id">
 	            </div>
 	             
          	</div>
@@ -160,11 +167,11 @@
 $(document).ready(function($) {
 	var invoices = []
 	<?php if (@$invoices): foreach($invoices as $value): ?>
-	    invoices[<?php echo $value->id ?>] = '<?php echo $value->invoice_name ?>'
+	    invoices[<?php echo $value->id ?>] = "<?php echo $value->invoice_name ?>"
 	<?php endforeach; endif; ?>
 	$('#basic-datatables').DataTable({
 		  "columnDefs": [ {
-		    "targets": 7,
+		    "targets": 8,
 		    "render": function ( data, type, row, meta ) {
 		    	data = JSON.parse(data)
 		      	
@@ -175,22 +182,30 @@ $(document).ready(function($) {
 		      	let delete_invoice = '<button class="btn btn-link btn-sm btn-delete" title="Delete invoice" data-id="'+data.id+'"><i class="fas fa-times"></i> Delete</button>'
 		    	
 		    	if (!data.collected_date || !data.sent_date) {
-		    		stringy = view
+		    		stringy = view;
 		    		<?php if(in_array($this->session->role, ['collection'])): ?>
 		    			if (!data.sent_date) {
-		    				stringy = stringy + delivered_button
+		    				stringy = stringy + delivered_button;
 		    			}
 		    			if (!data.collected_date) {
-		    				stringy = stringy + collect_button
+		    				stringy = stringy + collect_button;
 		    			}
 		    		<?php endif; ?>
+		    		
 		    		<?php if(in_array($this->session->role, ['superadmin', 'finance'])): ?>
-		    			stringy = stringy + delete_invoice
+		    			stringy = stringy + delete_invoice;
 		    		<?php endif; ?>
-		    		return stringy
+		    		
+		    		return stringy;
 		    	} else {
-		    		return view
+		    		return view;
 		    	}
+		    }
+		  },
+		  {
+		    "targets": 3,
+		    "render": function ( data, type, row, meta ) {
+		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		    }
 		  },
 		  {
@@ -200,7 +215,7 @@ $(document).ready(function($) {
 		    }
 		  },
 		  {
-		    "targets": 4,
+		    "targets": 5,
 		    "render": function ( data, type, row, meta ) {
 		    	data = JSON.parse(data)
 
@@ -268,7 +283,7 @@ $(document).ready(function($) {
       }).then((willDelete) => {
         if (willDelete) {
           invokeForm(base_url + 'cms/finance/delete_invoice/' + $(this).data('id') + '/' + 
-          	'<?php echo $this->input->get("show_all") ? "invoice_management_show_all" : "invoice_management"; ?>', {});
+          	'<?php echo $this->input->get("show_all") ? "invoice_management_show_all" : "invoice_management" ?>', {});
         } else {
           swal("Operation cancelled", {
             buttons : {
