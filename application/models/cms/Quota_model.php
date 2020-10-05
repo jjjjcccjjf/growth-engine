@@ -166,6 +166,7 @@ class Quota_model extends Admin_core_model
     $res = [];
 
     $quarters = [1,2,3,4];
+    // $quarters = [4];
 
     foreach ($quarters as $value) {
 
@@ -194,7 +195,7 @@ class Quota_model extends Admin_core_model
       // var_dump($result_verified); die();
 
       // $this->db->select('SUM(invoice.collected_amount) as collected_amount');
-      $this->db->select('SUM(sales.amount) as amount');
+      // $this->db->select('SUM(sales.amount) as amount');
       $this->db->where('QUARTER(sales.created_at)', $value);
       $this->db->where('YEAR(sales.created_at)', $year);
       if ($result_verified_ids) {
@@ -208,11 +209,18 @@ class Quota_model extends Admin_core_model
       }
       #######################################################
       $this->db->join('invoice', 'sales.id = invoice.sale_id', 'left');
-      $amount = @$this->db->get('sales')->row()->amount;
+      $this->db->group_by('sales.id');
+      $sales = @$this->db->get('sales')->result();
+      $amount = 0;
+      // var_dump($sales); die();
+      foreach ($sales as $sale_i) {
+        $amount += $sale_i->amount;
+      }
+      // var_dump($amount); die();
       // var_dump($this->db->last_query()); die();
       $res[] = ["Q{$value}", (int)$amount];
     }
-
+    // var_dump($res); die();
     return $res; # return all benta for all users for that year
   }
 

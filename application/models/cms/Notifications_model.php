@@ -30,6 +30,7 @@ class Notifications_model extends Admin_core_model
  
   function delegateNotifs($role)
   {
+    $this->db->order_by('id', 'desc');
     switch ($role) {
       case 'finance': # pag finance ako, kunin lahat ng sales notif
         $this->db->where('type', 'sales');
