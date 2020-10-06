@@ -199,6 +199,49 @@ class Finance extends Admin_core_controller {
     redirect('cms/sales/view/' . $sale_id);
   }
 
+  public function export()
+  {
+    // var_dump($this->session->role); die();
+
+    // output headers so that the file is downloaded rather than displayed
+    header('Content-type: text/csv');
+    header('Content-Disposition: attachment; filename="' . date('Y-m-d') . '_sales.csv"');
+    // do not cache the file
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    // create a file pointer connected to the output stream
+    
+    $file = fopen('php://output', 'w');
+    // send the column headers
+    fputcsv($file, array('Date', 'Client', 'Project Name',  'Invoice Name', 'Collected Amount', 'Owner'));
+    
+    if ($this->session->role == 'sales') {
+      $res = $this->finance_model->getUninvoicedForExportThisMonth();
+    } else {
+      $res = $this->finance_model->getUninvoicedForExportThisMonth();
+    }
+
+    $new_res = [];
+    foreach ($res as $key => $value) {
+      $new_res[] = array(
+        // $value->id,
+        $value->created_at,
+        $value->client_name,
+        $value->project_name,
+        $value->invoice_name,
+        $value->collected_amount,
+        $value->owner
+      );
+    }
+    $data = $new_res;
+
+    foreach ($data as $row)
+    {
+      fputcsv($file, $row);
+    }
+    exit();
+  }
+
   // public function attachment_delete($sale_id)
   // {
   //   header('Content-Type: application/json');

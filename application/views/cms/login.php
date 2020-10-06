@@ -78,8 +78,8 @@
                      </div>
                    </div>
                 <div class="card-action">
-                  <button class="btn btn-success" type="submit">Login</button>
-                  <!-- <button class="btn btn-danger">Forgot Password</button> -->
+                  <button class="btn btn-success" type="submit">Login</button> 
+                  <a class="btn pull-right btn-link" href="<?php echo base_url('forgot_password') ?>">Forgot Password</a>
                 </div>
                     </form>
 

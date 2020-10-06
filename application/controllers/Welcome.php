@@ -22,4 +22,12 @@ class Welcome extends CI_Controller {
 	{
 		redirect('cms/dashboard');
 	}
+
+	function forgot_password()
+	{
+	    $this->load->view('cms/partials/header', ['notifications_count' => $notifications_count, 'new_notifs' => $new_notifs]);
+    	$this->load->view('cms/partials/left-sidebar');
+		$this->load->view('forgot_password');
+    	$this->load->view('cms/partials/footer');
+	}
 }

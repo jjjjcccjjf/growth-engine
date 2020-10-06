@@ -238,6 +238,20 @@ class Sales_model extends Admin_core_model
     return $this->db->update($this->table, $data);
   }
 
+
+  function getSalesForExportThisMonth ($this_month = true, $user_id = false) {
+    if ($user_id) {
+      $this->db->where('sales.user_id', $user_id);
+    }
+    if ($this_month) {
+      $this->db->where('MONTH(sales.created_at) = MONTH(CURRENT_DATE())');
+    }
+    $this->db->select('DATE_FORMAT(sales.created_at, "%Y-%m-%d") as created_at, clients.client_name, sales.project_name, sales.amount, users.name as owner');
+    $this->db->join('clients', 'clients.id = sales.client_id', 'left');
+    $this->db->join('users', 'users.id = sales.user_id', 'left');
+    return $this->db->get('sales')->result();
+  }
+
   function getSales($user_id)
   {
     $res = $this->db->get_where($this->table, ['user_id' => $user_id])->result();

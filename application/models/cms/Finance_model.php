@@ -26,6 +26,19 @@ class Finance_model extends Admin_core_model
   //    }
   //    return $this->formatRes([$res])[0];
   // }
+  // 
+  function getUninvoicedForExportThisMonth($this_month = true)
+  {
+    if ($this_month) {
+      $this->db->where('MONTH(invoice.collected_date) = MONTH(CURRENT_DATE())');
+    }
+    $this->db->where('invoice.collected_date IS NOT NULL');
+    $this->db->select('invoice.due_date as created_at, clients.client_name, sales.project_name, invoice.invoice_name, invoice.collected_amount, users.name as owner');
+    $this->db->join('clients', 'clients.id = sales.client_id', 'left');
+    $this->db->join('users', 'users.id = sales.user_id', 'left');
+    $this->db->join('invoice', 'sales.id = invoice.sale_id', 'left');
+    return $this->db->get('sales')->result();
+  }
   
   
   function getSingleInvoice($id)

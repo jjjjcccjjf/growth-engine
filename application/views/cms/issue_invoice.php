@@ -10,6 +10,9 @@
 						<div class="card-header">
 							<h4 class="card-title">
 								<?php echo $title ?>
+								<a href="<?php echo base_url('cms/sales/export') ?>" class="btn btn-sm btn-warning pull-right" style="margin-right: 15px"><i class="fa fa-download"></i> Export Sales (this month)</a>
+								<a href="<?php echo base_url('cms/finance/export') ?>" class="btn btn-sm btn-warning pull-right" style="margin-right: 15px"><i class="fa fa-download"></i> Export Collected (this month)</a>
+
 								<!-- <button class="add-new btn btn-sm btn-info pull-right"><i class="fa fa-plus"></i> Add new</button> -->
 							</h4>
 						</div>

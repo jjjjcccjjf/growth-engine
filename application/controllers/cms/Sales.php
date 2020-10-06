@@ -92,5 +92,47 @@ class Sales extends Admin_core_controller {
       echo json_encode('flash_msg', ['message' => 'Error deleting attachment', 'color' => 'red']);
     }
   }
+
+  public function export()
+  {
+    // var_dump($this->session->role); die();
+
+    // output headers so that the file is downloaded rather than displayed
+    header('Content-type: text/csv');
+    header('Content-Disposition: attachment; filename="' . date('Y-m-d') . '_sales.csv"');
+    // do not cache the file
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    // create a file pointer connected to the output stream
+    
+    $file = fopen('php://output', 'w');
+    // send the column headers
+    fputcsv($file, array('Date', 'Client', 'Project Name', 'Amount', 'Owner'));
+    
+    if ($this->session->role == 'sales') {
+      $res = $this->sales_model->getSalesForExportThisMonth(true, $this->session->id);
+    } else {
+      $res = $this->sales_model->getSalesForExportThisMonth(true);
+    }
+
+    $new_res = [];
+    foreach ($res as $key => $value) {
+      $new_res[] = array(
+        // $value->id,
+        $value->created_at,
+        $value->client_name,
+        $value->project_name,
+        $value->amount,
+        $value->owner
+      );
+    }
+    $data = $new_res;
+
+    foreach ($data as $row)
+    {
+      fputcsv($file, $row);
+    }
+    exit();
+  }
  
 }

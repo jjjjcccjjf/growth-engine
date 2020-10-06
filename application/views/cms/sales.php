@@ -11,6 +11,7 @@
 							<h4 class="card-title">
 								Sales list
 								<button class="add-new btn btn-sm btn-info pull-right"><i class="fa fa-plus"></i> Add new</button>
+								<a href="<?php echo base_url('cms/sales/export') ?>" class="btn btn-sm btn-warning pull-right" style="margin-right: 15px"><i class="fa fa-download"></i> Export (this month)</a>
 							</h4>
 						</div>
 						<div class="card-body">
