@@ -24,7 +24,7 @@
 											<th>Client Name</th>
 											<th>Payment Terms</th>
 											<th>Status</th>
-											<th>Date created</th>
+											<th>Sale Date</th>
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -35,7 +35,7 @@
 											<th>Client Name</th>
 											<th>Payment Terms</th>
 											<th>Status</th>
-											<th>Date created</th>
+											<th>Sale Date</th>
 											<th>Action</th>
 										</tr>
 									</tfoot>

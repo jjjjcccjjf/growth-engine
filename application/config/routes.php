@@ -62,6 +62,9 @@ $route['translate_uri_dashes'] = FALSE;
 # name of route, url, etc. -------------------- controller path #
 $route['cms'] = 'cms/dashboard';
 $route['forgot_password'] = 'welcome/forgot_password';
+$route['send_reset_link'] = 'welcome/send_reset_link';
+$route['change_password'] = 'welcome/change_password';
+$route['reset_password/(:any)'] = 'welcome/reset_password/$1';
 
 # My routes
 $route['api/example/(:num)'] = 'api/example/single/$1';

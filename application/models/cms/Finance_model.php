@@ -119,7 +119,16 @@ class Finance_model extends Admin_core_model
 
   function getAmountLeft($sale_id)
   {
- 
+    $this->db->where('sale_id', $sale_id);
+    $res = $this->db->get('invoice')->result();
+    $total_collected_amount = 0;
+    foreach ($res as $value) {
+      $total_collected_amount += $value->invoice_amount;
+    }
+
+    $this->db->where('id', $sale_id);
+    $sale = $this->db->get('sales')->row();
+    return $sale->amount - $total_collected_amount;
   }
 
   public function deleteUploadedMedia($id)
