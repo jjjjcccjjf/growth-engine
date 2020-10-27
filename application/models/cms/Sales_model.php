@@ -22,6 +22,13 @@ class Sales_model extends Admin_core_model
     return $this->formatRes($res);
   }
 
+  function getUniqueOwners()
+  {
+    $this->db->where('role_title', 'sales');
+    $res = $this->db->get('users')->result();
+    return $res;
+  }
+
   function haveSales()
   {
     if ($this->input->get('u')) {
@@ -65,6 +72,16 @@ class Sales_model extends Admin_core_model
     }
 
     return $res;
+  }
+
+  function getSaleById($id)
+  {
+    $sale = $this->db->get_where('sales', ['id' => $id])->row();
+    if (!$sale) {
+      return false;
+    }
+
+    return $this->formatRes([$sale])[0];
   }
 
   function getVerifiedSaleCountPerSaleForGraph()
@@ -172,6 +189,12 @@ class Sales_model extends Admin_core_model
   {
     $this->db->distinct('client_name');
     return $this->db->get('sales')->result();
+  }
+
+  public function getUniqueClientsObject()
+  {
+    $this->db->order_by('client_name', 'asc');
+    return $this->db->get('clients')->result();
   }
 
   public function addAttachments($data, $meta_id)
@@ -312,7 +335,14 @@ class Sales_model extends Admin_core_model
       $value->client_name = $this->clients_model->get($value->client_id)->client_name;
       $value->sales_rep = @$this->users_model->get($value->user_id)->name;
       $value->invoice_remaining = $this->finance_model->getInvoiceRemaining($value->id);
-      $value->amount_left = $this->finance_model->getAmountLeft($value->id);
+      $value->amount_with_vat = round($value->amount * (((double)$value->vat_percent / 100) + 1), 2);
+      $value->amount_with_vat_f = number_format($value->amount_with_vat, 2);
+      $value->amount_left = round($value->amount_with_vat - round($this->finance_model->getTotalCollectedWithTax($value->id), 2), 2);
+      // if ($value->vat_percent > 0) {
+      //   $value->amount_left = $this->finance_model->getAmountLeft($value->id) * ((int)$value->vat_percent / 100) + 1;
+      // } else {
+      //   $value->amount_left = $this->finance_model->getAmountLeft($value->id);
+      // }
       $value->created_at = date('Y-m-d', strtotime($value->created_at));
       $value->attachments = $this->getAttachments($value->id, 'sales_attachment');
       $value->attachment_count = count($value->attachments);

@@ -81,6 +81,10 @@
 							            <div class="form-group col-md-4">
 							              <label >Collected amount (in peso)</label>
 							              <input type="number" step="0.01" min="0" class="form-control" name="collected_amount" placeholder="Collected amount" value="<?php echo $res->collected_amount ?>">
+							            </div> 							            
+							            <div class="form-group col-md-4">
+							              <label >Withholding tax amount (in peso)</label>
+							              <input type="number" step="0.01" min="0" class="form-control" name="withholding_tax_amount" placeholder="Withholding tax amount" value="<?php echo $res->withholding_tax_amount ?>">
 							            </div> 
 							            <div class="form-group col-md-4">
 							              <label >Collected date</label>

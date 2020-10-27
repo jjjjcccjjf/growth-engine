@@ -16,18 +16,28 @@ class Finance extends Admin_core_controller {
   public function issue_invoice()
   {
     $data['title'] = 'Pending Invoices';
+
+    $this->finance_model->filters();
     $data['sales'] = $this->sales_model->allPending();
+    // var_dump($data['sales']); die();
     $data['categories'] = $this->options_model->getSalesCategories();
     $data['unique_clients'] = $this->sales_model->getUniqueClients();
+    $data['unique_owners'] = $this->sales_model->getUniqueOwners();
+    $data['unique_clients_object'] = $this->sales_model->getUniqueClientsObject();
+    $data['export_str'] = "&type=pending";
     $this->wrapper('cms/issue_invoice', $data);
   }
 
   public function issue_invoice_all()
   {
     $data['title'] = 'List of Sales';
+    $this->finance_model->filters();
     $data['sales'] = $this->sales_model->all();
+    $data['export_str'] = "&type=all";
     $data['categories'] = $this->options_model->getSalesCategories();
     $data['unique_clients'] = $this->sales_model->getUniqueClients();
+    $data['unique_owners'] = $this->sales_model->getUniqueOwners();
+    $data['unique_clients_object'] = $this->sales_model->getUniqueClientsObject();
     $this->wrapper('cms/issue_invoice', $data);
   }
 
@@ -205,7 +215,7 @@ class Finance extends Admin_core_controller {
 
     // output headers so that the file is downloaded rather than displayed
     header('Content-type: text/csv');
-    header('Content-Disposition: attachment; filename="' . date('Y-m-d') . '_sales.csv"');
+    header('Content-Disposition: attachment; filename="' . date('Y-m-d') . '_collection.csv"');
     // do not cache the file
     header('Pragma: no-cache');
     header('Expires: 0');
@@ -216,21 +226,29 @@ class Finance extends Admin_core_controller {
     fputcsv($file, array('Date', 'Client', 'Project Name',  'Invoice Name', 'Collected Amount', 'Owner'));
     
     if ($this->session->role == 'sales') {
-      $res = $this->finance_model->getUninvoicedForExportThisMonth();
+      $this->db->where('invoice.sales_id', $this->session->id);
     } else {
-      $res = $this->finance_model->getUninvoicedForExportThisMonth();
+
     }
+    // $this->finance_model->filters();    
+    if (@$_GET['from']) {
+      $this->db->where('invoice.collected_date >= "' . $_GET['from']. '"');
+    }
+    if (@$_GET['to']) {
+      $this->db->where('invoice.collected_date <= "' . $_GET['to']. '"');
+    } 
+    $res = $this->finance_model->getUninvoicedForExportThisMonth();
 
     $new_res = [];
     foreach ($res as $key => $value) {
       $new_res[] = array(
         // $value->id,
-        $value->created_at,
-        $value->client_name,
-        $value->project_name,
-        $value->invoice_name,
-        $value->collected_amount,
-        $value->owner
+        $value->_created_at,
+        $value->_client_name,
+        $value->_project_name,
+        $value->_invoice_name,
+        $value->_collected_amount,
+        $value->_owner
       );
     }
     $data = $new_res;

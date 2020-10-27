@@ -110,20 +110,31 @@ class Sales extends Admin_core_controller {
     fputcsv($file, array('Date', 'Client', 'Project Name', 'Amount', 'Owner'));
     
     if ($this->session->role == 'sales') {
-      $res = $this->sales_model->getSalesForExportThisMonth(true, $this->session->id);
+      $this->db->where('sales.user_id', $this->session->id);
+      // $res = $this->sales_model->getSalesForExportThisMonth(true, $this->session->id);
     } else {
-      $res = $this->sales_model->getSalesForExportThisMonth(true);
+      // $res = $this->sales_model->getSalesForExportThisMonth(true);
+    }
+
+    $this->db->select('DATE_FORMAT(sales.created_at, "%Y-%m-%d") as _created_at, clients.client_name as _client_name, sales.project_name as _project_name, sales.amount as _amount, users.name as _owner');
+    $this->db->join('clients', 'clients.id = sales.client_id', 'left');
+    $this->db->join('users', 'users.id = sales.user_id', 'left');
+    $this->finance_model->filters();
+    if (@$_GET['type'] == 'all') {
+        $res = $this->sales_model->all();
+    } else if(@$_GET['type'] == 'pending') {
+        $res = $this->sales_model->allPending();
     }
 
     $new_res = [];
     foreach ($res as $key => $value) {
       $new_res[] = array(
         // $value->id,
-        $value->created_at,
-        $value->client_name,
-        $value->project_name,
-        $value->amount,
-        $value->owner
+        $value->_created_at,
+        $value->_client_name,
+        $value->_project_name,
+        $value->_amount,
+        $value->_owner
       );
     }
     $data = $new_res;

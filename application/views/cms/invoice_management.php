@@ -103,6 +103,10 @@
 				  <label >Collected amount</label>
 	              <input type="number" class="form-control" name="collected_amount" placeholder="Collected amount" required="required" step="0.01" min="0">
 	              <small>This field is required.</small> 
+				  <br>				  
+				  <label >Withholding tax amount</label>
+	              <input type="number" class="form-control" name="withholding_tax_amount" placeholder="Withholding tax amount" required="required" step="0.01" min="0">
+	              <small>This field is required.</small> 
 				  <br>
 	              <label >Attachments</label>
 	              <input type="file" name="attachments[]" class="form-control" multiple>

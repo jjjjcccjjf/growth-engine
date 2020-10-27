@@ -27,13 +27,10 @@ class Finance_model extends Admin_core_model
   //    return $this->formatRes([$res])[0];
   // }
   // 
-  function getUninvoicedForExportThisMonth($this_month = true)
+  function getUninvoicedForExportThisMonth()
   {
-    if ($this_month) {
-      $this->db->where('MONTH(invoice.collected_date) = MONTH(CURRENT_DATE())');
-    }
     $this->db->where('invoice.collected_date IS NOT NULL');
-    $this->db->select('invoice.due_date as created_at, clients.client_name, sales.project_name, invoice.invoice_name, invoice.collected_amount, users.name as owner');
+    $this->db->select('invoice.due_date as _created_at, clients.client_name as _client_name, sales.project_name as _project_name, invoice.invoice_name as _invoice_name, invoice.collected_amount as _collected_amount, users.name as _owner');
     $this->db->join('clients', 'clients.id = sales.client_id', 'left');
     $this->db->join('users', 'users.id = sales.user_id', 'left');
     $this->db->join('invoice', 'sales.id = invoice.sale_id', 'left');
@@ -54,7 +51,7 @@ class Finance_model extends Admin_core_model
   function updateCollect($data)
   {
     $this->db->where('id', $data['id']);
-    $update =  $this->db->update('invoice', ['collected_date' => $data['collected_date'], 'collected_amount' => $data['collected_amount']]);
+    $update =  $this->db->update('invoice', ['collected_date' => $data['collected_date'], 'collected_amount' => $data['collected_amount'], 'withholding_tax_amount' => $data['withholding_tax_amount']]);
 
     if ($update) {
       $this->notifications_model->createNotif($data['id'], 'collection');
@@ -90,6 +87,20 @@ class Finance_model extends Admin_core_model
     return $this->formatRes($res);
   }
 
+  function getTotalCollectedWithTax($sale_id)
+  {
+    $res = $this->getInvoicesBySale($sale_id);
+    if (!$res) {
+      return 0;
+    }
+    $total_collected_amount = 0;
+    foreach ($res as $value) {
+      $total_collected_amount += $value->collected_amount_w_tax;
+    }
+
+    return $total_collected_amount;
+  }
+
   function getInvoices()
   {
     return $this->all();
@@ -117,19 +128,19 @@ class Finance_model extends Admin_core_model
     return $sales - $invoices;
   }
 
-  function getAmountLeft($sale_id)
-  {
-    $this->db->where('sale_id', $sale_id);
-    $res = $this->db->get('invoice')->result();
-    $total_collected_amount = 0;
-    foreach ($res as $value) {
-      $total_collected_amount += $value->invoice_amount;
-    }
+  // function getAmountLeft($sale_id)
+  // {
+  //   $this->db->where('sale_id', $sale_id);
+  //   $res = $this->db->get('invoice')->result();
+  //   $total_collected_amount = 0;
+  //   foreach ($res as $value) {
+  //     $total_collected_amount += $value->invoice_amount;
+  //   }
 
-    $this->db->where('id', $sale_id);
-    $sale = $this->db->get('sales')->row();
-    return $sale->amount - $total_collected_amount;
-  }
+  //   $this->db->where('id', $sale_id);
+  //   $sale = $this->db->get('sales')->row();
+  //   return $sale->amount - $total_collected_amount;
+  // }
 
   public function deleteUploadedMedia($id)
   {
@@ -228,6 +239,7 @@ class Finance_model extends Admin_core_model
       $value->collected_date = $value->collected_date ? date('Y-m-d', strtotime($value->collected_date)) : null;
       $value->attachments = $this->getAttachments($value->id, 'invoice');
       $value->attachment_count = count($value->attachments);
+      $value->collected_amount_w_tax = $value->collected_amount + $value->withholding_tax_amount;
       $value->project_name = $this->db->get_where('sales', ['id' => $value->sale_id])->row()->project_name;
       $data[] = $value;
     }
@@ -474,6 +486,36 @@ class Finance_model extends Admin_core_model
     }
 
     return $uploaded_files;
+  }
+
+  function filters()
+  {
+    if (@$_GET['from']) {
+      $this->db->where('sales.created_at >= "' . $_GET['from']. '"');
+    }
+    if (@$_GET['to']) {
+      $this->db->where('sales.created_at <= "' . $_GET['to']. '"');
+    }
+    if (@$_GET['user_id']) {
+      $this->db->where('sales.user_id', $_GET['user_id']);
+    }
+    if (@$_GET['client_id']) {
+      $this->db->where('sales.client_id', $_GET['client_id']);
+    }
+    if (@$_GET['invoice_remaining'] || @$_GET['status']) {
+      $this->db->join('invoice', 'invoice.sale_id = sales.id', 'left');
+      $this->db->select('sales.id, sales.user_id, sales.amount, sales.client_id, sales.vat_percent, sales.project_name, sales.project_description, sales.payment_terms, sales.duration, sales.category, sales.payment_terms_notes, sales.num_of_invoices, sales.commission_percent, sales.created_at, COUNT(invoice.id) as _invoice_count_current');
+      $this->db->group_by('invoice.sale_id');
+
+      if (@$_GET['invoice_remaining']) {
+        $this->db->having('(sales.num_of_invoices - COUNT(invoice.id)) <= ' . $_GET['invoice_remaining']);
+      }      
+      if (@$_GET['status'] == 'verified') {
+        $this->db->where('invoice.collected_date IS NOT NULL');
+      } else if (@$_GET['status'] == 'unverified') {
+        $this->db->where('invoice.collected_date IS NULL');
+      }
+    }
   }
 
 }

@@ -86,15 +86,15 @@
 									</div>
 									<form role="form" method="post" action="<?php echo base_url('cms/sales/update/' . $res->id) ?>">
 										<div class="row">
-											<div class="form-group col-md-6">
+											<div class="form-group col-md-4">
 												<label >Project Name</label>
 												<input type="text" class="form-control" name="project_name" placeholder="Project name" value="<?php echo $res->project_name ?>">
 											</div>
-											<div class="form-group col-md-6">
+											<div class="form-group col-md-4">
 												<label >Project Description</label>
 												<textarea class="form-control" placeholder="Project description..." name="project_description"><?php echo $res->project_description ?></textarea>
 											</div>
-											<div class="form-group col-md-6">
+											<div class="form-group col-md-4">
 												<label >Client</label>
 												<select class="form-control" name='client_id'>
 													<?php foreach ($clients as $value): ?>
@@ -102,13 +102,17 @@
 													<?php endforeach ?>
 												</select>
 											</div>
-											<div class="form-group col-md-3">
+											<div class="form-group col-md-4">
 												<label >Amount (in peso)</label>
 												<input type="number" step="0.01" min="0" class="form-control" name="amount" placeholder="Amount" value="<?php echo $res->amount ?>">
 											</div>
-											<div class="form-group col-md-3">
+											<div class="form-group col-md-4">
 												<label >VAT (in percent %)</label>
 												<input type="number" class="form-control" name="vat_percent" placeholder="VAT" value="<?php echo $res->vat_percent ?>">
+											</div>											
+											<div class="form-group col-md-4">
+												<label >Computed Amount (with VAT)</label>
+												<input type="text" class="form-control" readonly="readonly" style="color:black" value="<?php echo $res->amount_with_vat_f ?>">
 											</div>
 											<div class="form-group col-md-6">
 												<label >Payment Terms</label>
@@ -126,7 +130,7 @@
 											</div>
 											<div class="form-group col-md-6">
 												<label >Number of Invoices</label>
-												<input type="number" class="form-control" placeholder="Number of Invoices" min="1" value="<?php echo $res->num_of_invoices ?>" >
+												<input type="number" class="form-control" placeholder="Number of Invoices" min="1" value="<?php echo $res->num_of_invoices ?>" name="num_of_invoices">
 											</div>
 											<div class="form-group col-md-6">
 												<label >Category</label>
@@ -172,7 +176,7 @@
 														 <button class="btn btn-xs btn-danger pull-right btn-delete-invoice" data-id="<?php echo $value->id ?>"><i class="fas fas fa-trash"></i> Delete</button>
 													</h3>
 														<small>Invoice amount: <span style="font-weight:bold"><?php echo $value->invoice_amount ?></span></small><br>											
-														<small>Collected amount: <span style="font-weight:bold"><?php echo $value->collected_amount ?></span></small><br>
+														<small>Collected amount: <span style="font-weight:bold"><?php echo $value->collected_amount ?> (with a withholding tax amount of <?php echo $value->withholding_tax_amount ?>)</span></small><br>
 														<small>Due date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->due_date ?></span></small><br>
 														<small>Date sent (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->sent_date ?: 'Unspecified' ?></span></small><br>								
 														<small>Collected date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->collected_date ?: 'Unspecified' ?></span></small><br>								
