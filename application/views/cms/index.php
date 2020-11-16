@@ -48,14 +48,14 @@
                         </div>
                         <div class="col-7 col-stats">
                             <div class="numbers">
-                                <p class="card-category">Total Uncollected (Invoice)</p>
+                                <p class="card-category">Total Uncollected Invoice (this month)</p>
                                 <h4 class="card-title"><span class="con">₱ <?php echo @$total_uncollected?: 0 ?></span></h4>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
         <div class="col-sm-6 col-md-4">
             <div class="card card-stats card-round">
                 <div class="card-body">
@@ -67,7 +67,7 @@
                         </div>
                         <div class="col-7 col-stats">
                             <div class="numbers">
-                                <p class="card-category">Total Uninvoiced (Sales)</p>
+                                <p class="card-category">Total Uninvoiced Sales (All time & Without a single invoice)</p>
                                 <h4 class="card-title"><span class="con">₱ <?php echo @$total_uninvoiced?: 0 ?></span></h4>
                             </div>
                         </div>
@@ -77,7 +77,7 @@
         </div>
     </div>
 <hr style="background-color:gainsboro">
-<?php endif ?> 
+<?php endif ?>
 
 
 
@@ -91,7 +91,7 @@
   <div class="card-list">
       <!-- <div class="item-list" > -->
         <?php if (@!$have_sales): ?>
-            
+
         <br>
         <br>
         <h3><i class="fas fa-exclamation-triangle"></i> No recorded sale yet. </h3>
@@ -100,8 +100,8 @@
 <script src="<?php echo base_url('public/admin/assets/') ?>code/highcharts.js"></script>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/modules/exporting.js"></script>
 <script src="<?php echo base_url('public/admin/assets/') ?>code/modules/export-data.js"></script>
- 
- 
+
+
 <br>
 
 <script type="text/javascript">
@@ -117,8 +117,8 @@ function getData(data) {
 </script>
 
 
-<!-- 
- 
+<!--
+
       <ul class="nav nav-pills nav-primary buttons">
         <li class="nav-item">
           <button class="nav-link" id='2000'>2000</button>
@@ -136,10 +136,10 @@ function getData(data) {
           <button class="nav-link active" id='2016'>2016</button>
         </li>
       </ul> -->
- 
+
 
 <?php if ($years_for_verified): ?>
-  
+
       <ul class="nav nav-pills nav-primary buttons2">
         <?php $first_item = 1; foreach ($years_for_verified as $value): ?>
           <li class="nav-item">
@@ -147,14 +147,14 @@ function getData(data) {
             <?php echo $value ?>
             </button>
           </li>
-        <?php 
+        <?php
         if ($first_item) {
           $first_year = $value;
         }
 
         $first_item = 0; endforeach ?>
         </li>
-      </ul> 
+      </ul>
 <?php endif ?>
 
 <div id="container"></div>
@@ -166,7 +166,7 @@ var dataPrev = <?php echo json_encode($sales_default_quota) ?>
 var data = <?php echo json_encode($sales_quota_met) ?>
 
 var countries = <?php echo json_encode($quarters_array) ?>
- 
+
 
 var chart = Highcharts.chart('container', {
     chart: {
@@ -277,7 +277,7 @@ years.forEach(function (year) {
     });
 });
 
-    </script> 
+    </script>
 
 
 <!-- #############################################/ -->
@@ -305,7 +305,7 @@ years.forEach(function (year) {
 
 
 <?php if ($years_for_verified): ?>
-  
+
       <ul class="nav nav-pills nav-primary buttons1">
         <?php $first_item = 1; foreach ($years_for_verified as $value): ?>
           <li class="nav-item">
@@ -313,14 +313,14 @@ years.forEach(function (year) {
             <?php echo $value ?>
             </button>
           </li>
-        <?php 
+        <?php
         if ($first_item) {
           $first_year = $value;
         }
 
         $first_item = 0; endforeach ?>
         </li>
-      </ul> 
+      </ul>
 <?php endif ?>
 
 <div id="container1"></div>
@@ -332,7 +332,7 @@ var dataPrev1 = <?php echo json_encode($sales_default_quota) ?>
 var data1 = <?php echo json_encode($sales_quota_met_verified) ?>
 
 var countries1 = <?php echo json_encode($quarters_array) ?>
- 
+
 
 var chart1 = Highcharts.chart('container1', {
     chart: {
@@ -443,7 +443,7 @@ years1.forEach(function (year) {
     });
 });
 
-    </script> 
+    </script>
 
 
 

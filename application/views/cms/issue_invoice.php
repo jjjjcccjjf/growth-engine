@@ -6,7 +6,7 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div class="card"> 
+					<div class="card">
 						<div class="card-header">
 							<h4 class="card-title">
 								<?php echo $title ?>
@@ -21,19 +21,19 @@
 										<p>
 											Date range filter
 										</p>
-									</div> 
+									</div>
 									<div class="col-md-4" style="text-align:center">
 									</div>
 									<div class="col-md-4" style="text-align:left">
 										<p>
 											(X) amount of invoices or less
 										</p>
-									</div> 
+									</div>
 								</div>
 								<form action="" method="GET">
 									<div class="row">
 											<div class="col-md-2">
-													<input type="date" name="from" placeholder="from" class="form-control" 
+													<input type="date" name="from" placeholder="from" class="form-control"
 													value="<?php echo @$_GET['from'] ?>">
 											</div>
 											<div class="col-md-2">
@@ -44,8 +44,8 @@
 												<select name="user_id" class="form-control">
 													<option value="">Owner</option>
 													<?php foreach ($unique_owners as $value): ?>
-														<option value="<?php echo $value->id ?>" 
-															<?php echo (@$_GET['user_id'] == $value->id) ? 'selected="selected"' : "" ?> 
+														<option value="<?php echo $value->id ?>"
+															<?php echo (@$_GET['user_id'] == $value->id) ? 'selected="selected"' : "" ?>
 															>
 															<?php echo $value->name ?>
 														</option>
@@ -56,8 +56,8 @@
 												<select name="client_id" class="form-control">
 													<option value="">Client</option>
 													<?php foreach ($unique_clients_object as $value): ?>
-														<option value="<?php echo $value->id ?>" 
-															<?php echo (@$_GET['client_id'] == $value->id) ? 'selected="selected"' : "" ?> 
+														<option value="<?php echo $value->id ?>"
+															<?php echo (@$_GET['client_id'] == $value->id) ? 'selected="selected"' : "" ?>
 															>
 															<?php echo $value->client_name ?>
 														</option>
@@ -89,6 +89,7 @@
 											<th>Sale date</th>
 											<th>Project Name</th>
 											<th>Sales Rep.</th>
+											<th>Sales Amount</th>
 											<th>Amount left</th>
 											<th>Client Name</th>
 											<!-- <th>Payment Terms</th> -->
@@ -99,27 +100,29 @@
 									</thead>
 									<tfoot>
 										<tr>
-											<th>Sale date</th>
-											<th>Project Name</th>
-											<th>Sales Rep.</th>
-											<th>Amount left</th>
-											<th>Client Name</th>
+											<th></th>
+											<th></th>
+											<th>Totals:</th>
+											<th><?php echo number_format($total_amount, 2) ?></th>
+											<th><?php echo number_format($total_amount_left, 2) ?></th>
+											<th></th>
 											<!-- <th>Payment Terms</th> -->
-											<th>Status</th>
-											<th>Invoice(s) remaining</th>
-											<th>Action</th>
+											<th></th>
+											<th><?php echo $total_invoice_remaining ?>/<?php echo $total_num_of_invoices ?></th>
+											<th></th>
 										</tr>
 									</tfoot>
 									<tbody>
 										 <?php foreach ($sales as $value): ?>
 										<tr>
-										    <td><?php echo $value->created_at ?></td> 
+										    <td><?php echo $value->created_at ?></td>
 											<td><?php echo $value->project_name ?></td>
 											<td><?php echo $value->sales_rep ?></td>
+											<td><?php echo $value->amount ?></td>
 											<td><?php echo $value->amount_left ?></td>
 											<td><?php echo $value->client_name ?></td>
 											<!-- <td><?php echo $value->payment_terms ?></td> -->
-											 <td><?php echo $value->is_verified ?></td> 
+											 <td><?php echo $value->is_verified ?></td>
 											<td><?php echo $value->invoice_remaining ?>/<?php echo $value->num_of_invoices ?></td>
 											<td>{"id": "<?php echo $value->id ?>", "invoice_remaining": "<?php echo $value->invoice_remaining ?>"}</td>
 										</tr>
@@ -147,12 +150,12 @@
         </button>
       </div>
       <div class="modal-body">
-         <form role="form" method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/finance/add') ?>">
+         <form role="form" class="dcheck" method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/finance/add') ?>">
          	<div class="row">
 	            <div class="form-group col-md-6">
 	              <label >Invoice name</label>
-	              <input type="text" class="form-control" name="invoice_name" placeholder="Invoice name">
-	            </div> 
+	              <input type="text" class="form-control" name="invoice_name" placeholder="Invoice name" required>
+	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Project</label>
 	              <select class="form-control" name='sale_id'>
@@ -160,28 +163,28 @@
 	              		<option value="<?php echo $value->id ?>"><?php echo $value->project_name ?></option>
 	              	<?php endforeach ?>
 	              </select>
-	            </div>  
+	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Invoice amount (in peso)</label>
-	              <input type="number" step="0.01" min="0" class="form-control" name="invoice_amount" placeholder="Invoice amount">
+	              <input type="number" step="0.01" min="0" class="form-control" name="invoice_amount" placeholder="Invoice amount" required>
 	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Due Date</label>
-	              <input type="date" class="form-control" name="due_date" placeholder="">
-	            </div> 
+	              <input type="date" class="form-control" name="due_date" placeholder="" required>
+	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Quickbooks ID</label>
 	              <input type="text" class="form-control" name="quickbooks_id" placeholder="Quickbooks ID">
-	            </div> 
+	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Attachments</label>
 	              <input type="file" class="form-control" name="attachments[]" multiple>
-	            </div>  
+	            </div>
          	</div>
           </div>
           <div class="modal-footer card-footer">
             <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-            <input class="btn btn-primary" type="submit" value="Create Invoice">
+            <input class="btn btn-primary dcheck-btn" type="submit" value="Create Invoice">
           </div>
         </form>
       </div>
@@ -192,9 +195,14 @@
 <script>
 $(document).ready(function($) {
 
+	// disable submit block
+	$('.dcheck').on('submit', function(){
+		console.log($('.dcheck-btn').attr('disabled', true).val('Loading...'))
+	})
+
 	$('#basic-datatables').DataTable({
 		  "columnDefs": [ {
-		    "targets": 7,
+		    "targets": 8,
 		    "render": function ( data, type, row, meta ) {
 		      data = JSON.parse(data)
 		      let issue_invoice ='<button class="btn-link btn issue-invoice btn-sm" data-id="' + data.id +'"> <i class="fa fa-pen"></i> Issue Invoice</button>'
@@ -213,7 +221,13 @@ $(document).ready(function($) {
 		    }
 		  },
   		  {
-		    "targets": 5,
+		    "targets": 4,
+		    "render": function ( data, type, row, meta ) {
+		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		    }
+		  },
+  		  {
+		    "targets": 6,
 		    "render": function ( data, type, row, meta ) {
 		       if (parseInt(data)) {
 		      	return '<button class="btn-success btn btn-xs btn-round" title="At least one collection"><i class="fas fa-check"></i> VERIFIED</button>'
@@ -237,7 +251,7 @@ $(document).ready(function($) {
 	<?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
 	swal("Success", "<?php echo $flash['message'] ?>", {
 		icon : "success",
-		buttons: {        			
+		buttons: {
 			confirm: {
 				className : 'btn btn-success'
 			}

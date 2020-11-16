@@ -18,6 +18,8 @@ class Sales extends Admin_core_controller {
   {
     $data['user'] = $this->users_model->get($this->session->id);
     $data['sales'] = $this->sales_model->getSales($this->session->id);
+    $data['total_amount'] = $this->sales_model->sumKey($data['sales'], 'amount');
+
     $data['categories'] = $this->options_model->getSalesCategories();
     $data['clients'] = $this->clients_model->all();
     $this->wrapper('cms/sales', $data);
@@ -104,11 +106,11 @@ class Sales extends Admin_core_controller {
     header('Pragma: no-cache');
     header('Expires: 0');
     // create a file pointer connected to the output stream
-    
+
     $file = fopen('php://output', 'w');
     // send the column headers
     fputcsv($file, array('Date', 'Client', 'Project Name', 'Amount', 'Owner'));
-    
+
     if ($this->session->role == 'sales') {
       $this->db->where('sales.user_id', $this->session->id);
       // $res = $this->sales_model->getSalesForExportThisMonth(true, $this->session->id);
@@ -145,5 +147,5 @@ class Sales extends Admin_core_controller {
     }
     exit();
   }
- 
+
 }

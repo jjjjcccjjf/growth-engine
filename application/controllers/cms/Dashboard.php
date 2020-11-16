@@ -24,10 +24,10 @@ class Dashboard extends Admin_core_controller {
 
     $data['sales_people'] = $this->users_model->getSales();
     $data['have_sales'] = $this->sales_model->haveSales();
-    
+
     $total_collection = $this->finance_model->getTotalCollection($this->session->role, $this->session->id);
     $total_uncollected = $this->finance_model->getTotalUncollected($this->session->role, $this->session->id);
-    $uninvoiced = $this->finance_model->getTotalUninvoiced($this->session->role, $this->session->id);
+    $uninvoiced = $this->finance_model->getTotalUninvoiced($this->session->role, $this->session->id, false); # true = this month false = all time
     $amount_sales_invoice_remaining = $this->finance_model->getTotalSalesInvoicedAmount($this->session->role, $this->session->id);
     $total_uninvoiced = $uninvoiced + ($amount_sales_invoice_remaining);
 
@@ -37,7 +37,7 @@ class Dashboard extends Admin_core_controller {
 
     $data['quarters_array'] = $this->quota_model->getQuartersArrayForGraph(); # should always be included
 
-    $data['years_for_verified'] = $this->quota_model->getYearsFromSales(); 
+    $data['years_for_verified'] = $this->quota_model->getYearsFromSales();
 
     $data['for_user'] = $this->sales_model->getSalesPersonLabel($salesperson_id);
 
@@ -86,5 +86,5 @@ class Dashboard extends Admin_core_controller {
 
     $this->wrapper('cms/index', $data);
   }
- 
+
 }

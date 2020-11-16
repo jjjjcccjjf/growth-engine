@@ -117,7 +117,7 @@ class Sales_model extends Admin_core_model
   //    }
   //    return $this->formatRes([$res])[0];
   // }
-  // 
+  //
   public function deleteUploadedMedia($id)
   {
     $this->db->where('id', $id);
@@ -338,6 +338,7 @@ class Sales_model extends Admin_core_model
       $value->amount_with_vat = round($value->amount * (((double)$value->vat_percent / 100) + 1), 2);
       $value->amount_with_vat_f = number_format($value->amount_with_vat, 2);
       $value->amount_left = number_format(round($value->amount_with_vat - round($this->finance_model->getTotalCollectedWithTax($value->id), 2), 2), 2);
+      $value->amount_left_nf = round($value->amount_with_vat - round($this->finance_model->getTotalCollectedWithTax($value->id), 2), 2);
       // if ($value->vat_percent > 0) {
       //   $value->amount_left = $this->finance_model->getAmountLeft($value->id) * ((int)$value->vat_percent / 100) + 1;
       // } else {
@@ -350,7 +351,7 @@ class Sales_model extends Admin_core_model
       $data[] = $value;
     }
     return $data;
-  } 
+  }
 
   function getAttachments($sale_id, $type)
   {
@@ -369,6 +370,20 @@ class Sales_model extends Admin_core_model
     } else {
       return 'All';
     }
+  }
+
+  public function sumKey($sales, $key)
+  {
+    if (!$sales) {
+      return 0;
+    }
+
+    $res = array_reduce($sales, function($carry, $item) use ($key)
+    {
+      return $carry + $item->$key;
+    });
+
+    return $res;
   }
 
 }

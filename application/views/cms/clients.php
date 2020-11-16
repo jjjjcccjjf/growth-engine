@@ -6,7 +6,7 @@
 			</div> -->
 			<div class="row">
 				<div class="col-md-12">
-					<div class="card"> 
+					<div class="card">
 						<div class="card-header">
 							<h4 class="card-title">
 								Clients list
@@ -64,7 +64,7 @@
         </button>
       </div>
       <div class="modal-body">
-         <form role="form" method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/clients/add') ?>">
+         <form role="form" class="dcheck" method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/clients/add') ?>">
          	<div class="row">
 	            <div class="form-group col-md-12">
 	              <label >Client Name</label>
@@ -76,12 +76,12 @@
                   <small class="form-text text-muted"><b>(Note) Please include:</b> <b>Contact persons</b>, <b>Contact Info</b>, <b>Collection Schedule</b>, and <b>Address</b></small>
 
 	            </div>
-	             
+
          	</div>
           </div>
           <div class="modal-footer card-footer">
             <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-            <input class="btn btn-primary" type="submit" value="Save changes">
+            <input class="btn btn-primary dcheck-btn" type="submit" value="Save changes">
           </div>
         </form>
       </div>
@@ -128,8 +128,13 @@
 <script>
 $(document).ready(function($) {
 
+	// disable submit block
+	$('.dcheck').on('submit', function(){
+		console.log($('.dcheck-btn').attr('disabled', true).val('Loading...'))
+	})
+	// End disable submit block
 	$('#basic-datatables').DataTable({
-		  "columnDefs": [ 
+		  "columnDefs": [
 		  {
 		    "targets": 3,
 		    "render": function ( data, type, row, meta ) {
@@ -159,7 +164,7 @@ $(document).ready(function($) {
 	<?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
 	swal("Success", "<?php echo $flash['message'] ?>", {
 		icon : "success",
-		buttons: {        			
+		buttons: {
 			confirm: {
 				className : 'btn btn-success'
 			}

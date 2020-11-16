@@ -6,7 +6,7 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div class="card"> 
+					<div class="card">
 						<div class="card-header">
 							<h4 class="card-title">
 								Sales list
@@ -30,13 +30,13 @@
 									</thead>
 									<tfoot>
 										<tr>
-											<th>Project Name</th>
-											<th>Amount</th>
-											<th>Client Name</th>
-											<th>Payment Terms</th>
-											<th>Status</th>
-											<th>Sale Date</th>
-											<th>Action</th>
+											<th>Totals:</th>
+											<th><?php echo @number_format($total_amount, 2) ?></th>
+											<th></th>
+											<th></th>
+											<th></th>
+											<th></th>
+											<th></th>
 										</tr>
 									</tfoot>
 									<tbody>
@@ -74,7 +74,7 @@
         </button>
       </div>
       <div class="modal-body">
-         <form role="form" method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/sales/add') ?>">
+         <form role="form" class="dcheck" method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/sales/add') ?>">
          	<div class="row">
 	            <div class="form-group col-md-6">
 	              <label >Project Name</label>
@@ -94,7 +94,7 @@
 	            </div>
 	            <div class="form-group col-md-3">
 	              <label >Amount (in peso)</label>
-	              <input type="number" step="0.01" min="0" class="form-control" name="amount" placeholder="Amount">
+	              <input type="number" step="0.01" min="0" class="form-control" name="amount" placeholder="Amount" required="required">
 	            </div>
 	            <div class="form-group col-md-3">
 	              <label >VAT (in percent %)</label>
@@ -116,12 +116,12 @@
 	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Number of Invoices</label>
-	              <input type="number" class="form-control" name="num_of_invoices" min="1" placeholder="Number of Invoices">
-	            </div> 
+	              <input type="number" class="form-control" name="num_of_invoices" min="1" placeholder="Number of Invoices" required>
+	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Attachments</label>
 	              <input type="file" class="form-control" name="attachments[]" multiple>
-	            </div>  
+	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Category</label>
 	              <select class="form-control" name='category'>
@@ -129,11 +129,11 @@
 	              		<option><?php echo $value ?></option>
 	              	<?php endforeach ?>
 	              </select>
-	            </div> 
+	            </div>
 
 	            <div class="form-group col-md-6">
 	              <label >Sale date</label>
-	              <input type="date" class="form-control" name="created_at" placeholder="Sale date">
+	              <input type="date" class="form-control" name="created_at" placeholder="Sale date" required="required">
                   <!-- <small class="form-text text-muted">Example: 12 months</small> -->
 	            </div>
                 <input type="hidden" class="form-control" name="user_id" value="<?php echo $this->session->id ?>">
@@ -141,7 +141,7 @@
           </div>
           <div class="modal-footer card-footer">
             <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-            <input class="btn btn-primary" type="submit" value="Save changes">
+            <input class="btn dcheck-btn btn-primary" type="submit" value="Save changes">
           </div>
         </form>
       </div>
@@ -152,8 +152,14 @@
 <script>
 $(document).ready(function($) {
 
+	// disable submit block
+	$('.dcheck').on('submit', function(){
+		console.log($('.dcheck-btn').attr('disabled', true).val('Loading...'))
+	})
+	// End disable submit block
+
 	$('#basic-datatables').DataTable({
-		  "columnDefs": [ 
+		  "columnDefs": [
 		  {
 		    "targets": 6,
 		    "render": function ( data, type, row, meta ) {
@@ -186,7 +192,7 @@ $(document).ready(function($) {
 	<?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
 	swal("Success", "<?php echo $flash['message'] ?>", {
 		icon : "success",
-		buttons: {        			
+		buttons: {
 			confirm: {
 				className : 'btn btn-success'
 			}

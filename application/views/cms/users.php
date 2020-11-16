@@ -77,7 +77,7 @@
         </button>
       </div>
       <div class="modal-body">
-         <form role="form" method="post" enctype="multipart/form-data" id="edit-form">
+         <form role="form" class="dcheck" method="post" enctype="multipart/form-data" id="edit-form">
          	<div class="row">
 	            <div class="form-group col-md-6">
 	              <label >Name</label>
@@ -98,17 +98,17 @@
 	              		<option><?php echo $value ?></option>
 	              	<?php endforeach ?>
 	              </select>
-	            </div> 
+	            </div>
 	            <div class="form-group col-md-6">
 	              <label >Profile Picture</label>
 	              <input type="file" class="form-control" name="profile_pic_filename">
-	            </div> 
+	            </div>
 	            <div class="form-group col-md-6">
 	            	<img src="" id="pfp" style="width: 100px" onerror="this.src='<?php echo base_url('public/admin/') ?>/assets/img/optimind-logo.png'">
-	            </div> 
+	            </div>
 	            <div class="form-group col-md-12">
 	            	<hr>
-	            </div> 
+	            </div>
 	            <div class="form-group col-md-6">
 	            	<label>New Password</label>
 	            	<input type="password" class="form-control" name="password">
@@ -121,7 +121,7 @@
           </div>
           <div class="modal-footer card-footer">
             <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-            <input class="btn btn-primary" type="submit" value="Save changes">
+            <input class="btn btn-primary dcheck-btn" type="submit" value="Save changes">
           </div>
         </form>
       </div>
@@ -132,18 +132,23 @@
 
 $(document).ready(function() {
 
+		// disable submit block
+		$('.dcheck').on('submit', function(){
+			console.log($('.dcheck-btn').attr('disabled', true).val('Loading...'))
+		})
+
     //Updating
     $('html').on('click', '.edit-row', function(){
       $('#edit-form')[0].reset() // reset the form
       const payload = $(this).data('payload')
       $('#staticBackdropLabel').text('Editing ' + payload.name)
-  
+
       $('input[name=name]').removeAttr('required')
       $('input[name=email]').removeAttr('required')
       $('input[name=profile_pic_filename]').removeAttr('required')
       $('input[name=password]').removeAttr('required')
       $('input[id=confirm_password]').removeAttr('required')
-  
+
 
   	  $('select[name=role_title]').removeAttr('required')
   	  $('select[name=role_title]').attr('disabled', true)
@@ -152,14 +157,14 @@ $(document).ready(function() {
       $('input[name=name]').val(payload.name)
       $('input[name=email]').val(payload.email)
       $('input[name=contact_num]').val(payload.contact_num)
-      
+
       $('form').attr('action', base_url + 'cms/users/update/' + payload.id)
 
       $('#pfp').attr('src', payload.profile_pic_path)
-      
+
       $('#staticBackdrop').modal()
     })
-  
+
     // Adding
     $('.add-btn').on('click', function() {
       $('#edit-form')[0].reset() // reset the form
@@ -177,28 +182,28 @@ $(document).ready(function() {
       $('form').attr('action', base_url + 'cms/users/add')
       $('#staticBackdrop').modal()
     })
-  
+
     //Deleting
     // $('.btn-delete').on('click', function(){
-  
+
     //   let p = prompt("Are you sure you want to delete this? Type DELETE to continue", "");
     //   if (p === 'DELETE') {
     //     const id = $(this).data('id')
-  
+
     //     invokeForm(base_url + 'cms/users/delete', {id: id});
     //   }
-  
+
     // })
-  
+
     $('#edit-form').on('submit', function (){
-  
+
       let p = $('input[name=password]').val()
       let cp = $('input[id=confirm_password]').val()
-  
+
     if (!(p === cp)) {
       swal("Passwords don't match", "Please try again or leave them blank when adding a new user", {
         icon : "error",
-        buttons: {              
+        buttons: {
           confirm: {
             className : 'btn btn-danger'
           }
@@ -206,7 +211,7 @@ $(document).ready(function() {
       });
         return false
       }
-  
+
     })
 
  $('html').on('click', '.btn-delete', function(e) {
@@ -219,7 +224,7 @@ $(document).ready(function() {
             visible: true,
             text : 'No, cancel!',
             className: 'btn btn-danger'
-          },              
+          },
           confirm: {
             text : 'Yes, delete ' + $(this).data('payload').name,
             className : 'btn btn-success'
@@ -248,14 +253,14 @@ $(document).ready(function() {
         }
       });
     })
-  
+
 })
 
 
 <?php $flash = $this->session->flash_msg; if ($flash['color'] == 'green'): ?>
 swal("Success", "<?php echo $flash['message'] ?>", {
 	icon : "success",
-	buttons: {        			
+	buttons: {
 		confirm: {
 			className : 'btn btn-success'
 		}

@@ -26,7 +26,7 @@ class Finance_model extends Admin_core_model
   //    }
   //    return $this->formatRes([$res])[0];
   // }
-  // 
+  //
   function getUninvoicedForExportThisMonth()
   {
     $this->db->where('invoice.collected_date IS NOT NULL');
@@ -36,8 +36,8 @@ class Finance_model extends Admin_core_model
     $this->db->join('invoice', 'sales.id = invoice.sale_id', 'left');
     return $this->db->get('sales')->result();
   }
-  
-  
+
+
   function getSingleInvoice($id)
   {
     $this->db->where('id', $id);
@@ -71,7 +71,7 @@ class Finance_model extends Admin_core_model
   }
 
   function updateInvoice($invoice_id, $data)
-  { 
+  {
     if (!$data['collected_date']) {
       unset($data['collected_date']);
     }
@@ -114,8 +114,8 @@ class Finance_model extends Admin_core_model
   //    }
   //    return $this->formatRes([$res])[0];
   // }
-  // 
-  // 
+  //
+  //
   public function getInvoiceRemaining($sale_id){
     $sales = $this->db->get_where('sales', ['id' => $sale_id])->row()->num_of_invoices;
     $this->db->where('sale_id', $sale_id);
@@ -170,7 +170,7 @@ class Finance_model extends Admin_core_model
     }
 
     # / Delete attachments on invoice
-    
+
     # Delete notif invoice
     $this->db->where('meta_id', $id);
     $this->db->where('type', 'invoice');
@@ -240,11 +240,11 @@ class Finance_model extends Admin_core_model
       $value->attachments = $this->getAttachments($value->id, 'invoice');
       $value->attachment_count = count($value->attachments);
       $value->collected_amount_w_tax = $value->collected_amount + $value->withholding_tax_amount;
-      $value->project_name = $this->db->get_where('sales', ['id' => $value->sale_id])->row()->project_name;
+      $value->project_name = @$this->db->get_where('sales', ['id' => $value->sale_id])->row()->project_name;
       $data[] = $value;
     }
     return $data;
-  } 
+  }
 
   function getVerifiedStatus($sale_id)
   {
@@ -271,7 +271,7 @@ class Finance_model extends Admin_core_model
         $this->db->where("0");
       }
       break;
-      
+
       case 'finance':
       case 'superadmin':
       default:
@@ -279,18 +279,24 @@ class Finance_model extends Admin_core_model
     }
 
     if ($current_month) {
-      $this->db->where('MONTH(collected_date) = MONTH(CURRENT_DATE())');
+      $this->db->where('MONTH(collected_date) = MONTH(CURRENT_DATE()) AND YEAR(collected_date) = YEAR(CURRENT_DATE())');
     }
+    // var_dump($invoice_amount_instead); die();
     if ($invoice_amount_instead) {
       $this->db->select_sum('invoice_amount', 'collected_amount');
     } else {
-      $this->db->select_sum('collected_amount', 'collected_amount');
+      $this->db->select('SUM(collected_amount) + SUM(withholding_tax_amount) as collected_amount');
     }
-    return $this->db->get('invoice')->row()->collected_amount;
+    $res = $this->db->get('invoice')->row()->collected_amount;
+    // var_dump($res,$this->db->last_query()); die();
+    return $res;
   }
 
   function getTotalUncollected($role, $id) {
-      return $this->getTotalInvoiceAmount($role, $id) - $this->getTotalCollection($role, $id, false, true);
+    // var_dump($role, $id); die();
+      // var_dump($this->getTotalInvoiceAmount($role, $id) , $this->getTotalCollection($role, $id, true, false)); die();
+      // return $this->getTotalInvoiceAmount($role, $id) - $this->getTotalCollection($role, $id, false, true); #orig
+      return $this->getTotalInvoiceAmount($role, $id) - $this->getTotalCollection($role, $id, true, false);
   }
 
   /**
@@ -299,16 +305,20 @@ class Finance_model extends Admin_core_model
    * @param  [type] $id   [description]
    * @return [type]       [description]
    */
-  function getTotalUninvoiced($role, $id) {
+  function getTotalUninvoiced($role, $id, $current_month = true) {
       switch ($role) {
         case 'sales':
         $this->db->where('sales.user_id', $id);
         break;
-        
+
         case 'finance':
         case 'superadmin':
         default:
         break;
+      }
+
+      if ($current_month) {
+        $this->db->where('MONTH(collected_date) = MONTH(CURRENT_DATE()) AND YEAR(collected_date) = YEAR(CURRENT_DATE())');
       }
 
       $this->db->select_sum('sales.amount', 'amount');
@@ -330,7 +340,7 @@ class Finance_model extends Admin_core_model
           $this->db->where("1");
         }
         break;
-        
+
         case 'finance':
         case 'superadmin':
         default:
@@ -352,8 +362,8 @@ class Finance_model extends Admin_core_model
           foreach ($res as $res_q) {
             if ($key == $res_q->sale_id) {
                 $unique_sale_ids[$key] += $res_q->invoice_amount;
-            }          
-          }        
+            }
+          }
       }
 
       if (@$sale_ids) {
@@ -370,7 +380,7 @@ class Finance_model extends Admin_core_model
       return $amount_remaining_sum;
   }
 
-  function getTotalInvoiceAmount($role, $id)
+  function getTotalInvoiceAmount($role, $id, $current_month = true)
   {
     switch ($role) {
       case 'sales':
@@ -383,15 +393,21 @@ class Finance_model extends Admin_core_model
         $this->db->where("0");
       }
       break;
-      
+
       case 'finance':
       case 'superadmin':
       default:
       break;
     }
 
+    if ($current_month) {
+      $this->db->where('MONTH(due_date) = MONTH(CURRENT_DATE()) AND YEAR(due_date) = YEAR(CURRENT_DATE())');
+    }
+
     $this->db->select_sum('invoice_amount', 'invoice_amount');
-    return $this->db->get('invoice')->row()->invoice_amount;
+    $res = $this->db->get('invoice')->row()->invoice_amount;
+    // var_dump($res, $this->db->last_query()); die();
+    return $res;
   }
 
   function formatInvoiceRes($res)
@@ -408,7 +424,7 @@ class Finance_model extends Admin_core_model
       $data[] = $value;
     }
     return $data;
-  } 
+  }
 
   function getAttachments($sale_id, $type)
   {
@@ -423,7 +439,7 @@ class Finance_model extends Admin_core_model
   {
     $this->db->insert('invoice', $data);
     $last_id = $this->db->insert_id();
-    
+
     if ($last_id) {
       $this->notifications_model->createNotif($last_id, 'invoice');
     }
@@ -509,12 +525,32 @@ class Finance_model extends Admin_core_model
 
       if (@$_GET['invoice_remaining']) {
         $this->db->having('(sales.num_of_invoices - COUNT(invoice.id)) <= ' . $_GET['invoice_remaining']);
-      }      
+      }
       if (@$_GET['status'] == 'verified') {
         $this->db->where('invoice.collected_date IS NOT NULL');
       } else if (@$_GET['status'] == 'unverified') {
         $this->db->where('invoice.collected_date IS NULL');
       }
+    }
+  }
+
+  function filtersInvoices()
+  {
+    if (@$_GET['from']) {
+      $this->db->where('invoice.due_date >= "' . $_GET['from']. '"');
+    }
+    if (@$_GET['to']) {
+      $this->db->where('invoice.due_date <= "' . $_GET['to']. '"');
+    }
+  }
+
+  function filtersInvoicesByCollectedDate()
+  {
+    if (@$_GET['from']) {
+      $this->db->where('invoice.collected_date >= "' . $_GET['from']. '"');
+    }
+    if (@$_GET['to']) {
+      $this->db->where('invoice.collected_date <= "' . $_GET['to']. '"');
     }
   }
 
