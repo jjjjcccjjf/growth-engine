@@ -86,6 +86,7 @@
 								<table id="basic-datatables" class="display table table-striped table-hover" >
 									<thead>
 										<tr>
+											<th>Sale date</th>
 											<th>Project Name</th>
 											<th>Sales Rep.</th>
 											<th>Amount left</th>
@@ -93,12 +94,12 @@
 											<!-- <th>Payment Terms</th> -->
 											<th>Status</th>
 											<th>Invoice(s) remaining</th>
-											<!-- <th>Date created</th> -->
 											<th>Action</th>
 										</tr>
 									</thead>
 									<tfoot>
 										<tr>
+											<th>Sale date</th>
 											<th>Project Name</th>
 											<th>Sales Rep.</th>
 											<th>Amount left</th>
@@ -106,13 +107,13 @@
 											<!-- <th>Payment Terms</th> -->
 											<th>Status</th>
 											<th>Invoice(s) remaining</th>
-											<!-- <th>Date created</th> -->
 											<th>Action</th>
 										</tr>
 									</tfoot>
 									<tbody>
 										 <?php foreach ($sales as $value): ?>
 										<tr>
+										    <td><?php echo $value->created_at ?></td> 
 											<td><?php echo $value->project_name ?></td>
 											<td><?php echo $value->sales_rep ?></td>
 											<td><?php echo $value->amount_left ?></td>
@@ -120,7 +121,6 @@
 											<!-- <td><?php echo $value->payment_terms ?></td> -->
 											 <td><?php echo $value->is_verified ?></td> 
 											<td><?php echo $value->invoice_remaining ?>/<?php echo $value->num_of_invoices ?></td>
-											<!-- <td><?php echo $value->created_at ?></td> -->
 											<td>{"id": "<?php echo $value->id ?>", "invoice_remaining": "<?php echo $value->invoice_remaining ?>"}</td>
 										</tr>
 										 <?php endforeach ?>
@@ -194,7 +194,7 @@ $(document).ready(function($) {
 
 	$('#basic-datatables').DataTable({
 		  "columnDefs": [ {
-		    "targets": 6,
+		    "targets": 7,
 		    "render": function ( data, type, row, meta ) {
 		      data = JSON.parse(data)
 		      let issue_invoice ='<button class="btn-link btn issue-invoice btn-sm" data-id="' + data.id +'"> <i class="fa fa-pen"></i> Issue Invoice</button>'
@@ -207,13 +207,13 @@ $(document).ready(function($) {
 		    },
 		  },
   		  {
-		    "targets": 2,
+		    "targets": 3,
 		    "render": function ( data, type, row, meta ) {
 		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		    }
 		  },
   		  {
-		    "targets": 4,
+		    "targets": 5,
 		    "render": function ( data, type, row, meta ) {
 		       if (parseInt(data)) {
 		      	return '<button class="btn-success btn btn-xs btn-round" title="At least one collection"><i class="fas fa-check"></i> VERIFIED</button>'
