@@ -401,7 +401,7 @@ class Finance_model extends Admin_core_model
     }
 
     if ($current_month) {
-      $this->db->where('MONTH(due_date) = MONTH(CURRENT_DATE()) AND YEAR(due_date) = YEAR(CURRENT_DATE())');
+      $this->db->where('MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())');
     }
 
     $this->db->select_sum('invoice_amount', 'invoice_amount');
@@ -537,10 +537,10 @@ class Finance_model extends Admin_core_model
   function filtersInvoices()
   {
     if (@$_GET['from']) {
-      $this->db->where('invoice.due_date >= "' . $_GET['from']. '"');
+      $this->db->where('invoice.created_at >= "' . $_GET['from']. '"');
     }
     if (@$_GET['to']) {
-      $this->db->where('invoice.due_date <= "' . $_GET['to']. '"');
+      $this->db->where('invoice.created_at <= "' . $_GET['to']. '"');
     }
   }
 
