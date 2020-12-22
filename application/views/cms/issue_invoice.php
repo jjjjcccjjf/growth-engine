@@ -207,10 +207,12 @@ $(document).ready(function($) {
 		      data = JSON.parse(data)
 		      let issue_invoice ='<button class="btn-link btn issue-invoice btn-sm" data-id="' + data.id +'"> <i class="fa fa-pen"></i> Issue Invoice</button>'
 		      let view = '<button class="btn btn-link btn-sm"><a target="_blank" href="'+base_url + 'cms/sales/view/' + data.id+'" title="View"><i class="fas fa-book"></i> Details</a></button>'
+					let del = '<br><a href="javascript:void(0)" class="btn-delete btn-sm" data-id="'+ data.id +'" title="Delete"><i class="fa fa-trash"></i> Delete</a>'
 		      let stringy = view
 		      if (data.invoice_remaining > 0) {
 		      	stringy = stringy + issue_invoice
 		      }
+					stringy = stringy + del
 		      return stringy;
 		    },
 		  },
@@ -258,5 +260,47 @@ $(document).ready(function($) {
 		},
 	});
 	<?php endif; ?>
+
+
+		 $('html').on('click', '.btn-delete', function(e) {
+	      swal({
+	        title: 'Are you sure you want to delete this?',
+	        text: "You won't be able to revert this!",
+	        type: 'warning',
+	        icon: 'warning',
+	        buttons:{
+	          confirm: {
+	            text : 'Yes, delete this',
+	            className : 'btn btn-success'
+	          },
+	          cancel: {
+	            visible: true,
+	            text : 'No, cancel!',
+	            className: 'btn btn-danger'
+	          }
+	        }
+	      }).then((willDelete) => {
+	        if (willDelete) {
+	          // swal("Sale deleted successfully", {
+	          //   icon: "success",
+	          //   buttons : {
+	          //     confirm : {
+	          //       className: 'btn btn-success'
+	          //     }
+	          //   }
+	          // });
+
+	          invokeForm(base_url + 'cms/sales/delete', {id: $(this).data('id'), from: 'issue_invoice'});
+	        } else {
+	          swal("Operation cancelled", {
+	            buttons : {
+	              confirm : {
+	                className: 'btn btn-success'
+	              }
+	            }
+	          });
+	        }
+	      });
+	    })
 });
 </script>

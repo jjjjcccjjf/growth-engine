@@ -71,7 +71,12 @@ class Sales extends Admin_core_controller {
     } else {
       $this->session->set_flashdata('flash_msg', ['message' => 'Error deleting sale', 'color' => 'red']);
     }
-    redirect('cms/sales');
+    if ($this->input->post('from') == 'issue_invoice') {
+      redirect('cms/finance/issue_invoice_all');
+    } else {
+      redirect('cms/sales');
+    }
+    die();
   }
 
   public function add_attachments($sale_id)

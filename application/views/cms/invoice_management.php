@@ -42,6 +42,9 @@
 										<div class="col-md-1">
 												<input type="submit" value="Apply" class="btn btn-info btn-sm">
 										</div>
+										<div class="col-md-1">
+											<a href="<?php echo base_url('cms/finance/export?') . $this->input->server('QUERY_STRING') ?>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> Export Collected (including current filters)</a>
+										</div>
 								</div>
 							</form>
 

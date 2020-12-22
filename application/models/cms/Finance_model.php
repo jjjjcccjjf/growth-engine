@@ -30,10 +30,13 @@ class Finance_model extends Admin_core_model
   function getUninvoicedForExportThisMonth()
   {
     $this->db->where('invoice.collected_date IS NOT NULL');
-    $this->db->select('invoice.due_date as _created_at, clients.client_name as _client_name, sales.project_name as _project_name, invoice.invoice_name as _invoice_name, invoice.collected_amount as _collected_amount, users.name as _owner');
+    $this->db->select('invoice.collected_date as _created_at, clients.client_name as _client_name, sales.project_name as _project_name, invoice.invoice_name as _invoice_name, invoice.collected_amount as _collected_amount, users.name as _owner');
     $this->db->join('clients', 'clients.id = sales.client_id', 'left');
     $this->db->join('users', 'users.id = sales.user_id', 'left');
     $this->db->join('invoice', 'sales.id = invoice.sale_id', 'left');
+    $this->db->order_by('invoice.collected_date', 'asc');
+    $this->db->order_by('clients.client_name', 'asc');
+    $this->db->order_by('sales.project_name', 'asc');
     return $this->db->get('sales')->result();
   }
 
