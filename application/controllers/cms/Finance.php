@@ -57,13 +57,15 @@ class Finance extends Admin_core_controller {
   {
     if(@$_GET['show_all']) { # pag naka show all. pag default lang use this WHERE
        $data['title'] = 'All Invoices';
+       $this->db->where('(collected_amount IS NULL OR collected_amount = 0)');
     } else {
        $data['title'] = 'Uncollected Invoices';
         $this->db->where('MONTH(invoice.due_date) = MONTH(CURRENT_DATE()) AND (invoice.collected_date IS NULL OR invoice.collected_date = "0000-00-00 00:00:00")');
     }
     $this->finance_model->filtersInvoices();
+    $this->db->order_by('age', 'desc');
     $data['invoices'] = $this->finance_model->getInvoices();
-
+    // var_dump($data['invoices']); die();
     $data['total_invoice_amount'] = $this->sales_model->sumKey($data['invoices'], 'invoice_amount');
 
     // var_dump($data['invoices']); die();
@@ -77,9 +79,17 @@ class Finance extends Admin_core_controller {
   public function invoice_management_collected()
   {
 
+    if(@$_GET['all_time']) { # pag naka show all. pag default lang use this WHERE
+       $data['title'] = 'Collected Invoices (All time)';
+    } else {
+       $data['title'] = 'Collected Invoices (This month only)';
+        $this->db->where('MONTH(invoice.collected_date) = MONTH(CURRENT_DATE()) AND YEAR(invoice.collected_date) = YEAR(CURRENT_DATE())');
+    }
+
     $this->db->where('collected_date IS NOT NULL');
     $data['title'] = 'Collected Invoices';
     $this->finance_model->filtersInvoicesByCollectedDate();
+    $this->db->order_by('collected_date', 'desc');
     $data['invoices'] = $this->finance_model->getInvoices();
     $data['total_invoice_amount'] = $this->sales_model->sumKey($data['invoices'], 'invoice_amount');
     $data['total_collected_amount'] = $this->sales_model->sumKey($data['invoices'], 'collected_amount');
@@ -257,6 +267,18 @@ class Finance extends Admin_core_controller {
     }
     if (@$_GET['to']) {
       $this->db->where('invoice.collected_date <= "' . $_GET['to']. '"');
+    }
+    // if (@$_GET['show_all']) {
+    //   $this->db->where('(invoice.collected_amount IS NULL OR invoice.collected_amount = 0)');
+    // }
+    //
+    //
+    if(@$_GET['all_time']) { # pag naka show all. pag default lang use this WHERE
+       //
+    }
+
+    if (@$_GET['collected'] && !@$_GET['all_time']) {
+       $this->db->where('MONTH(invoice.collected_date) = MONTH(CURRENT_DATE()) AND YEAR(invoice.collected_date) = YEAR(CURRENT_DATE())');
     }
     $res = $this->finance_model->getUninvoicedForExportThisMonth();
 

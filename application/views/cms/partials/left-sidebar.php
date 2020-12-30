@@ -18,7 +18,7 @@
                 </span>
               </a>
               <!-- <div class="clearfix"></div> -->
-<!-- 
+<!--
               <div class="collapse in" id="collapseExample">
                 <ul class="nav">
                   <li>
@@ -46,7 +46,7 @@
               <a href="<?php echo base_url('cms/notifications') ?>">
                 <i class="fas fa-bell"></i>
                 <p>Notifications</p>
-              </a> 
+              </a>
             </li>
           </ul>
 
@@ -77,7 +77,7 @@
               <a href="<?php echo base_url('cms/dashboard') ?><?php echo ($this->session->role == 'sales') ? '?u=' . $this->session->id : '' ?>">
                 <i class="fas fa-home"></i>
                 <p>Dashboard</p>
-              </a> 
+              </a>
             </li>
 
             <?php if (in_array($this->session->role, ['superadmin'])): ?>
@@ -85,8 +85,8 @@
               <a href="<?php echo base_url('cms/users') ?>">
                 <i class="fas fa-users"></i>
                 <p>Users & Quota Management</p>
-              </a> 
-            </li> 
+              </a>
+            </li>
             <?php endif ?>
 
             <?php if (in_array($this->session->role, ['superadmin', 'sales'])): ?>
@@ -94,7 +94,7 @@
               <a href="<?php echo base_url('cms/clients') ?>">
                 <i class="fas fa-clipboard"></i>
                 <p>Clients</p>
-              </a> 
+              </a>
             </li>
             <?php endif ?>
 
@@ -103,7 +103,7 @@
               <a href="<?php echo base_url('cms/sales') ?>">
                 <i class="fas fa-book"></i>
                 <p>Sales Management</p>
-              </a> 
+              </a>
             </li>
             <?php endif ?>
 
@@ -112,28 +112,28 @@
               <a href="<?php echo base_url('cms/finance/issue_invoice') ?>">
                 <i class="fas fas fa-money-check-alt"></i>
                 <p>Pending Invoices</p>
-              </a> 
+              </a>
             </li>
             <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && $this->uri->segment(3) == 'issue_invoice_all' ? 'active' : '' ?>">
               <a href="<?php echo base_url('cms/finance/issue_invoice_all') ?>">
                 <i class="fas fas fa-money-check-alt"></i>
                 <p>List of Sales</p>
-              </a> 
+              </a>
             </li>
             <?php endif ?>
-            
+
             <?php if (in_array($this->session->role, ['collection', 'finance', 'superadmin'])): ?>
             <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && ($this->uri->segment(3) == 'invoice_management')  ? 'active' : '' ?>">
-              <a href="<?php echo base_url('cms/finance/invoice_management') ?>">
+              <a href="<?php echo base_url('cms/finance/invoice_management') ?>?show_all=1">
                 <i class="fas fas fas fa-list-ul"></i>
                 <p>Uncollected Invoices</p>
-              </a> 
+              </a>
             </li>
             <li class="nav-item <?php echo $this->uri->segment(1) == 'cms' && $this->uri->segment(2) == 'finance' && ($this->uri->segment(3) == 'invoice_management_collected')  ? 'active' : '' ?>">
               <a href="<?php echo base_url('cms/finance/invoice_management_collected') ?>">
                 <i class="fas fas fas fa-list-ul"></i>
                 <p>Collected Invoices</p>
-              </a> 
+              </a>
             </li>
             <?php endif ?>
 
@@ -373,7 +373,7 @@
               </div>
             </li>
             <li class="mx-4 mt-2">
-              <a href="http://themekita.com/atlantis-bootstrap-dashboard.html" class="btn btn-primary btn-block"><span class="btn-label mr-2"> <i class="fa fa-heart"></i> </span>Buy Pro</a> 
+              <a href="http://themekita.com/atlantis-bootstrap-dashboard.html" class="btn btn-primary btn-block"><span class="btn-label mr-2"> <i class="fa fa-heart"></i> </span>Buy Pro</a>
             </li> -->
           </ul>
         </div>

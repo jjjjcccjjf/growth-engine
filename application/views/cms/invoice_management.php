@@ -29,6 +29,20 @@
 													</a>
 												<?php endif; ?>
 											<?php endif; ?>
+
+											<?php if ($this->uri->segment(3) == 'invoice_management_collected'): ?>
+												<?php if (@$_GET['all_time']): ?>
+													(All time) &nbsp;
+													<a href="<?php echo current_url()?>">
+														<button type="button" class="add-new btn btn-sm btn-info"><i class="fa fa-eye"></i> Show This Month only</button>
+													</a>
+												<?php else: ?>
+													(This month) &nbsp;
+													<a href="<?php echo current_url() . '?all_time=1'?>">
+														<button type="button" class="add-new btn btn-sm btn-danger"><i class="fa fa-eye"></i> Show All Time</button>
+													</a>
+												<?php endif; ?>
+											<?php endif; ?>
 											</p>
 										</div>
 										<div class="col-md-2">
@@ -42,8 +56,14 @@
 										<div class="col-md-1">
 												<input type="submit" value="Apply" class="btn btn-info btn-sm">
 										</div>
+										<?php if (isset($_GET['show_all'])): ?>
+											<input type="hidden" name="show_all" value="<?php echo @$_GET['show_all'] ?>">
+										<?php endif; ?>
 										<div class="col-md-1">
-											<a href="<?php echo base_url('cms/finance/export?') . $this->input->server('QUERY_STRING') ?>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> Export Collected (including current filters)</a>
+											<?php if ($this->uri->segment(3) == 'invoice_management_collected'){
+												$sq_collected = '&collected=1';
+											} ?>
+											<a href="<?php echo base_url('cms/finance/export?') . $this->input->server('QUERY_STRING') . @$sq_collected ?>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> Export Collected (including current filters)</a>
 										</div>
 								</div>
 							</form>
@@ -63,6 +83,7 @@
 												<th>Collected date</th>
 											<?php else: ?>
 												<th>Due date</th>
+												<th>Age</th>
 											<?php endif; ?>
 											<th>Status</th>
 											<th>Quickbooks ID</th>
@@ -79,6 +100,7 @@
 												<th><?php echo @number_format($total_collected_amount, 2) ?></th>
 												<th></th>
 											<?php else: ?>
+												<th></th>
 												<th></th>
 											<?php endif; ?>
 											<th></th>
@@ -98,6 +120,7 @@
 												<td><?php echo $value->collected_date ?></td>
 											<?php else: ?>
 												<td><?php echo $value->due_date ?></td>
+												<td><?php echo $value->age ?></td>
 											<?php endif; ?>
 											<td><?php echo json_encode(['collected_date' => $value->collected_date, 'sent_date' => $value->sent_date]) ?></td>
 											<td><?php echo $value->quickbooks_id ?></td>
@@ -209,8 +232,9 @@ $(document).ready(function($) {
 	    invoices[<?php echo $value->id ?>] = "<?php echo $value->invoice_name ?>"
 	<?php endforeach; endif; ?>
 	$('#basic-datatables').DataTable({
+		"order": [],
 		  "columnDefs": [ {
-		    "targets": 8 <?php echo (!@$collected_view) ? '- 1': ''; ?>,
+		    "targets": 8 <?php echo (!@$collected_view) ? '': ''; ?>,
 		    "render": function ( data, type, row, meta ) {
 		    	data = JSON.parse(data)
 
@@ -241,20 +265,22 @@ $(document).ready(function($) {
 		    	}
 		    }
 		  },
+			<?php if(@$collected_view): ?>
 		  {
-		    "targets": 3 <?php echo (!@$collected_view) ? '- 1': ''; ?>,
+		    "targets": 3 <?php echo (!@$collected_view) ? '': ''; ?>,
+		    "render": function ( data, type, row, meta ) {
+		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		    }
+		  },
+			<?php endif; ?>
+		  {
+		    "targets": 2 <?php echo (!@$collected_view) ? '': ''; ?>,
 		    "render": function ( data, type, row, meta ) {
 		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		    }
 		  },
 		  {
-		    "targets": 2 <?php echo (!@$collected_view) ? '- 1': ''; ?>,
-		    "render": function ( data, type, row, meta ) {
-		      return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		    }
-		  },
-		  {
-		    "targets": 5 <?php echo (!@$collected_view) ? '- 1': ''; ?>,
+		    "targets": 5 <?php echo (!@$collected_view) ? '': ''; ?>,
 		    "render": function ( data, type, row, meta ) {
 		    	data = JSON.parse(data)
 

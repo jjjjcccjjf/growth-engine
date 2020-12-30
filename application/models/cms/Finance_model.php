@@ -14,6 +14,7 @@ class Finance_model extends Admin_core_model
 
   public function all()
   {
+    $this->db->select('id, invoice_name, sale_id, invoice_amount, collected_amount, withholding_tax_amount, collected_date, sent_date, received_by, due_date, quickbooks_id, created_at, updated_at, DATEDIFF(CURDATE(), due_date) AS age');
     $res = $this->db->get($this->table)->result();
     return $this->formatRes($res);
   }

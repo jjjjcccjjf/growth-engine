@@ -201,6 +201,7 @@ $(document).ready(function($) {
 	})
 
 	$('#basic-datatables').DataTable({
+		"order": [],
 		  "columnDefs": [ {
 		    "targets": 8,
 		    "render": function ( data, type, row, meta ) {
