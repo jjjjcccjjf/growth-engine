@@ -69,7 +69,7 @@
 											</div>
 											<div class="col-md-2">
 												<select name="status" class="form-control">
-													<option>Status</option>
+													<option value="">Status</option>
 													<option value="verified" <?php echo (@$_GET['status'] == 'verified') ? 'selected="selected"' : "" ?>>Verified</option>
 													<option value="unverified" <?php echo (@$_GET['status'] == 'unverified') ? 'selected="selected"' : "" ?>>Unverified</option>
 												</select>

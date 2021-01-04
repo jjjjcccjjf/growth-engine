@@ -18,7 +18,7 @@ class Sales_model extends Admin_core_model
 
   public function all()
   {
-    $this->db->order_by('created_at', 'desc');
+    $this->db->order_by('sales.created_at', 'desc');
     $res = $this->db->get($this->table)->result();
     return $this->formatRes($res);
   }

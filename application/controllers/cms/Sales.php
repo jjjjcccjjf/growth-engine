@@ -127,11 +127,13 @@ class Sales extends Admin_core_controller {
     $this->db->join('clients', 'clients.id = sales.client_id', 'left');
     $this->db->join('users', 'users.id = sales.user_id', 'left');
     $this->finance_model->filters();
-    if (@$_GET['type'] == 'all') {
-        $res = $this->sales_model->all();
-    } else if(@$_GET['type'] == 'pending') {
-        $res = $this->sales_model->allPending();
-    }
+    $res = $this->db->get('sales')->result();
+
+    // if (@$_GET['type'] == 'all') {
+    //     $res = $this->sales_model->all();
+    // } else if(@$_GET['type'] == 'pending') {
+    //     $res = $this->sales_model->allPending();
+    // }
 
     $new_res = [];
     foreach ($res as $key => $value) {

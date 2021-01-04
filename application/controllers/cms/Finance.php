@@ -268,11 +268,19 @@ class Finance extends Admin_core_controller {
     if (@$_GET['to']) {
       $this->db->where('invoice.collected_date <= "' . $_GET['to']. '"');
     }
-    // if (@$_GET['show_all']) {
-    //   $this->db->where('(invoice.collected_amount IS NULL OR invoice.collected_amount = 0)');
-    // }
-    //
-    //
+
+    if (@$_GET['user_id']) {
+      $this->db->where('sales.user_id', $_GET['user_id']);
+    }
+    if (@$_GET['client_id']) {
+      $this->db->where('sales.client_id', $_GET['client_id']);
+    }
+    if (@$_GET['status'] == 'verified') {
+      $this->db->where('invoice.collected_date IS NOT NULL');
+    } else if (@$_GET['status'] == 'unverified') {
+      $this->db->where('invoice.collected_date IS NULL');
+    }
+     
     if(@$_GET['all_time']) { # pag naka show all. pag default lang use this WHERE
        //
     }

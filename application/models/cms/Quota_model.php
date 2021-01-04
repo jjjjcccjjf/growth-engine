@@ -43,7 +43,7 @@ class Quota_model extends Admin_core_model
     rsort($years);
     return $years;
   }
-  
+
 
   public function all()
   {
@@ -51,8 +51,8 @@ class Quota_model extends Admin_core_model
     $res = $this->db->get($this->table)->result();
     return $this->formatRes($res);
   }
- 
- 
+
+
   public function addQuota($user_id, $data)
   {
     $this->db->where('user_id', $user_id);
@@ -68,7 +68,7 @@ class Quota_model extends Admin_core_model
     }
 
     return true;
-  } 
+  }
 
   function get($user_id)
   {
@@ -134,7 +134,7 @@ class Quota_model extends Admin_core_model
       $res[] = ["Q{$value}", (int)$quota_amount];
     }
 
-    return $res; # return all benta for all users for that year 
+    return $res; # return all benta for all users for that year
   }
 
   function getQuarterAndSalesByYear($year)
@@ -157,7 +157,7 @@ class Quota_model extends Admin_core_model
         $res[] = ["Q{$value}", (int)$amount];
     }
 
-    return $res; # return all benta for all users for that year 
+    return $res; # return all benta for all users for that year
   }
 
 
@@ -237,7 +237,7 @@ class Quota_model extends Admin_core_model
   //         ];
   //       }
   //       # example 2020
-        
+
   //       $res->{(int)$year} = $sales_in_that_year;
   //     }
 
@@ -343,7 +343,7 @@ class Quota_model extends Admin_core_model
 
   //   if ($sales_people) {
   //     foreach ($sales_people as $value) {
-        
+
   //       $this->db->select('sales.id');
   //       $this->db->where("YEAR(sales.created_at) = '{$year}'");
   //       $this->db->where('sales.user_id', $value->id);
@@ -358,7 +358,7 @@ class Quota_model extends Admin_core_model
   //         $this->db->select('SUM(invoice.collected_amount) as amount');
   //         $this->db->where_in('invoice.sale_id', $sales_id_array);
   //         $amount = $this->db->get('invoice')->row()->amount;
-  //       } 
+  //       }
 
   //       $res[] = [$value->name, (int)$amount];
   //     }
@@ -395,11 +395,11 @@ class Quota_model extends Admin_core_model
 
     return $res; # return all benta for all users for that year
   }
- 
+
   // public function add($data)
   // {
   //   if ($this->checkYearExist($data['year'])) {
-  //     return false;  
+  //     return false;
   //   } # return false pag nag eexist na ung year
 
   //   $this->db->insert($this->table, $data);
@@ -413,7 +413,7 @@ class Quota_model extends Admin_core_model
   //   $this->db->where('year', $year);
   //   return $this->db->count_all_results('quota');
   // }
- 
+
 
   // public function update($id, $data)
   // {
@@ -430,7 +430,7 @@ class Quota_model extends Admin_core_model
   //     $data[] = $value;
   //   }
   //   return $data;
-  // } 
- 
+  // }
+
 
 }

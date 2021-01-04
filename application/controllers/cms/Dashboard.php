@@ -43,6 +43,7 @@ class Dashboard extends Admin_core_controller {
 
     $data['sales_default_quota'] = $this->quota_model->getDefaultQuota($data['years_for_verified']);
     $data['sales_quota_met'] = $this->quota_model->getQuotaMet($data['years_for_verified']);
+    // var_dump($data['sales_quota_met']); die();
     $data['sales_quota_met_verified'] = $this->quota_model->getQuotaMetVerified($data['years_for_verified']);
     // var_dump($data); die();
 

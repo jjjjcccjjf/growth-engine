@@ -522,20 +522,21 @@ class Finance_model extends Admin_core_model
     if (@$_GET['client_id']) {
       $this->db->where('sales.client_id', $_GET['client_id']);
     }
-    if (@$_GET['invoice_remaining'] || @$_GET['status']) {
-      $this->db->join('invoice', 'invoice.sale_id = sales.id', 'left');
-      $this->db->select('sales.id, sales.user_id, sales.amount, sales.client_id, sales.vat_percent, sales.project_name, sales.project_description, sales.payment_terms, sales.duration, sales.category, sales.payment_terms_notes, sales.num_of_invoices, sales.commission_percent, sales.created_at, COUNT(invoice.id) as _invoice_count_current');
-      $this->db->group_by('invoice.sale_id');
+    
+    $this->db->join('invoice', 'invoice.sale_id = sales.id', 'left');
+    $this->db->select('sales.id, sales.user_id, sales.amount, sales.client_id, sales.vat_percent, sales.project_name, sales.project_description, sales.payment_terms, sales.duration, sales.category, sales.payment_terms_notes, sales.num_of_invoices, sales.commission_percent, sales.created_at, COUNT(invoice.id) as _invoice_count_current');
+    $this->db->group_by('sales.id');
 
-      if (@$_GET['invoice_remaining']) {
-        $this->db->having('(sales.num_of_invoices - COUNT(invoice.id)) <= ' . $_GET['invoice_remaining']);
-      }
-      if (@$_GET['status'] == 'verified') {
-        $this->db->where('invoice.collected_date IS NOT NULL');
-      } else if (@$_GET['status'] == 'unverified') {
-        $this->db->where('invoice.collected_date IS NULL');
-      }
+    if (@$_GET['invoice_remaining']) {
+      $this->db->having('(sales.num_of_invoices - COUNT(invoice.id)) <= ' . $_GET['invoice_remaining']);
     }
+
+    if (@$_GET['status'] == 'verified') {
+      $this->db->where('invoice.collected_date IS NOT NULL');
+    } else if (@$_GET['status'] == 'unverified') {
+      $this->db->where('invoice.collected_date IS NULL');
+    }
+
   }
 
   function filtersInvoices()
