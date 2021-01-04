@@ -200,6 +200,11 @@ class Finance extends Admin_core_controller {
   public function add()
   {
     $attachments = $this->finance_model->batch_upload($_FILES['attachments']);
+
+    $frommy = $this->input->post('frommy'); # handle for adding from sales
+    if ($frommy) {
+      unset($_POST['frommy']);
+    }
     $data = $this->input->post();
 
     $last_id = $this->finance_model->add($this->input->post());
@@ -211,6 +216,12 @@ class Finance extends Admin_core_controller {
     } else {
       $this->session->set_flashdata('flash_msg', ['message' => 'Error adding invoice.', 'color' => 'red']);
     }
+
+    if ($frommy) {
+      redirect($frommy);
+      die();
+    }
+
     redirect('cms/finance/issue_invoice');
   }
 
@@ -280,7 +291,7 @@ class Finance extends Admin_core_controller {
     } else if (@$_GET['status'] == 'unverified') {
       $this->db->where('invoice.collected_date IS NULL');
     }
-     
+
     if(@$_GET['all_time']) { # pag naka show all. pag default lang use this WHERE
        //
     }

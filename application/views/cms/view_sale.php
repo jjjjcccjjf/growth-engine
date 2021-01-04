@@ -109,7 +109,7 @@
 											<div class="form-group col-md-4">
 												<label >VAT (in percent %)</label>
 												<input type="number" class="form-control" name="vat_percent" placeholder="VAT" value="<?php echo $res->vat_percent ?>">
-											</div>											
+											</div>
 											<div class="form-group col-md-4">
 												<label >Computed Amount (with VAT)</label>
 												<input type="text" class="form-control" readonly="readonly" style="color:black" value="<?php echo $res->amount_with_vat_f ?>">
@@ -162,7 +162,16 @@
 
 							<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
 								<div class="card-body">
+
+									<?php if ($res->invoice_remaining > 0): ?>
+										<button class="btn issue-invoice btn-md" data-id="<?php echo $sale_id ?>"> <i class="fa fa-pen"></i> Issue Invoice</button>
+									<?php else: ?>
+										<button disabled class="btn btn-warning issue-invoice btn-md" data-id="<?php echo $sale_id ?>"> Invoice limit reached <i class="fa fa-exclamation-triangle"></i></button>
+									<?php endif; ?>
+
+
 									<?php if(@$invoices):foreach ($invoices as $value): ?>
+
 
 										<div class="card-sub">
 											<div class="row">
@@ -175,11 +184,11 @@
 													<?php endif ?>
 														 <button class="btn btn-xs btn-danger pull-right btn-delete-invoice" data-id="<?php echo $value->id ?>"><i class="fas fas fa-trash"></i> Delete</button>
 													</h3>
-														<small>Invoice amount: <span style="font-weight:bold"><?php echo $value->invoice_amount ?></span></small><br>											
+														<small>Invoice amount: <span style="font-weight:bold"><?php echo $value->invoice_amount ?></span></small><br>
 														<small>Collected amount: <span style="font-weight:bold"><?php echo $value->collected_amount ?> (with a withholding tax amount of <?php echo $value->withholding_tax_amount ?>)</span></small><br>
 														<small>Due date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->due_date ?></span></small><br>
-														<small>Date sent (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->sent_date ?: 'Unspecified' ?></span></small><br>								
-														<small>Collected date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->collected_date ?: 'Unspecified' ?></span></small><br>								
+														<small>Date sent (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->sent_date ?: 'Unspecified' ?></span></small><br>
+														<small>Collected date (yyyy-mm-dd): <span style="font-weight:bold"><?php echo $value->collected_date ?: 'Unspecified' ?></span></small><br>
 														<small>Received by: <span style="font-weight:bold"><?php echo $value->received_by ?: 'Unspecified' ?></span></small><br>
 														<small>Quickbooks ID: <span style="font-weight:bold"><?php echo $value->quickbooks_id ?></span></small>
 														<hr>
@@ -204,33 +213,96 @@
 												</div>
 											</div>
 										</div>
-										
+
 									<?php endforeach; else: ?>
+										<br>
+										<br>
 										<h3>Nothing to see here. 🤷‍♀️ Finance should issue an invoice first.</h3>
 									<?php endif ?>
 
 
-									
+
 								</div>
-							</div> 
+							</div>
 						</div>
 
 					</div>
-				
+
 				</div>
 			</div>
 		</div> <!-- / row -->
 	</div>
-	
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="invoicer" data-keyboard="false" tabindex="-1" role="dialog">
+	  <div class="modal-dialog modal-lg">
+	    <div class="modal-content card">
+	      <div class="modal-header card-header">
+	        <h3 class="modal-title card-title" id="staticBackdropLabel" style="font-weight:bold">Issue Invoice</h3>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	         <form role="form" class="dcheck" method="post" enctype="multipart/form-data" action="<?php echo base_url('cms/finance/add') ?>">
+	         	<div class="row">
+		            <div class="form-group col-md-6">
+		              <label >Invoice name</label>
+		              <input type="text" class="form-control" name="invoice_name" placeholder="Invoice name" required>
+		            </div>
+		            <div class="form-group col-md-6">
+		              <label >Project</label>
+		              <select class="form-control" name='sale_id'>
+		              		<option selected value="<?php echo $sale_id ?>"><?php echo $res->project_name ?></option>
+		              </select>
+		            </div>
+		            <div class="form-group col-md-6">
+		              <label >Invoice amount (in peso)</label>
+		              <input type="number" step="0.01" min="0" class="form-control" name="invoice_amount" placeholder="Invoice amount" required>
+		            </div>
+		            <div class="form-group col-md-6">
+		              <label >Due Date</label>
+		              <input type="date" class="form-control" name="due_date" placeholder="" required>
+		            </div>
+		            <div class="form-group col-md-6">
+		              <label >Quickbooks ID</label>
+		              <input type="text" class="form-control" name="quickbooks_id" placeholder="Quickbooks ID">
+		            </div>
+		            <div class="form-group col-md-6">
+		              <label >Attachments</label>
+		              <input type="file" class="form-control" name="attachments[]" multiple>
+		            </div>
+	         	</div>
+						<input type="hidden" name="frommy" value="<?php echo current_url() ?>">
+	          </div>
+	          <div class="modal-footer card-footer">
+	            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+	            <input class="btn btn-primary dcheck-btn" type="submit" value="Create Invoice">
+	          </div>
+	        </form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
 </div>
 
 <script>
 	$(document).ready(function($) {
+
+		$('html').on('click', '.issue-invoice', function(){
+			let sale_id = $(this).data('id')
+			$('select[name=sale_id]').val(sale_id).change()
+			$('#invoicer').modal()
+		})
+
+
 		$('select[name=category]').val('<?php echo $res->category ?>').change()
 		$('select[name=client_id]').val('<?php echo $res->client_id ?>').change()
 		$('.delete-me').on('click', function(e){
 		e.preventDefault();
-		
+
 		swal({
 			title: 'Are you sure you want to delete this?',
 			text: "You won't be able to revert this!",
@@ -252,7 +324,7 @@
 			$.getJSON( "<?php echo base_url('cms/sales/attachment_delete/') ?>" + file_attachment_id, function( data ) {
 				$('.attachment_count').text($('.attachment_count').text() - 1)
 				$('.file-wrapper-' + file_attachment_id).remove()
-				
+
 				swal({
 					title: 'Deleted!',
 					text: 'Your file has been deleted.',
@@ -281,7 +353,7 @@
             visible: true,
             text : 'No, cancel!',
             className: 'btn btn-danger'
-          },              
+          },
           confirm: {
             text : 'Yes, delete it',
             className : 'btn btn-success'
