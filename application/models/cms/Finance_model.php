@@ -238,6 +238,7 @@ class Finance_model extends Admin_core_model
     $data = [];
 
     foreach ($res as $key => $value) {
+      $value->invoice_name = str_replace(array('"', "'"), '', $value->invoice_name);
       $value->created_at = date('Y-m-d', strtotime($value->created_at));
       $value->due_date = date('Y-m-d', strtotime($value->due_date));
       $value->collected_date = $value->collected_date ? date('Y-m-d', strtotime($value->collected_date)) : null;
@@ -522,7 +523,7 @@ class Finance_model extends Admin_core_model
     if (@$_GET['client_id']) {
       $this->db->where('sales.client_id', $_GET['client_id']);
     }
-    
+
     $this->db->join('invoice', 'invoice.sale_id = sales.id', 'left');
     $this->db->select('sales.id, sales.user_id, sales.amount, sales.client_id, sales.vat_percent, sales.project_name, sales.project_description, sales.payment_terms, sales.duration, sales.category, sales.payment_terms_notes, sales.num_of_invoices, sales.commission_percent, sales.created_at, COUNT(invoice.id) as _invoice_count_current');
     $this->db->group_by('sales.id');
