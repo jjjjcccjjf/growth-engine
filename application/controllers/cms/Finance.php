@@ -26,10 +26,14 @@ class Finance extends Admin_core_controller {
     $data['total_num_of_invoices'] = $this->sales_model->sumKey($data['sales'], 'num_of_invoices');
 
     // var_dump($data['sales']); die();
+    # mga parang di nagagamit
     $data['categories'] = $this->options_model->getSalesCategories();
     $data['unique_clients'] = $this->sales_model->getUniqueClients();
+
+    # filters
     $data['unique_owners'] = $this->sales_model->getUniqueOwners();
     $data['unique_clients_object'] = $this->sales_model->getUniqueClientsObject();
+
     $data['export_str'] = "&type=pending";
     $this->wrapper('cms/issue_invoice', $data);
   }
@@ -45,11 +49,14 @@ class Finance extends Admin_core_controller {
     $data['total_invoice_remaining'] = $this->sales_model->sumKey($data['sales'], 'invoice_remaining');
     $data['total_num_of_invoices'] = $this->sales_model->sumKey($data['sales'], 'num_of_invoices');
 
-    $data['export_str'] = "&type=all";
     $data['categories'] = $this->options_model->getSalesCategories();
     $data['unique_clients'] = $this->sales_model->getUniqueClients();
+
+    # Filters
     $data['unique_owners'] = $this->sales_model->getUniqueOwners();
     $data['unique_clients_object'] = $this->sales_model->getUniqueClientsObject();
+
+    $data['export_str'] = "&type=all";
     $this->wrapper('cms/issue_invoice', $data);
   }
 
@@ -62,6 +69,7 @@ class Finance extends Admin_core_controller {
        $data['title'] = 'Uncollected Invoices';
         $this->db->where('MONTH(invoice.due_date) = MONTH(CURRENT_DATE()) AND (invoice.collected_date IS NULL OR invoice.collected_date = "0000-00-00 00:00:00")');
     }
+
     $this->finance_model->filtersInvoices();
     $this->db->order_by('age', 'desc');
     $data['invoices'] = $this->finance_model->getInvoices();

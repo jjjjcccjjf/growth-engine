@@ -45,8 +45,9 @@ class Sales_model extends Admin_core_model
 
     $new_res = [];
     foreach ($data as $value) {
-      if ($value->invoice_remaining) {
-        $new_res[] = $value;
+      # Dito nagaganap ang determine kung pending ba o hinde
+      if ($value->invoice_remaining) { # pag may invoice pa
+        $new_res[] = $value; # sama natin sa $res
       }
     }
 
