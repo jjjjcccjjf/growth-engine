@@ -163,10 +163,15 @@
 							<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
 								<div class="card-body">
 
-									<?php if ($res->invoice_remaining > 0): ?>
-										<button class="btn issue-invoice btn-md" data-id="<?php echo $sale_id ?>"> <i class="fa fa-pen"></i> Issue Invoice</button>
-									<?php else: ?>
-										<button disabled class="btn btn-warning issue-invoice btn-md" data-id="<?php echo $sale_id ?>"> Invoice limit reached <i class="fa fa-exclamation-triangle"></i></button>
+
+									<?php if (in_array($this->session->role, ['superadmin', 'finance'])): ?>
+
+										<?php if ($res->invoice_remaining > 0): ?>
+											<button class="btn issue-invoice btn-md" data-id="<?php echo $sale_id ?>"> <i class="fa fa-pen"></i> Issue Invoice</button>
+										<?php else: ?>
+											<button disabled class="btn btn-warning issue-invoice btn-md" data-id="<?php echo $sale_id ?>"> Invoice limit reached <i class="fa fa-exclamation-triangle"></i></button>
+										<?php endif; ?>
+										
 									<?php endif; ?>
 
 
