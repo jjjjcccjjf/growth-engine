@@ -16,7 +16,11 @@ class Sales extends Admin_core_controller {
 
   public function index()
   {
+    $data['unique_clients_object'] = $this->sales_model->getUniqueClientsObject();
+    
     $data['user'] = $this->users_model->get($this->session->id);
+    $this->finance_model->filters();
+    $this->db->order_by('created_at', 'DESC');
     $data['sales'] = $this->sales_model->getSales($this->session->id);
     $data['total_amount'] = $this->sales_model->sumKey($data['sales'], 'amount');
 

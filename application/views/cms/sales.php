@@ -14,6 +14,65 @@
 								<a href="<?php echo base_url('cms/sales/export') ?>" class="btn btn-sm btn-warning pull-right" style="margin-right: 15px"><i class="fa fa-download"></i> Export (this month)</a>
 							</h4>
 						</div>
+						<div class="card-header">
+							<h4 class="card-title">
+								<!-- <button class="add-new btn btn-sm btn-info pull-right"><i class="fa fa-plus"></i> Add new</button> -->
+								<hr>
+								<div class="row">
+									<div class="col-md-4" style="text-align:center">
+										<p>
+											Date range filter
+										</p>
+									</div>
+									<!-- <div class="col-md-2" style="text-align:center">
+									</div>
+									<div class="col-md-4" style="text-align:left">
+										<p>
+											(X) amount of invoices or less
+										</p>
+									</div> -->
+								</div>
+								<form action="" method="GET">
+									<div class="row">
+											<div class="col-md-2">
+													<input type="date" name="from" placeholder="from" class="form-control"
+													value="<?php echo @$_GET['from'] ?>">
+											</div>
+											<div class="col-md-2">
+													<input type="date" name="to" placeholder="to" class="form-control"
+													value="<?php echo @$_GET['to'] ?>">
+											</div>
+											<div class="col-md-2">
+												<select name="client_id" class="form-control">
+													<option value="">Client</option>
+													<?php foreach ($unique_clients_object as $value): ?>
+														<option value="<?php echo $value->id ?>"
+															<?php echo (@$_GET['client_id'] == $value->id) ? 'selected="selected"' : "" ?>
+															>
+															<?php echo $value->client_name ?>
+														</option>
+													<?php endforeach ?>
+												</select>
+											</div>
+											<!-- <div class="col-md-1">
+												<input type="number" min="1" step="1" name="invoice_remaining" class="form-control" value="<?php echo @$_GET['invoice_remaining'] ?>" placeholder="Invoice remaining">
+											</div> -->
+											<div class="col-md-2">
+												<select name="status" class="form-control">
+													<option value="">Status</option>
+													<option value="verified" <?php echo (@$_GET['status'] == 'verified') ? 'selected="selected"' : "" ?>>Verified</option>
+													<option value="unverified" <?php echo (@$_GET['status'] == 'unverified') ? 'selected="selected"' : "" ?>>Unverified</option>
+												</select>
+											</div>
+											<div class="col-md-1">
+													<input type="submit" value="Apply" class="btn btn-info btn-sm">
+											</div>
+									</div>
+								</form>
+							</h4>
+						</div>
+
+
 						<div class="card-body">
 							<div class="table-responsive">
 								<table id="basic-datatables" class="display table table-striped table-hover" >
@@ -159,6 +218,7 @@ $(document).ready(function($) {
 	// End disable submit block
 
 	$('#basic-datatables').DataTable({
+			"order": [],
 		  "columnDefs": [
 		  {
 		    "targets": 6,

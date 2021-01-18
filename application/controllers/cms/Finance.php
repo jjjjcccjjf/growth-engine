@@ -73,11 +73,12 @@ class Finance extends Admin_core_controller {
     $this->finance_model->filtersInvoices();
     $this->db->order_by('age', 'desc');
     $data['invoices'] = $this->finance_model->getInvoices();
+    // var_dump($this->db->last_query()); die();
+    // var_dump($this->db->last_query()); die();
     // var_dump($data['invoices']); die();
     $data['total_invoice_amount'] = $this->sales_model->sumKey($data['invoices'], 'invoice_amount');
 
     // var_dump($data['invoices']); die();
-    // var_dump($this->db->last_query()); die();
     $data['categories'] = $this->options_model->getSalesCategories();
     $data['unique_clients'] = $this->sales_model->getUniqueClients();
 

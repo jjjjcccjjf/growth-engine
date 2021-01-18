@@ -183,7 +183,7 @@ class Quota_model extends Admin_core_model
       #######################################################
       $this->db->join('sales', 'sales.id = invoice.sale_id', 'left');
       $result_verified = $this->db->get('invoice')->result();
-
+      // var_dump($result_verified); die();
       $result_verified_ids = [];
       if ($result_verified) {
         foreach ($result_verified as $sale) {
@@ -216,7 +216,9 @@ class Quota_model extends Admin_core_model
       foreach ($sales as $sale_i) {
         $amount += $sale_i->amount;
       }
-      // var_dump($amount); die();
+      // if ($year == 2021) {
+      //   var_dump($amount); die();
+      // }
       // var_dump($this->db->last_query()); die();
       $res[] = ["Q{$value}", (int)$amount];
     }
@@ -255,7 +257,7 @@ class Quota_model extends Admin_core_model
 
     foreach ($quarters as $value) {
 
-      // $this->db->select('SUM(invoice.collected_amount) as collected_amount');
+      // $this->db->select('SUM(invoice.collected_amount) as collected _amount');
       $this->db->select('SUM(sales.amount) as amount');
       $this->db->where('QUARTER(sales.created_at)', $value);
       $this->db->where('YEAR(sales.created_at)', $year);
