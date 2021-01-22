@@ -554,10 +554,10 @@ class Finance_model extends Admin_core_model
   function filtersInvoices()
   {
     if (@$_GET['from']) {
-      $this->db->where('invoice.created_at >= "' . $_GET['from']. '"');
+      $this->db->where('invoice.due_date >= "' . $_GET['from']. '"');
     }
     if (@$_GET['to']) {
-      $this->db->where('invoice.created_at <= "' . $_GET['to']. '"');
+      $this->db->where('invoice.due_date <= "' . $_GET['to']. '"');
     }
   }
 
