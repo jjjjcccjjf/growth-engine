@@ -233,6 +233,14 @@ class Finance_model extends Admin_core_model
   //   return $this->formatRes($res)[0];
   // }
 
+  public function getTotalInvoicedAmount($sale_id)
+  {
+    $this->db->where('sale_id', $sale_id);
+    $this->db->select_sum('invoice_amount', 'total_invoice_amount');
+    $total_invoice_amount = @$this->db->get('invoice')->row()->total_invoice_amount;
+    return $total_invoice_amount;
+  }
+
   function formatRes($res)
   {
     $data = [];

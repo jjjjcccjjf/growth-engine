@@ -42,7 +42,6 @@ class Sales_model extends Admin_core_model
   {
     $res = $this->db->get($this->table)->result();
     $data = $this->formatRes($res);
-
     $new_res = [];
     foreach ($data as $value) {
       # Dito nagaganap ang determine kung pending ba o hinde
@@ -50,6 +49,7 @@ class Sales_model extends Admin_core_model
         $new_res[] = $value; # sama natin sa $res
       }
     }
+    // var_dump($new_res); die();
 
     return $new_res;
   }
@@ -339,8 +339,16 @@ class Sales_model extends Admin_core_model
       $value->invoice_remaining = $this->finance_model->getInvoiceRemaining($value->id);
       $value->amount_with_vat = round($value->amount * (((double)$value->vat_percent / 100) + 1), 2);
       $value->amount_with_vat_f = number_format($value->amount_with_vat, 2);
-      $value->amount_left = number_format(round($value->amount_with_vat - round($this->finance_model->getTotalCollectedWithTax($value->id), 2), 2), 2);
-      $value->amount_left_nf = round($value->amount_with_vat - round($this->finance_model->getTotalCollectedWithTax($value->id), 2), 2);
+
+
+      $value->amount_left = number_format(round($value->amount_with_vat - round($this->finance_model->getTotalInvoicedAmount($value->id), 2), 2), 2);
+      $value->amount_left_nf = round($value->amount_with_vat - round($this->finance_model->getTotalInvoicedAmount($value->id), 2), 2);
+
+      # OLD do not delete
+      #$value->amount_left = number_format(round($value->amount_with_vat - round($this->finance_model->getTotalCollectedWithTax($value->id), 2), 2), 2);
+      #$value->amount_left_nf = round($value->amount_with_vat - round($this->finance_model->getTotalCollectedWithTax($value->id), 2), 2);
+      # / OLD do not delete
+
       // if ($value->vat_percent > 0) {
       //   $value->amount_left = $this->finance_model->getAmountLeft($value->id) * ((int)$value->vat_percent / 100) + 1;
       // } else {

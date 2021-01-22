@@ -90,7 +90,7 @@
 											<th>Project Name</th>
 											<th>Sales Rep.</th>
 											<th>Sales Amount</th>
-											<th>Amount left</th>
+											<th title="Total Sales Amount - Total Invoice Amount">Amount left</th>
 											<th>Client Name</th>
 											<!-- <th>Payment Terms</th> -->
 											<th>Status</th>
