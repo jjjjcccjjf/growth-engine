@@ -297,11 +297,12 @@ class Finance_model extends Admin_core_model
     return $res;
   }
 
-  function getTotalUncollected($role, $id) {
+  function getTotalUncollected($role, $id, $this_month = false) {
     // var_dump($role, $id); die();
       // var_dump($this->getTotalInvoiceAmount($role, $id) , $this->getTotalCollection($role, $id, true, false)); die();
       // return $this->getTotalInvoiceAmount($role, $id) - $this->getTotalCollection($role, $id, false, true); #orig
-      return $this->getTotalInvoiceAmount($role, $id) - $this->getTotalCollection($role, $id, true, false);
+      return $this->getTotalInvoiceAmount($role, $id, $this_month);
+       // - $this->getTotalCollection($role, $id, true, false);
   }
 
   /**
@@ -409,6 +410,8 @@ class Finance_model extends Admin_core_model
       $this->db->where('MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())');
     }
 
+    $this->db->where('collected_date IS NULL');
+    $this->db->where('collected_amount = 0');
     $this->db->select_sum('invoice_amount', 'invoice_amount');
     $res = $this->db->get('invoice')->row()->invoice_amount;
     // var_dump($res, $this->db->last_query()); die();

@@ -48,7 +48,7 @@
                         </div>
                         <div class="col-7 col-stats">
                             <div class="numbers">
-                                <p class="card-category">Total Uncollected Invoice (this month)</p>
+                                <p class="card-category">Total Uncollected Invoice</p>
                                 <h4 class="card-title"><span class="con">₱ <?php echo @$total_uncollected?: 0 ?></span></h4>
                             </div>
                         </div>
