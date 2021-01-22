@@ -31,14 +31,39 @@ class Finance_model extends Admin_core_model
   function getUninvoicedForExportThisMonth()
   {
     $this->db->where('invoice.collected_date IS NOT NULL');
-    $this->db->select('invoice.collected_date as _created_at, clients.client_name as _client_name, sales.project_name as _project_name, invoice.invoice_name as _invoice_name, invoice.collected_amount as _collected_amount, users.name as _owner');
+    $this->db->select('invoice.id as _id, invoice.collected_date as _created_at, clients.client_name as _client_name, sales.project_name as _project_name, invoice.invoice_name as _invoice_name, invoice.collected_amount as _collected_amount, invoice.quickbooks_id as _quickbooks_id, users.name as _owner');
     $this->db->join('clients', 'clients.id = sales.client_id', 'left');
     $this->db->join('users', 'users.id = sales.user_id', 'left');
     $this->db->join('invoice', 'sales.id = invoice.sale_id', 'left');
     $this->db->order_by('invoice.collected_date', 'asc');
     $this->db->order_by('clients.client_name', 'asc');
     $this->db->order_by('sales.project_name', 'asc');
-    return $this->db->get('sales')->result();
+    $res = $this->db->get('sales')->result();
+
+    // return $this->db->get('sales')->result();
+
+    return $this->formatResss($res);
+  }
+
+  function formatResss($res)
+  {
+    $data = [];
+
+    foreach ($res as $key => $value) {
+      $value->attachments = $this->getAttachmentsss($value->_id, 'invoice');
+      
+      $data[] = $value;
+    }
+    return $data;
+  }
+
+  function getAttachmentsss($sale_id, $type)
+  {
+    $res = $this->db->get_where('attachments', ['meta_id' => $sale_id, 'type' => $type])->result();
+    foreach ($res as $value) {
+      $value->attachment_path = base_url('uploads/attachments/') . $value->attachment_name;
+    }
+    return $res;
   }
 
 

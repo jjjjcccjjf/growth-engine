@@ -262,8 +262,6 @@ class Finance extends Admin_core_controller {
 
   public function export()
   {
-    // var_dump($this->session->role); die();
-
     // output headers so that the file is downloaded rather than displayed
     header('Content-type: text/csv');
     header('Content-Disposition: attachment; filename="' . date('Y-m-d') . '_collection.csv"');
@@ -274,7 +272,7 @@ class Finance extends Admin_core_controller {
 
     $file = fopen('php://output', 'w');
     // send the column headers
-    fputcsv($file, array('Date', 'Client', 'Project Name',  'Invoice Name', 'Collected Amount', 'Owner'));
+    fputcsv($file, array('Date', 'Client', 'Project Name',  'Invoice Name', 'Collected Amount', 'Owner', 'Quick Books ID', 'Attachments'));
 
     if ($this->session->role == 'sales') {
       $this->db->where('invoice.sales_id', $this->session->id);
@@ -311,17 +309,23 @@ class Finance extends Admin_core_controller {
     $res = $this->finance_model->getUninvoicedForExportThisMonth();
 
     $new_res = [];
+
     foreach ($res as $key => $value) {
-      $new_res[] = array(
-        // $value->id,
-        $value->_created_at,
-        $value->_client_name,
-        $value->_project_name,
-        $value->_invoice_name,
-        $value->_collected_amount,
-        $value->_owner
-      );
+        $names = @array_column($value->attachments, 'attachment_path');
+        $attachments = @implode(', ', $names);
+         $new_res[] = array(
+          // $value->id,
+          $value->_created_at,
+          $value->_client_name,
+          $value->_project_name,
+          $value->_invoice_name,
+          $value->_collected_amount,
+          $value->_owner,
+          $value->_quickbooks_id,
+          $attachments
+        );
     }
+
     $data = $new_res;
 
     foreach ($data as $row)
