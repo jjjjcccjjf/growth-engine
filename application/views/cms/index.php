@@ -67,7 +67,7 @@
                         </div>
                         <div class="col-7 col-stats">
                             <div class="numbers">
-                                <p class="card-category">Total Uninvoiced Sales (All time, without a single invoice)</p>
+                                <p class="card-category">Total Uninvoiced Amount</p>
                                 <h4 class="card-title"><span class="con">₱ <?php echo @$total_uninvoiced?: 0 ?></span></h4>
                             </div>
                         </div>

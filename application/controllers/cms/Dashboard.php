@@ -27,9 +27,14 @@ class Dashboard extends Admin_core_controller {
 
     $total_collection = $this->finance_model->getTotalCollection($this->session->role, $this->session->id);
     $total_uncollected = $this->finance_model->getTotalUncollected($this->session->role, $this->session->id, false); # all time
+
     $uninvoiced = $this->finance_model->getTotalUninvoiced($this->session->role, $this->session->id, false); # true = this month false = all time
     $amount_sales_invoice_remaining = $this->finance_model->getTotalSalesInvoicedAmount($this->session->role, $this->session->id);
-    $total_uninvoiced = $uninvoiced + ($amount_sales_invoice_remaining);
+    $total_uninvoiced = $this->sales_model->sumKey($this->sales_model->allPending(), 'amount_left_nf');
+    // var_dump($this->finance_model->getTotalSalesAmount($this->session->role, $this->session->id), $this->finance_model->getTotalInvoiceAmount($this->session->role, $this->session->id, false, false)); die();
+    // $total_uninvoiced = $uninvoiced + ($amount_sales_invoice_remaining);
+
+    // var_dump(); die();
 
     $data['total_collection'] = number_format($total_collection, 2);
     $data['total_uncollected'] = number_format($total_uncollected, 2);

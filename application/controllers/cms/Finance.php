@@ -19,7 +19,7 @@ class Finance extends Admin_core_controller {
 
     $this->finance_model->filters();
     $data['sales'] = $this->sales_model->allPending();
-    
+
     $data['total_amount'] = $this->sales_model->sumKey($data['sales'], 'amount');
     $data['total_amount_left'] = $this->sales_model->sumKey($data['sales'], 'amount_left_nf');
     $data['total_invoice_remaining'] = $this->sales_model->sumKey($data['sales'], 'invoice_remaining');
@@ -63,7 +63,7 @@ class Finance extends Admin_core_controller {
   public function invoice_management()
   {
     if(@$_GET['show_all']) { # pag naka show all. pag default lang use this WHERE
-       $data['title'] = 'All Invoices';
+       $data['title'] = 'All Uncollected Invoices';
        $this->db->where('(collected_amount IS NULL OR collected_amount = 0)');
     } else {
        $data['title'] = 'Uncollected Invoices';

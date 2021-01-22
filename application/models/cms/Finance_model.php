@@ -341,6 +341,25 @@ class Finance_model extends Admin_core_model
       return $this->db->get('sales')->row()->amount;
   }
 
+  public function getTotalSalesAmount($role, $id)
+  {
+    switch ($role) {
+      case 'sales':
+        $this->db->where('user_id', $id);
+        break;
+
+      case 'finance':
+      case 'superadmin':
+      default:
+        break;
+    }
+
+    $this->db->select_sum('amount', 'total_amount');
+    $total_amount = @$this->db->get('sales')->row()->total_amount;
+    // var_dump($total_amount); die();
+    return $total_amount;
+  }
+
   function getTotalSalesInvoicedAmount($role, $id)
   {
       switch ($role) {
@@ -394,7 +413,7 @@ class Finance_model extends Admin_core_model
       return $amount_remaining_sum;
   }
 
-  function getTotalInvoiceAmount($role, $id, $current_month = true)
+  function getTotalInvoiceAmount($role, $id, $current_month = true, $uncollected_only = true)
   {
     switch ($role) {
       case 'sales':
@@ -418,8 +437,11 @@ class Finance_model extends Admin_core_model
       $this->db->where('MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())');
     }
 
-    $this->db->where('collected_date IS NULL');
-    $this->db->where('collected_amount = 0');
+    if ($uncollected_only) {
+      $this->db->where('collected_date IS NULL');
+      $this->db->where('collected_amount = 0');
+    }
+
     $this->db->select_sum('invoice_amount', 'invoice_amount');
     $res = $this->db->get('invoice')->row()->invoice_amount;
     // var_dump($res, $this->db->last_query()); die();
