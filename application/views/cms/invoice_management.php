@@ -56,14 +56,14 @@
 										<div class="col-md-1">
 												<input type="submit" value="Apply" class="btn btn-info btn-sm">
 										</div>
-										<?php if (isset($_GET['show_all'])): ?>
-											<input type="hidden" name="show_all" value="<?php echo @$_GET['show_all'] ?>">
-										<?php endif; ?>
+										<?php #if (isset($_GET['show_all'])): ?>
+											<input type="hidden" name="all_time" value="1">
+										<?php #endif; ?>
 										<div class="col-md-1">
 											<?php if ($this->uri->segment(3) == 'invoice_management_collected'){
 												$sq_collected = '&collected=1';
 											} ?>
-											<a href="<?php echo base_url('cms/finance/export?') . $this->input->server('QUERY_STRING') . @$sq_collected ?>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> Export Collected (including current filters)</a>
+											<a href="<?php echo base_url('cms/finance/export?all_time=1&') . $this->input->server('QUERY_STRING') . @$sq_collected ?>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> Export Collected (including current filters)</a>
 										</div>
 								</div>
 							</form>

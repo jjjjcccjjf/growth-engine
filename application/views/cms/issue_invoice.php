@@ -116,7 +116,7 @@
 										 <?php foreach ($sales as $value): ?>
 										<tr>
 										    <td><?php echo $value->created_at ?></td>
-											<td><?php echo $value->project_name ?></td>
+											<td> <a target="_blank" href="<?php echo base_url('cms/sales/view/') . $value->id ?>"><?php echo $value->project_name ?></a></td>
 											<td><?php echo $value->sales_rep ?></td>
 											<td><?php echo $value->amount ?></td>
 											<td><?php echo $value->amount_left ?></td>

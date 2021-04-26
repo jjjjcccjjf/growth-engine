@@ -171,7 +171,7 @@
 										<?php else: ?>
 											<button disabled class="btn btn-warning issue-invoice btn-md" data-id="<?php echo $sale_id ?>"> Invoice limit reached <i class="fa fa-exclamation-triangle"></i></button>
 										<?php endif; ?>
-										
+
 									<?php endif; ?>
 
 
@@ -188,6 +188,7 @@
 														<button class="btn btn-xs btn-warning btn-round"><i class="fas fas fa-exclamation-triangle"></i> Uncollected</button>
 													<?php endif ?>
 														 <button class="btn btn-xs btn-danger pull-right btn-delete-invoice" data-id="<?php echo $value->id ?>"><i class="fas fas fa-trash"></i> Delete</button>
+														 <a target="_blank" class="btn btn-xs btn-info pull-right" href="<?php echo base_url('cms/finance/view_invoice/' . $value->id) ?>"><i class="fas fa-pencil-alt"></i> Edit</a>
 													</h3>
 														<small>Invoice amount: <span style="font-weight:bold"><?php echo $value->invoice_amount ?></span></small><br>
 														<small>Collected amount: <span style="font-weight:bold"><?php echo $value->collected_amount ?> (with a withholding tax amount of <?php echo $value->withholding_tax_amount ?>)</span></small><br>
