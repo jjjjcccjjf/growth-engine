@@ -90,7 +90,9 @@ class Finance extends Admin_core_controller {
 
     if(@$_GET['all_time']) { # pag naka show all. pag default lang use this WHERE
        $data['title'] = 'Collected Invoices (All time)';
-    } else {
+    }elseif (@$_GET['from'] || @$_GET['to']) {
+      $data['title'] = 'Collected Invoices (Filtered Date)';
+    }else {
        $data['title'] = 'Collected Invoices (This month only)';
         $this->db->where('MONTH(invoice.collected_date) = MONTH(CURRENT_DATE()) AND YEAR(invoice.collected_date) = YEAR(CURRENT_DATE())');
     }
@@ -303,7 +305,7 @@ class Finance extends Admin_core_controller {
        //
     }
 
-    if (@$_GET['collected'] && !@$_GET['all_time']) {
+    if (@$_GET['collected'] && !@$_GET['all_time'] && !@$_GET['from'] || !@$_GET['to']) {
        $this->db->where('MONTH(invoice.collected_date) = MONTH(CURRENT_DATE()) AND YEAR(invoice.collected_date) = YEAR(CURRENT_DATE())');
     }
     $res = $this->finance_model->getUninvoicedForExportThisMonth();
@@ -311,6 +313,7 @@ class Finance extends Admin_core_controller {
     $new_res = [];
 
     foreach ($res as $key => $value) {
+        $quickbooks_id =  @$value->_quickbooks_id;
         $names = @array_column($value->attachments, 'attachment_path');
         $attachments = @implode(', ', $names);
          $new_res[] = array(
@@ -321,7 +324,7 @@ class Finance extends Admin_core_controller {
           $value->_invoice_name,
           $value->_collected_amount,
           $value->_owner,
-          $value->_quickbooks_id,
+          $quickbooks_id,
           $attachments
         );
     }
